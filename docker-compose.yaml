@@ -1,0 +1,64 @@
+services:
+    envio-postgres:
+        image: postgres:16
+        restart: always
+        ports:
+            - "5433:5432"
+        volumes:
+            - db_data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_PASSWORD: testing
+            POSTGRES_USER: postgres
+            POSTGRES_DB: envio-dev
+        networks:
+            - indexer-service
+    graphql-engine:
+        image: hasura/graphql-engine:v2.23.0
+        ports:
+            - "8080:8080"
+        user: 1001:1001
+        depends_on:
+            - "envio-postgres"
+        restart: always
+        environment:
+            HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:testing@envio-postgres:5432/envio-dev
+            HASURA_GRAPHQL_ENABLE_CONSOLE: true
+            HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log,
+                query-log
+            HASURA_GRAPHQL_NO_OF_RETRIES: 10
+            HASURA_GRAPHQL_ADMIN_SECRET: testing
+            HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: "true"
+            PORT: 8080
+            HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
+        healthcheck:
+            test: timeout 1s bash -c ':> /dev/tcp/127.0.0.1/8080' || exit 1
+            interval: 5s
+            timeout: 2s
+            retries: 50
+            start_period: 5s
+        networks:
+            - indexer-service
+    indexer-service:
+        build:
+            context: ./apps/indexer
+            dockerfile: Dockerfile
+        depends_on:
+            - "envio-postgres"
+            - "graphql-engine"
+        restart: always
+        environment:
+            ENVIO_PG_HOST: envio-postgres
+            ENVIO_PG_PORT: 5432
+            ENVIO_POSTGRES_PASSWORD: testing
+            ENVIO_PG_USER: postgres
+            ENVIO_PG_DATABASE: envio-dev
+            HASURA_GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/metadata
+            TUI_OFF: true
+        networks:
+            - indexer-service
+volumes:
+    db_data:
+    ganache-data:
+networks:
+    indexer-service:
+        name: indexer_test_network

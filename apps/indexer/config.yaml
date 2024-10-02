@@ -1,0 +1,326 @@
+name: Allo Indexer
+unordered_multichain_mode: true
+raw_events: true
+##########################
+#       CONTRACTS        #
+##########################
+contracts:
+    - name: Allo
+      handler: src/handlers/Allo.ts
+      events:
+          - event: PoolCreated(uint256 indexed poolId, bytes32 indexed profileId, address strategy, address token, uint256 amount, (uint256,string) metadata)
+          - event: RoleGranted(uint64 indexed roleId, address indexed account, uint32 delay, uint48 since, bool newMember)
+          - event: PoolMetadataUpdated(uint256 indexed poolId, (uint256,string) metadata)
+          - event: PoolFunded(uint256 indexed poolId, uint256 amount, uint256 fee)
+          - event: RoleRevoked(uint64 indexed roleId, address indexed account)
+    - name: Registry
+      handler: src/handlers/Registry.ts
+      events:
+          - event: ProfileCreated(bytes32 indexed profileId, uint256 nonce, string name, (uint256,string) metadata, address owner, address anchor)
+          - event: ProfileMetadataUpdated(bytes32 indexed profileId, (uint256,string) metadata)
+          - event: ProfileNameUpdated(bytes32 indexed profileId, string name, address anchor)
+          - event: ProfileOwnerUpdated(bytes32 indexed profileId, address owner)
+    - name: Strategy
+      handler: src/handlers/Strategy.ts
+      events:
+          ########################## ALLO v2 ##########################
+          # Registered
+          - event: Registered(address indexed recipientId, bytes data, address sender)
+            name: RegisteredWithSender
+          - event: Registered(address indexed _recipient, bytes _data)
+            name: RegisteredWithData
+
+          #TimestampsUpdated
+          - event: TimestampsUpdated(uint64 startTime, uint64 endTime, address sender)
+            # Keep in mind that parameters could be allocation or registration timestamps in this case. It depends on the contract.
+            name: TimestampsUpdated
+          - event: TimestampsUpdated(uint64 registrationStartTime, uint64 registrationEndTime, uint64 allocationStartTime, uint64 allocationEndTime, address sender)
+            name: TimestampsUpdatedWithRegistrationAndAllocation
+
+          # DistributionUpdated
+          - event: DistributionUpdated(bytes32 merkleRoot, (uint256,string) metadata)
+
+          # FundsUpdated
+          - event: FundsDistributed(uint256 amount, address grantee, address indexed token, address indexed recipientId)
+
+          # Distributed
+          - event: Distributed(address indexed recipientId, address recipientAddress, uint256 amount, address sender)
+            name: DistributedWithRecipientAddress
+          - event: Distributed(address indexed _recipient, bytes _data)
+            name: DistributedWithData
+          - event: Distributed(address indexed sender, int96 flowRate)
+            name: DistributedWithFlowRate
+
+          # Allocated
+          - event: Allocated(address indexed recipientId, uint256 amount, address token, address sender, address origin)
+            name: AllocatedWithOrigin
+          - event: Allocated(address indexed _recipient, address indexed _sender, uint256 _amount, bytes _data)
+            name: AllocatedWithData
+          - event: Allocated(address indexed recipientId, uint256 amount, address token, address sender)
+            name: AllocatedWithToken
+          - event: Allocated(address indexed recipientId, uint256 votes, address allocator)
+            name: AllocatedWithVotes
+          - event: Allocated(address indexed recipientId, uint8 status, address sender)
+            name: AllocatedWithStatus
+
+          # AllocatedWithNft
+          - event: AllocatedWithNft(address indexed recipientId, uint256 votes, address nft, address allocator)
+
+          # DirectAllocated
+          - event: DirectAllocated(address indexed recipient, uint256 amount, address token, address sender)
+
+          # RecipientStatusUpdated
+          - event: RecipientStatusUpdated(address indexed recipientId, uint256 applicationId, uint8 status, address sender)
+            name: RecipientStatusUpdatedWithApplicationId
+          - event: RecipientStatusUpdated(address indexed recipientId, uint8 recipientStatus, address sender)
+            name: RecipientStatusUpdatedWithRecipientStatus
+          - event: RecipientStatusUpdated(uint256 indexed rowIndex, uint256 fullRow, address sender)
+            name: RecipientStatusUpdatedWithFullRow
+
+          # ########################## ALLO v2.1 ##########################
+
+          # # AllocationExtension
+          # - event: AllocationTimestampsUpdated(uint64 allocationStartTime, uint64 allocationEndTime, address sender)
+
+          # # AllocationAllowlistExtension
+          # - event: AllocatorsRemoved(address[] allocators, address sender)
+          # - event: AllocatorsAdded(address[] allocators, address sender)
+
+          # # MilestoneExtension
+          # - event: MaxBidIncreased(uint256 maxBid)
+          # - event: SetBid(address indexed bidderId, uint256 newBid)
+          # - event: MilestoneSubmitted(uint256 milestoneId)
+          # - event: MilestoneStatusChanged(uint256 indexed milestoneId, uint8 status)
+          # - event: MilestonesSet(uint256 milestonesLength)
+
+          # # RecipientsExtension
+          # - event: UpdatedRegistration(address indexed recipientId, bytes data, address sender, uint8 status)
+          # - event: RecipientStatusUpdated(uint256 indexed rowIndex, uint256 fullRow, address sender)
+          # - event: RegistrationTimestampsUpdated(uint64 registrationStartTime, uint64 registrationEndTime, address sender)
+
+##########################
+#        NETWORKS        #
+##########################
+networks:
+    #######################
+    #       MAINNET       #
+    #######################
+    - id: 1 # mainnet
+      start_block: 18486688
+      contracts:
+          - name: Allo
+            address:
+                - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+          - name: Strategy
+          - name: Registry
+            address:
+                - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+
+    - id: 10 # optimism
+      start_block: 111678968
+      contracts:
+          - name: Registry
+            address:
+                - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+          - name: Strategy
+          - name: Allo
+            address:
+                - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+    - id: 11155111 # sepolia
+      start_block: 4617051
+      contracts:
+          - name: Registry
+            address:
+                - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+          - name: Strategy
+          - name: Allo
+            address:
+                - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+    - id: 250 # fantom
+      start_block: 77624278
+      contracts:
+          - name: Registry
+            address:
+                - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+          - name: Strategy
+          - name: Allo
+            address:
+                - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+    - id: 42161 # arbitrum
+      start_block: 146489425
+      contracts:
+          - name: Registry
+            address:
+                - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+          - name: Strategy
+          - name: Allo
+            address:
+                - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+    - id: 137 # polygon
+      start_block: 49466006
+      contracts:
+          - name: Registry
+            address:
+                - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+          - name: Strategy
+          - name: Allo
+            address:
+                - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+    - id: 8453 # base
+      start_block: 6083365
+      contracts:
+          - name: Registry
+            address:
+                - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+          - name: Strategy
+          - name: Allo
+            address:
+                - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+    - id: 324 # zksync-era-mainnet
+      start_block: 31154341
+      contracts:
+          - name: Registry
+            address:
+                - 0xaa376Ef759c1f5A8b0B5a1e2FEC5C23f3bF30246
+          - name: Strategy
+          - name: Allo
+            address:
+                - 0x9D1D1BF2835935C291C0f5228c86d5C4e235A249
+
+    - id: 43114 # avalanche
+      start_block: 34540051
+      contracts:
+          - name: Registry
+            address:
+                - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+          - name: Strategy
+          - name: Allo
+            address:
+                - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+    - id: 534352 # scroll
+      start_block: 2683205
+      contracts:
+          - name: Registry
+            address:
+                - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+          - name: Strategy
+          - name: Allo
+            address:
+                - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+    # - id: 1329 # sei-mainnet
+    #   rpc_config:
+    #     url: https://evm-rpc.sei-apis.com
+    #   start_block: 78000000
+    #   contracts:
+    #     - name: Registry
+    #       address:
+    #         - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+    #     - name: Strategy
+    #     - name: Allo
+    #       address:
+    #         - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+    - id: 42220 # celo-mainnet
+      start_block: 22257475
+      contracts:
+          - name: Registry
+            address:
+                - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+          - name: Strategy
+          - name: Allo
+            address:
+                - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+    - id: 42 # lukso-mainnet
+      start_block: 2400000
+      contracts:
+          - name: Registry
+            address:
+                - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+          - name: Strategy
+          - name: Allo
+            address:
+                - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+#######################
+#       TESTNET       #
+#######################
+
+# - id: 80001 # polygon-mumbai
+#   start_block: 41939383
+#   contracts:
+#   - name: Registry
+#     address:
+#     - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+#  - name: Strategy
+#
+#   - name: Allo
+#     address:
+#     - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+# - id: 300 # zksync-era-testnet
+#   rpc_config:
+#     url: https://sepolia.era.zksync.dev
+#   start_block: 1573385
+#   contracts:
+#   - name: Registry
+#     address:
+#     - 0xaa376Ef759c1f5A8b0B5a1e2FEC5C23f3bF30246
+#   - name: Allo
+#     address:
+#     - 0x9D1D1BF2835935C291C0f5228c86d5C4e235A249
+
+# - id: 43113 # avalanche-fuji
+#   rpc_config:
+#     url: https://rpc.ankr.com/avalanche_fuji
+#   start_block: 25380385
+#   contracts:
+#   - name: Registry
+#     address:
+#     - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+#   - name: Allo
+#     address:
+#     - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+# - id: 713715 # sei-devnet
+#   rpc_config:
+#     url: https://evm-rpc.arctic-1.seinetwork.io
+#   start_block: 14660337
+#   contracts:
+#   - name: Registry
+#     address:
+#     - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+#   - name: Allo
+#     address:
+#     - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+# - id: 4201 # lukso-testnet
+#   rpc_config:
+#     url: https://rpc.testnet.lukso.network
+#   start_block: 2500000
+#   contracts:
+#   - name: Registry
+#     address:
+#     - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+#   - name: Allo
+#     address:
+#     - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1
+
+# - id: 44787 # celo-testnet
+#   rpc_config:
+#     url: https://alfajores-forno.celo-testnet.org
+#   start_block: 23061115
+#   contracts:
+#   - name: Registry
+#     address:
+#     - 0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3
+#   - name: Allo
+#     address:
+#     - 0x1133eA7Af70876e64665ecD07C0A0476d09465a1

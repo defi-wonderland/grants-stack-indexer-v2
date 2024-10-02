@@ -1,13 +1,8 @@
 {
-    "name": "ts-turborepo-boilerplate",
+    "name": "grants-stack-indexer",
     "version": "0.0.1",
     "private": true,
-    "description": "Start your next offchain project in seconds",
-    "homepage": "https://github.com/defi-wonderland/ts-turborepo-boilerplate#readme",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/defi-wonderland/ts-turborepo-boilerplate.git"
-    },
+    "description": "Grants stack indexer for Gitcoin Allo protocol",
     "license": "MIT",
     "author": "Wonderland",
     "type": "module",
