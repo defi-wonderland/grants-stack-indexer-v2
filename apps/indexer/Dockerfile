@@ -5,7 +5,7 @@ RUN corepack enable
 COPY . /app
 WORKDIR /app
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=$PNPM_HOME/store pnpm install --frozen-lockfile
 RUN pnpm dlx envio codegen
 
-CMD pnpm dlx envio local db-migrate setup && pnpm dlx envio start
+CMD pnpm dlx envio local db-migrate up && pnpm dlx envio start

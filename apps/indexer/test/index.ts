@@ -3,6 +3,7 @@ import path from "path";
 
 import { compareEventsAndHandlers, loadHandlerFunctions, loadYaml } from "./helpers";
 
+//TODO: MIGRATE TO GIT WORKFLOW AS AN ISOLATED SCRIPT
 describe("All events are handled", () => {
     it("handles all the events", () => {
         // File paths
