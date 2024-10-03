@@ -27,6 +27,14 @@ To deploy locally with Docker, run the following command:
 docker-compose up -d --build
 ```
 
+Once the deployment is complete, you can access Hasura by navigating to:
+
+```
+http://localhost:8080/
+```
+
+Use the default password: `testing`.
+
 ## Contributing
 
 Wonderland is a team of top Web3 researchers, developers, and operators who believe that the future needs to be open-source, permissionless, and decentralized.
