@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "scripts": {
         "build": "envio codegen",
+        "check-types": "tsc --noEmit -p ./tsconfig.json",
         "clean": "rm -rf generated node_modules",
         "dev": "envio dev",
         "mocha": "ts-mocha test/**/*.ts",
