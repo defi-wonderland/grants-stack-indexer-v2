@@ -1,0 +1,5 @@
+type Dummy {
+    id: ID!
+    protocol: BigInt!
+    pointer: String!
+}

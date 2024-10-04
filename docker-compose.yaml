@@ -1,0 +1,48 @@
+services:
+    envio-postgres:
+        image: postgres:16
+        restart: always
+        ports:
+            - "${POSTGRES_PORT:-5433}:5432"
+        volumes:
+            - db_data:/var/lib/postgresql/data
+        env_file:
+            - .env
+        networks:
+            - indexer-service
+    graphql-engine:
+        image: hasura/graphql-engine:v2.23.0
+        ports:
+            - "${HASURA_EXPOSED_PORT:-8080}:${PORT:-8080}"
+        user: 1001:1001
+        depends_on:
+            - "envio-postgres"
+        restart: always
+        env_file:
+            - .env
+        healthcheck:
+            test: timeout 1s bash -c ':> /dev/tcp/127.0.0.1/8080' || exit 1
+            interval: 5s
+            timeout: 2s
+            retries: 50
+            start_period: 5s
+        networks:
+            - indexer-service
+    indexer-service:
+        build:
+            context: ./apps/indexer
+            dockerfile: Dockerfile
+        depends_on:
+            - "envio-postgres"
+            - "graphql-engine"
+        restart: always
+        env_file:
+            - .env
+        networks:
+            - indexer-service
+volumes:
+    db_data:
+    ganache-data:
+networks:
+    indexer-service:
+        name: indexer_test_network
