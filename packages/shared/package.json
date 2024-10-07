@@ -26,5 +26,8 @@
         "lint:fix": "pnpm lint --fix",
         "test": "vitest run --config vitest.config.ts --passWithNoTests",
         "test:cov": "vitest run --config vitest.config.ts --coverage"
+    },
+    "dependencies": {
+        "viem": "2.21.19"
     }
 }
