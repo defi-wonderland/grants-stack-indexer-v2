@@ -91,6 +91,17 @@ describe("CoingeckoProvider", () => {
             expect(result).toBeUndefined();
         });
 
+        it("return undefined when endTimestamp is greater than startTimestamp", async () => {
+            const result = await provider.getTokenPrice(
+                1,
+                "0x1234567890123456789012345678901234567890" as Address,
+                1609545600000, // startTimestamp
+                1609459200000, // endTimestamp
+            );
+
+            expect(result).toBeUndefined();
+        });
+
         it("return undefined if 400 family error", async () => {
             mock.onGet().replyOnce(400, "Bad Request");
 

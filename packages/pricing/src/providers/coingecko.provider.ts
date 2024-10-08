@@ -89,6 +89,10 @@ export class CoingeckoProvider implements IPricingProvider {
             throw new UnsupportedChainException(chainId);
         }
 
+        if (startTimestampMs > endTimestampMs) {
+            return undefined;
+        }
+
         const startTimestampSecs = Math.floor(startTimestampMs / 1000);
         const endTimestampSecs = Math.floor(endTimestampMs / 1000);
 
