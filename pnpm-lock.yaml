@@ -98,6 +98,12 @@ importers:
 
     packages/data-flow:
         dependencies:
+            "@grants-stack-indexer/indexer-client":
+                specifier: workspace:*
+                version: link:../indexer-client
+            "@grants-stack-indexer/shared":
+                specifier: workspace:*
+                version: link:../shared
             viem:
                 specifier: 2.21.19
                 version: 2.21.19(typescript@5.5.4)(zod@3.23.8)
