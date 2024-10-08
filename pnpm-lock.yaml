@@ -96,20 +96,18 @@ importers:
                 specifier: 5.2.2
                 version: 5.2.2
 
-    packages/data-flow:
-        dependencies:
-            viem:
-                specifier: 2.21.19
-                version: 2.21.19(typescript@5.5.4)(zod@3.23.8)
-
-    packages/indexer-client:
+    packages/pricing:
         dependencies:
             "@grants-stack-indexer/shared":
-                specifier: workspace:*
+                specifier: workspace:0.0.1
                 version: link:../shared
-            graphql-request:
-                specifier: 7.1.0
-                version: 7.1.0(graphql@16.9.0)
+            axios:
+                specifier: 1.7.7
+                version: 1.7.7
+        devDependencies:
+            axios-mock-adapter:
+                specifier: 2.0.0
+                version: 2.0.0(axios@1.7.7)
 
     packages/shared:
         dependencies:
@@ -629,14 +627,6 @@ packages:
             }
         engines: { node: ^12.22.0 || ^14.17.0 || >=16.0.0 }
 
-    "@graphql-typed-document-node/core@3.2.0":
-        resolution:
-            {
-                integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==,
-            }
-        peerDependencies:
-            graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-
     "@humanwhocodes/config-array@0.11.14":
         resolution:
             {
@@ -722,18 +712,6 @@ packages:
         resolution:
             {
                 integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==,
-            }
-
-    "@molt/command@0.9.0":
-        resolution:
-            {
-                integrity: sha512-1JI8dAlpqlZoXyKWVQggX7geFNPxBpocHIXQCsnxDjKy+3WX4SGyZVJXuLlqRRrX7FmQCuuMAfx642ovXmPA9g==,
-            }
-
-    "@molt/types@0.2.0":
-        resolution:
-            {
-                integrity: sha512-p6ChnEZDGjg9PYPec9BK6Yp5/DdSrYQvXTBAtgrnqX6N36cZy37ql1c8Tc5LclfIYBNG7EZp8NBcRTYJwyi84g==,
             }
 
     "@noble/curves@1.2.0":
@@ -1210,12 +1188,6 @@ packages:
                 integrity: sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==,
             }
 
-    alge@0.8.1:
-        resolution:
-            {
-                integrity: sha512-kiV9nTt+XIauAXsowVygDxMZLplZxDWt0W8plE/nB32/V2ziM/P/TxDbSVK7FYIUt2Xo16h3/htDh199LNPCKQ==,
-            }
-
     ansi-colors@4.1.1:
         resolution:
             {
@@ -1316,6 +1288,26 @@ packages:
                 integrity: sha512-Izi8RQcffqCeNVgFigKli1ssklIbpHnCYc6AknXGYoB6grJqyeby7jv12JUQgmTAnIDnbck1uxksT4dzN3PWBA==,
             }
         engines: { node: ">=12" }
+
+    asynckit@0.4.0:
+        resolution:
+            {
+                integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==,
+            }
+
+    axios-mock-adapter@2.0.0:
+        resolution:
+            {
+                integrity: sha512-D/K0J5Zm6KvaMTnsWrBQZWLzKN9GxUFZEa0mx2qeEHXDeTugCoplWehy8y36dj5vuSjhe1u/Dol8cZ8lzzmDew==,
+            }
+        peerDependencies:
+            axios: ">= 0.17.0"
+
+    axios@1.7.7:
+        resolution:
+            {
+                integrity: sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==,
+            }
 
     balanced-match@1.0.2:
         resolution:
@@ -1509,6 +1501,13 @@ packages:
                 integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==,
             }
 
+    combined-stream@1.0.8:
+        resolution:
+            {
+                integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==,
+            }
+        engines: { node: ">= 0.8" }
+
     commander@12.1.0:
         resolution:
             {
@@ -1657,6 +1656,13 @@ packages:
             {
                 integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==,
             }
+
+    delayed-stream@1.0.0:
+        resolution:
+            {
+                integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==,
+            }
+        engines: { node: ">=0.4.0" }
 
     detect-indent@7.0.1:
         resolution:
@@ -2032,12 +2038,31 @@ packages:
                 integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==,
             }
 
+    follow-redirects@1.15.9:
+        resolution:
+            {
+                integrity: sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==,
+            }
+        engines: { node: ">=4.0" }
+        peerDependencies:
+            debug: "*"
+        peerDependenciesMeta:
+            debug:
+                optional: true
+
     foreground-child@3.3.0:
         resolution:
             {
                 integrity: sha512-Ld2g8rrAyMYFXBhEqMz8ZAHBi4J4uS1i/CxGMDnjyFWddMXLVcDp051DZfu+t7+ab7Wv6SMqpWmyFIj5UbfFvg==,
             }
         engines: { node: ">=14" }
+
+    form-data@4.0.0:
+        resolution:
+            {
+                integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==,
+            }
+        engines: { node: ">= 6" }
 
     fs.realpath@1.0.0:
         resolution:
@@ -2184,32 +2209,6 @@ packages:
                 integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==,
             }
 
-    graphql-request@7.1.0:
-        resolution:
-            {
-                integrity: sha512-Ouu/lYVFhARS1aXeZoVJWnGT6grFJXTLwXJuK4mUGGRo0EUk1JkyYp43mdGmRgUVezpRm6V5Sq3t8jBDQcajng==,
-            }
-        hasBin: true
-        peerDependencies:
-            "@dprint/formatter": ^0.3.0
-            "@dprint/typescript": ^0.91.1
-            dprint: ^0.46.2
-            graphql: 14 - 16
-        peerDependenciesMeta:
-            "@dprint/formatter":
-                optional: true
-            "@dprint/typescript":
-                optional: true
-            dprint:
-                optional: true
-
-    graphql@16.9.0:
-        resolution:
-            {
-                integrity: sha512-GGTKBX4SD7Wdb8mqeDLni2oaRGYQWjWHGKPQ24ZMnUtKfcsVoiv4uX8+LJr1K6U5VW2Lu1BwJnj7uiori0YtRw==,
-            }
-        engines: { node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0 }
-
     has-flag@3.0.0:
         resolution:
             {
@@ -2311,6 +2310,13 @@ packages:
                 integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==,
             }
         engines: { node: ">=8" }
+
+    is-buffer@2.0.5:
+        resolution:
+            {
+                integrity: sha512-i2R6zNFDwgEHJyQUtJEk0XFi1i0dPFn/oqjK3/vPCcDeJvW5NQ83V8QbicfF1SupOaB0h8ntgBC2YiE7dfyctQ==,
+            }
+        engines: { node: ">=4" }
 
     is-extglob@2.1.1:
         resolution:
@@ -2592,12 +2598,6 @@ packages:
                 integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==,
             }
 
-    lodash.ismatch@4.4.0:
-        resolution:
-            {
-                integrity: sha512-fPMfXjGQEV9Xsq/8MTSgUf255gawYRbjwMyDbcvDhXgV7enSZA0hynz6vMPnpAb5iONEzBHBPsT+0zes5Z301g==,
-            }
-
     lodash.isplainobject@4.0.6:
         resolution:
             {
@@ -2735,6 +2735,20 @@ packages:
                 integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==,
             }
         engines: { node: ">=8.6" }
+
+    mime-db@1.52.0:
+        resolution:
+            {
+                integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==,
+            }
+        engines: { node: ">= 0.6" }
+
+    mime-types@2.1.35:
+        resolution:
+            {
+                integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==,
+            }
+        engines: { node: ">= 0.6" }
 
     mimic-fn@4.0.0:
         resolution:
@@ -3045,6 +3059,12 @@ packages:
         engines: { node: ">=14" }
         hasBin: true
 
+    proxy-from-env@1.1.0:
+        resolution:
+            {
+                integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==,
+            }
+
     punycode@2.3.1:
         resolution:
             {
@@ -3070,19 +3090,6 @@ packages:
                 integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==,
             }
         engines: { node: ">=8.10.0" }
-
-    readline-sync@1.4.10:
-        resolution:
-            {
-                integrity: sha512-gNva8/6UAe8QYepIQH/jQ2qn91Qj0B9sYjMBBs3QOB8F2CXcKgLxQaJRP76sWVRQt+QU+8fAkCbCvjjMFu7Ycw==,
-            }
-        engines: { node: ">= 0.8.0" }
-
-    remeda@1.61.0:
-        resolution:
-            {
-                integrity: sha512-caKfSz9rDeSKBQQnlJnVW3mbVdFgxgGWQKq1XlFokqjf+hQD5gxutLGTTY2A/x24UxVyJe9gH5fAkFI63ULw4A==,
-            }
 
     require-directory@2.1.1:
         resolution:
@@ -3295,13 +3302,6 @@ packages:
             }
         engines: { node: ">=0.6.19" }
 
-    string-length@6.0.0:
-        resolution:
-            {
-                integrity: sha512-1U361pxZHEQ+FeSjzqRpV+cu2vTzYeWeafXFLykiFlv4Vc0n3njgU8HrMbyik5uwm77naWMuVG8fhEF+Ovb1Kg==,
-            }
-        engines: { node: ">=16" }
-
     string-width@4.2.3:
         resolution:
             {
@@ -3497,12 +3497,6 @@ packages:
         engines: { node: ">=4.2.0" }
         hasBin: true
 
-    ts-toolbelt@9.6.0:
-        resolution:
-            {
-                integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==,
-            }
-
     tsconfig-paths@3.15.0:
         resolution:
             {
@@ -3596,13 +3590,6 @@ packages:
                 integrity: sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==,
             }
         engines: { node: ">=10" }
-
-    type-fest@4.26.1:
-        resolution:
-            {
-                integrity: sha512-yOGpmOAL7CkKe/91I5O3gPICmJNLJ1G4zFYVAsRHg7M64biSnPtRj0WNQt++bRkjYOqjWXrhnUw1utzmVErAdg==,
-            }
-        engines: { node: ">=16" }
 
     typescript@5.2.2:
         resolution:
@@ -4248,10 +4235,6 @@ snapshots:
 
     "@eslint/js@8.56.0": {}
 
-    "@graphql-typed-document-node/core@3.2.0(graphql@16.9.0)":
-        dependencies:
-            graphql: 16.9.0
-
     "@humanwhocodes/config-array@0.11.14":
         dependencies:
             "@humanwhocodes/object-schema": 2.0.3
@@ -4308,24 +4291,6 @@ snapshots:
         dependencies:
             "@jridgewell/resolve-uri": 3.1.2
             "@jridgewell/sourcemap-codec": 1.5.0
-
-    "@molt/command@0.9.0":
-        dependencies:
-            "@molt/types": 0.2.0
-            alge: 0.8.1
-            chalk: 5.3.0
-            lodash.camelcase: 4.3.0
-            lodash.snakecase: 4.1.1
-            readline-sync: 1.4.10
-            string-length: 6.0.0
-            strip-ansi: 7.1.0
-            ts-toolbelt: 9.6.0
-            type-fest: 4.26.1
-            zod: 3.23.8
-
-    "@molt/types@0.2.0":
-        dependencies:
-            ts-toolbelt: 9.6.0
 
     "@noble/curves@1.2.0":
         dependencies:
@@ -4616,13 +4581,6 @@ snapshots:
             json-schema-traverse: 1.0.0
             require-from-string: 2.0.2
 
-    alge@0.8.1:
-        dependencies:
-            lodash.ismatch: 4.4.0
-            remeda: 1.61.0
-            ts-toolbelt: 9.6.0
-            zod: 3.23.8
-
     ansi-colors@4.1.1: {}
 
     ansi-escapes@7.0.0:
@@ -4661,6 +4619,22 @@ snapshots:
     assertion-error@1.1.0: {}
 
     assertion-error@2.0.1: {}
+
+    asynckit@0.4.0: {}
+
+    axios-mock-adapter@2.0.0(axios@1.7.7):
+        dependencies:
+            axios: 1.7.7
+            fast-deep-equal: 3.1.3
+            is-buffer: 2.0.5
+
+    axios@1.7.7:
+        dependencies:
+            follow-redirects: 1.15.9
+            form-data: 4.0.0
+            proxy-from-env: 1.1.0
+        transitivePeerDependencies:
+            - debug
 
     balanced-match@1.0.2: {}
 
@@ -4782,6 +4756,10 @@ snapshots:
 
     colorette@2.0.20: {}
 
+    combined-stream@1.0.8:
+        dependencies:
+            delayed-stream: 1.0.0
+
     commander@12.1.0: {}
 
     commitlint@19.4.1(@types/node@20.3.1)(typescript@5.5.4):
@@ -4861,6 +4839,8 @@ snapshots:
     deep-eql@5.0.2: {}
 
     deep-is@0.1.4: {}
+
+    delayed-stream@1.0.0: {}
 
     detect-indent@7.0.1: {}
 
@@ -5116,10 +5096,18 @@ snapshots:
 
     flatted@3.3.1: {}
 
+    follow-redirects@1.15.9: {}
+
     foreground-child@3.3.0:
         dependencies:
             cross-spawn: 7.0.3
             signal-exit: 4.1.0
+
+    form-data@4.0.0:
+        dependencies:
+            asynckit: 0.4.0
+            combined-stream: 1.0.8
+            mime-types: 2.1.35
 
     fs.realpath@1.0.0: {}
 
@@ -5210,15 +5198,6 @@ snapshots:
 
     graphemer@1.4.0: {}
 
-    graphql-request@7.1.0(graphql@16.9.0):
-        dependencies:
-            "@graphql-typed-document-node/core": 3.2.0(graphql@16.9.0)
-            "@molt/command": 0.9.0
-            graphql: 16.9.0
-            zod: 3.23.8
-
-    graphql@16.9.0: {}
-
     has-flag@3.0.0: {}
 
     has-flag@4.0.0: {}
@@ -5256,6 +5235,8 @@ snapshots:
     is-binary-path@2.1.0:
         dependencies:
             binary-extensions: 2.3.0
+
+    is-buffer@2.0.5: {}
 
     is-extglob@2.1.1: {}
 
@@ -5398,8 +5379,6 @@ snapshots:
 
     lodash.camelcase@4.3.0: {}
 
-    lodash.ismatch@4.4.0: {}
-
     lodash.isplainobject@4.0.6: {}
 
     lodash.kebabcase@4.1.1: {}
@@ -5469,6 +5448,12 @@ snapshots:
         dependencies:
             braces: 3.0.3
             picomatch: 2.3.1
+
+    mime-db@1.52.0: {}
+
+    mime-types@2.1.35:
+        dependencies:
+            mime-db: 1.52.0
 
     mimic-fn@4.0.0: {}
 
@@ -5629,6 +5614,8 @@ snapshots:
 
     prettier@3.3.3: {}
 
+    proxy-from-env@1.1.0: {}
+
     punycode@2.3.1: {}
 
     queue-microtask@1.2.3: {}
@@ -5640,10 +5627,6 @@ snapshots:
     readdirp@3.6.0:
         dependencies:
             picomatch: 2.3.1
-
-    readline-sync@1.4.10: {}
-
-    remeda@1.61.0: {}
 
     require-directory@2.1.1: {}
 
@@ -5755,10 +5738,6 @@ snapshots:
     std-env@3.7.0: {}
 
     string-argv@0.3.2: {}
-
-    string-length@6.0.0:
-        dependencies:
-            strip-ansi: 7.1.0
 
     string-width@4.2.3:
         dependencies:
@@ -5876,8 +5855,6 @@ snapshots:
             source-map-support: 0.5.21
             yn: 2.0.0
 
-    ts-toolbelt@9.6.0: {}
-
     tsconfig-paths@3.15.0:
         dependencies:
             "@types/json5": 0.0.29
@@ -5924,8 +5901,6 @@ snapshots:
     type-detect@4.1.0: {}
 
     type-fest@0.20.2: {}
-
-    type-fest@4.26.1: {}
 
     typescript@5.2.2: {}
 
@@ -6112,4 +6087,5 @@ snapshots:
 
     yocto-queue@1.1.1: {}
 
-    zod@3.23.8: {}
+    zod@3.23.8:
+        optional: true
