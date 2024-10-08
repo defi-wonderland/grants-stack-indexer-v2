@@ -1,1 +1,2 @@
-export type { AnyProtocolEvent, Address } from "./internal.js";
+export type { AnyProtocolEvent, Address, Branded } from "./internal.js";
+export { NATIVE_TOKEN_ADDRESS, isNativeToken } from "./constants/index.js";
