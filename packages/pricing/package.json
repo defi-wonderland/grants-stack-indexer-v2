@@ -30,5 +30,8 @@
     "dependencies": {
         "@grants-stack-indexer/shared": "workspace:0.0.1",
         "axios": "1.7.7"
+    },
+    "devDependencies": {
+        "axios-mock-adapter": "2.0.0"
     }
 }

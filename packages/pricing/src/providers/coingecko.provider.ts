@@ -53,6 +53,9 @@ const nativeTokens: { [key in CoingeckoSupportedChainId]: CoingeckoTokenId } = {
     1088: "metis-token" as CoingeckoTokenId,
 };
 
+/**
+ * The Coingecko provider is a pricing provider that uses the Coingecko API to get the price of a token.
+ */
 export class CoingeckoProvider implements IPricingProvider {
     private readonly axios: AxiosInstance;
 
@@ -112,13 +115,13 @@ export class CoingeckoProvider implements IPricingProvider {
                     return undefined;
                 }
 
-                if (error.status! >= 500) {
+                if (error.status! >= 500 || error.message === "Network Error") {
                     throw new NetworkException(error.message, error.status!);
                 }
             }
             console.error(error);
             throw new UnknownPricingException(
-                JSON.stringify(error),
+                isNativeError(error) ? error.message : JSON.stringify(error),
                 isNativeError(error) ? error.stack : undefined,
             );
         }
