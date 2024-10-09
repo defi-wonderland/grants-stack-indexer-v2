@@ -4,6 +4,9 @@ import { gql, GraphQLClient } from "graphql-request";
 import { IndexerClientError, InvalidIndexerResponse } from "../exceptions/index.js";
 import { IIndexerClient } from "../internal.js";
 
+/**
+ * Indexer client for the Envio indexer service
+ */
 export class EnvioIndexerClient implements IIndexerClient {
     private client: GraphQLClient;
 
@@ -11,8 +14,8 @@ export class EnvioIndexerClient implements IIndexerClient {
         this.client = new GraphQLClient(url);
         this.client.setHeader("x-hasura-admin-secret", secret);
     }
-
-    public async getEventsByBlockNumberAndLogIndex(
+    /* @inheritdoc */
+    public async getEventsAfterBlockNumberAndLogIndex(
         chainId: number,
         blockNumber: number,
         logIndex: number,
@@ -20,7 +23,7 @@ export class EnvioIndexerClient implements IIndexerClient {
     ): Promise<AnyProtocolEvent[]> {
         try {
             const response = (await this.client.rawRequest(gql`
-                query getEventsByChainIdBlockNumberAndLogIndex {
+                query getEventsAfterBlockNumberAndLogIndex {
                     raw_events(
                         where: {
                             chain_id: { _eq: ${chainId} }

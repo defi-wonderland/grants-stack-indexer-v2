@@ -5,8 +5,8 @@ import { IEventsFetcher } from "./interfaces/index.js";
 
 export class EventsFetcher implements IEventsFetcher {
     constructor(private indexerClient: IIndexerClient) {}
-
-    async fetcEventsByBlockNumberAndLogIndex(
+    /* @inheritdoc */
+    async fetchEventsByBlockNumberAndLogIndex(
         chainId: number,
         blockNumber: number,
         logIndex: number,

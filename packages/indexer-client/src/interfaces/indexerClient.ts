@@ -9,8 +9,9 @@ export interface IIndexerClient {
      * @param chainId Id of the chain
      * @param fromBlock Block number to start fetching events from
      * @param logIndex Log index in the block
+     * @param limit Limit of events to fetch
      */
-    getEventsByBlockNumberAndLogIndex(
+    getEventsAfterBlockNumberAndLogIndex(
         chainId: number,
         fromBlock: number,
         logIndex: number,
