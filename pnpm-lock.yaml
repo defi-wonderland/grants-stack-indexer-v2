@@ -96,6 +96,22 @@ importers:
                 specifier: 5.2.2
                 version: 5.2.2
 
+    packages/metadata:
+        dependencies:
+            "@grants-stack-indexer/shared":
+                specifier: workspace:0.0.1
+                version: link:../shared
+            axios:
+                specifier: 1.7.7
+                version: 1.7.7
+            zod:
+                specifier: 3.23.8
+                version: 3.23.8
+        devDependencies:
+            axios-mock-adapter:
+                specifier: 2.0.0
+                version: 2.0.0(axios@1.7.7)
+
     packages/pricing:
         dependencies:
             "@grants-stack-indexer/shared":
@@ -6087,5 +6103,4 @@ snapshots:
 
     yocto-queue@1.1.1: {}
 
-    zod@3.23.8:
-        optional: true
+    zod@3.23.8: {}
