@@ -12,7 +12,7 @@ export class EventsFetcher implements IEventsFetcher {
         logIndex: number,
         limit: number = 100,
     ): Promise<AnyProtocolEvent[]> {
-        return await this.indexerClient.getEventsByBlockNumberAndLogIndex(
+        return await this.indexerClient.getEventsAfterBlockNumberAndLogIndex(
             chainId,
             blockNumber,
             logIndex,

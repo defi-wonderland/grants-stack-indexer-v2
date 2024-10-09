@@ -10,7 +10,7 @@ describe("EventsFetcher", () => {
 
     beforeEach(() => {
         indexerClientMock = {
-            getEventsByBlockNumberAndLogIndex: vi.fn(),
+            getEventsAfterBlockNumberAndLogIndex: vi.fn(),
         };
 
         eventsFetcher = new EventsFetcher(indexerClientMock);
@@ -46,15 +46,15 @@ describe("EventsFetcher", () => {
         const logIndex = 0;
         const limit = 100;
 
-        indexerClientMock.getEventsByBlockNumberAndLogIndex.mockResolvedValue(mockEvents);
+        indexerClientMock.getEventsAfterBlockNumberAndLogIndex.mockResolvedValue(mockEvents);
 
-        const result = await eventsFetcher.fetcEventsByBlockNumberAndLogIndex(
+        const result = await eventsFetcher.fetchEventsByBlockNumberAndLogIndex(
             chainId,
             blockNumber,
             logIndex,
         );
 
-        expect(indexerClientMock.getEventsByBlockNumberAndLogIndex).toHaveBeenCalledWith(
+        expect(indexerClientMock.getEventsAfterBlockNumberAndLogIndex).toHaveBeenCalledWith(
             chainId,
             blockNumber,
             logIndex,
@@ -68,12 +68,12 @@ describe("EventsFetcher", () => {
         const blockNumber = 1000;
         const logIndex = 0;
 
-        indexerClientMock.getEventsByBlockNumberAndLogIndex.mockRejectedValue(
+        indexerClientMock.getEventsAfterBlockNumberAndLogIndex.mockRejectedValue(
             new Error("Network error"),
         );
 
         await expect(
-            eventsFetcher.fetcEventsByBlockNumberAndLogIndex(chainId, blockNumber, logIndex),
+            eventsFetcher.fetchEventsByBlockNumberAndLogIndex(chainId, blockNumber, logIndex),
         ).rejects.toThrow("Network error");
     });
 });

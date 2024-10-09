@@ -40,7 +40,7 @@ describe("EnvioIndexerClient", () => {
         });
     });
 
-    describe("getEventsByBlockNumberAndLogIndex", () => {
+    describe("getEventsAfterBlockNumberAndLogIndex", () => {
         const mockEvents: AnyProtocolEvent[] = [
             {
                 chain_id: 1,
@@ -65,7 +65,7 @@ describe("EnvioIndexerClient", () => {
             };
             graphqlClient.rawRequest.mockResolvedValue(mockedResponse);
 
-            const result = await envioIndexerClient.getEventsByBlockNumberAndLogIndex(
+            const result = await envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(
                 1,
                 12345,
                 0,
@@ -84,7 +84,7 @@ describe("EnvioIndexerClient", () => {
             };
             graphqlClient.rawRequest.mockResolvedValue(mockedResponse);
 
-            await envioIndexerClient.getEventsByBlockNumberAndLogIndex(1, 12345, 0);
+            await envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(1, 12345, 0);
             expect(graphqlClient.rawRequest).toHaveBeenCalledWith(
                 expect.stringContaining("limit: 100"),
             );
@@ -100,7 +100,7 @@ describe("EnvioIndexerClient", () => {
             };
             graphqlClient.rawRequest.mockResolvedValue(mockedResponse);
 
-            await envioIndexerClient.getEventsByBlockNumberAndLogIndex(1, 12345, 0, 50);
+            await envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(1, 12345, 0, 50);
             expect(graphqlClient.rawRequest).toHaveBeenCalledWith(
                 expect.stringContaining("limit: 50"),
             );
@@ -117,7 +117,7 @@ describe("EnvioIndexerClient", () => {
             graphqlClient.rawRequest.mockResolvedValue(mockedResponse);
 
             await expect(
-                envioIndexerClient.getEventsByBlockNumberAndLogIndex(1, 12345, 0),
+                envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(1, 12345, 0),
             ).rejects.toThrow(InvalidIndexerResponse);
         });
 
@@ -126,7 +126,7 @@ describe("EnvioIndexerClient", () => {
             graphqlClient.rawRequest.mockRejectedValue(error);
 
             await expect(
-                envioIndexerClient.getEventsByBlockNumberAndLogIndex(1, 12345, 0),
+                envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(1, 12345, 0),
             ).rejects.toThrow(IndexerClientError);
         });
 
@@ -140,7 +140,7 @@ describe("EnvioIndexerClient", () => {
             };
             graphqlClient.rawRequest.mockResolvedValue(mockedResponse);
 
-            await envioIndexerClient.getEventsByBlockNumberAndLogIndex(1, 12345, 0);
+            await envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(1, 12345, 0);
             expect(graphqlClient.rawRequest).toHaveBeenCalledWith(
                 expect.stringContaining("chain_id: { _eq: 1 }"),
             );
@@ -162,7 +162,11 @@ describe("EnvioIndexerClient", () => {
             };
             graphqlClient.rawRequest.mockResolvedValue(mockedResponse);
 
-            const result = await envioIndexerClient.getEventsByBlockNumberAndLogIndex(1, 12345, 0);
+            const result = await envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(
+                1,
+                12345,
+                0,
+            );
             expect(result).toEqual([]);
         });
     });
