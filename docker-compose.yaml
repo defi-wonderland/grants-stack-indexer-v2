@@ -1,13 +1,32 @@
 services:
+    datalayer-postgres:
+        image: postgres:16
+        restart: always
+        ports:
+            - "${DATALAYER_POSTGRES_EXPOSED_PORT:-5432}:5432"
+        volumes:
+            - db_data:/var/lib/datalayer-postgresql/data
+        env_file:
+            - .env
+        environment:
+            POSTGRES_DB: ${DATALAYER_PG_DATABASE}
+            POSTGRES_USER: ${DATALAYER_PG_USER}
+            POSTGRES_PASSWORD: ${DATALAYER_POSTGRES_PASSWORD}
+        networks:
+            - datalayer
     envio-postgres:
         image: postgres:16
         restart: always
         ports:
-            - "${POSTGRES_PORT:-5433}:5432"
+            - "${ENVIO_POSTGRES_EXPOSED_PORT:-5433}:5432"
         volumes:
-            - db_data:/var/lib/postgresql/data
+            - db_data:/var/lib/envio-postgresql/data
         env_file:
             - .env
+        environment:
+            POSTGRES_DB: ${ENVIO_PG_DATABASE}
+            POSTGRES_USER: ${ENVIO_PG_USER}
+            POSTGRES_PASSWORD: ${ENVIO_POSTGRES_PASSWORD}
         networks:
             - indexer-service
     graphql-engine:
@@ -46,3 +65,5 @@ volumes:
 networks:
     indexer-service:
         name: indexer_test_network
+    datalayer:
+        name: datalayer_test_network
