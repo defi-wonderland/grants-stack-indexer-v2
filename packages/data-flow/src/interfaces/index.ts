@@ -12,8 +12,8 @@ export interface IEventsFetcher {
      * @param limit limit of events to fetch
      */
     fetchEventsByBlockNumberAndLogIndex(
-        chainId: number,
-        blockNumber: number,
+        chainId: bigint,
+        blockNumber: bigint,
         logIndex: number,
         limit?: number,
     ): Promise<AnyProtocolEvent[]>;

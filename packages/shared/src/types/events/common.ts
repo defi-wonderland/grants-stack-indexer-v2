@@ -30,15 +30,15 @@ export type EventParams<T extends ContractName, E extends ContractToEventName<T>
  * This type is used to represent a protocol event.
  */
 export type ProtocolEvent<T extends ContractName, E extends ContractToEventName<T>> = {
-    block_number: number;
-    block_timestamp: number;
-    chain_id: number;
-    contract_name: T;
-    event_id: string;
-    event_name: E;
-    log_index: number;
+    //TODO: make blocknumber and chainId bigints, implies implementing adapter patterns in the EventsFetcher or IndexerClient
+    blockNumber: number;
+    blockTimestamp: number;
+    chainId: number;
+    contractName: T;
+    eventName: E;
+    logIndex: number;
     params: EventParams<T, E>;
-    src_address: Address;
+    srcAddress: Address;
 };
 
 export type AnyProtocolEvent = ProtocolEvent<ContractName, ContractToEventName<ContractName>>;

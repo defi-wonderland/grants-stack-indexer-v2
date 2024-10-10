@@ -24,7 +24,6 @@ describe("EventsFetcher", () => {
                 block_timestamp: 123123123,
                 contract_name: "Allo",
                 event_name: "PoolCreated",
-                event_id: "123",
                 src_address: "0x1234567890123456789012345678901234567890",
                 log_index: 0,
                 params: { contractAddress: "0x1234" },
@@ -35,14 +34,13 @@ describe("EventsFetcher", () => {
                 block_timestamp: 123123123,
                 contract_name: "Allo",
                 event_name: "PoolCreated",
-                event_id: "123",
                 src_address: "0x1234567890123456789012345678901234567890",
                 log_index: 0,
                 params: { contractAddress: "0x1234" },
             },
         ];
-        const chainId = 1;
-        const blockNumber = 1000;
+        const chainId = 1n;
+        const blockNumber = 1000n;
         const logIndex = 0;
         const limit = 100;
 
@@ -64,8 +62,8 @@ describe("EventsFetcher", () => {
     });
 
     it("should handle errors thrown by indexer client", async () => {
-        const chainId = 1;
-        const blockNumber = 1000;
+        const chainId = 1n;
+        const blockNumber = 1000n;
         const logIndex = 0;
 
         indexerClientMock.getEventsAfterBlockNumberAndLogIndex.mockRejectedValue(

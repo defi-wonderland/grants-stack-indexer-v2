@@ -7,8 +7,8 @@ export class EventsFetcher implements IEventsFetcher {
     constructor(private indexerClient: IIndexerClient) {}
     /* @inheritdoc */
     async fetchEventsByBlockNumberAndLogIndex(
-        chainId: number,
-        blockNumber: number,
+        chainId: bigint,
+        blockNumber: bigint,
         logIndex: number,
         limit: number = 100,
     ): Promise<AnyProtocolEvent[]> {

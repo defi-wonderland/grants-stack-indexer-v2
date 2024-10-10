@@ -12,8 +12,8 @@ export interface IIndexerClient {
      * @param limit Limit of events to fetch
      */
     getEventsAfterBlockNumberAndLogIndex(
-        chainId: number,
-        fromBlock: number,
+        chainId: bigint,
+        fromBlock: bigint,
         logIndex: number,
         limit?: number,
     ): Promise<AnyProtocolEvent[]>;

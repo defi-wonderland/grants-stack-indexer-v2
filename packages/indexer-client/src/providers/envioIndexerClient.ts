@@ -16,33 +16,41 @@ export class EnvioIndexerClient implements IIndexerClient {
     }
     /* @inheritdoc */
     public async getEventsAfterBlockNumberAndLogIndex(
-        chainId: number,
-        blockNumber: number,
+        chainId: bigint,
+        blockNumber: bigint,
         logIndex: number,
         limit: number = 100,
     ): Promise<AnyProtocolEvent[]> {
         try {
-            const response = (await this.client.rawRequest(gql`
-                query getEventsAfterBlockNumberAndLogIndex {
-                    raw_events(
-                        where: {
-                            chain_id: { _eq: ${chainId} }
-                            block_number: { _gte: ${blockNumber} }
-                            log_index: { _gt: ${logIndex} }
-                        }
-                        limit: ${limit}
+            const response = (await this.client.request(
+                gql`
+                    query getEventsAfterBlockNumberAndLogIndex(
+                        $chainId: Int!
+                        $blockNumber: Int!
+                        $logIndex: Int!
+                        $limit: Int!
                     ) {
-                        block_number
-                        block_timestamp
-                        chain_id
-                        contract_name
-                        event_name
-                        log_index
-                        params
-                        src_address
+                        raw_events(
+                            where: {
+                                chain_id: { _eq: $chainId }
+                                block_number: { _gte: $blockNumber }
+                                log_index: { _gt: $logIndex }
+                            }
+                            limit: $limit
+                        ) {
+                            block_number: blockNumber
+                            block_timestamp: blockTimestamp
+                            chain_id: chainId
+                            contract_name: contractName
+                            event_name: eventName
+                            log_index: logIndex
+                            params
+                            src_address: srcAddress
+                        }
                     }
-                }
-            `)) as { data: { raw_events: AnyProtocolEvent[] } };
+                `,
+                { chainId, blockNumber, logIndex, limit },
+            )) as { data: { raw_events: AnyProtocolEvent[] } };
             if (response?.data?.raw_events) {
                 return response.data.raw_events;
             } else {
