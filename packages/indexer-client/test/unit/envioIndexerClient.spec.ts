@@ -1,6 +1,7 @@
-import { AnyProtocolEvent } from "@grants-stack-indexer/shared";
 import { GraphQLClient } from "graphql-request";
 import { afterEach, beforeEach, describe, expect, it, Mocked, vi } from "vitest";
+
+import { AnyProtocolEvent } from "@grants-stack-indexer/shared";
 
 import { IndexerClientError, InvalidIndexerResponse } from "../../src/exceptions/index.js";
 import { EnvioIndexerClient } from "../../src/providers/envioIndexerClient.js";
@@ -43,13 +44,13 @@ describe("EnvioIndexerClient", () => {
     describe("getEventsAfterBlockNumberAndLogIndex", () => {
         const mockEvents: AnyProtocolEvent[] = [
             {
-                chain_id: 1,
-                block_number: 12345,
-                block_timestamp: 123123123,
-                contract_name: "Allo",
-                event_name: "PoolCreated",
-                src_address: "0x1234567890123456789012345678901234567890",
-                log_index: 0,
+                chainId: 1,
+                blockNumber: 12345,
+                blockTimestamp: 123123123,
+                contractName: "Allo",
+                eventName: "PoolCreated",
+                srcAddress: "0x1234567890123456789012345678901234567890",
+                logIndex: 0,
                 params: { contractAddress: "0x1234" },
             },
         ];

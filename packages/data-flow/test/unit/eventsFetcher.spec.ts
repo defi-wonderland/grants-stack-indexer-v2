@@ -1,6 +1,7 @@
+import { beforeEach, describe, expect, it, Mocked, vi } from "vitest";
+
 import { IIndexerClient } from "@grants-stack-indexer/indexer-client";
 import { AnyProtocolEvent } from "@grants-stack-indexer/shared";
-import { beforeEach, describe, expect, it, Mocked, vi } from "vitest";
 
 import { EventsFetcher } from "../../src/eventsFetcher.js";
 

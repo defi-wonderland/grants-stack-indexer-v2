@@ -1,5 +1,6 @@
-import { AnyProtocolEvent } from "@grants-stack-indexer/shared";
 import { gql, GraphQLClient } from "graphql-request";
+
+import { AnyProtocolEvent } from "@grants-stack-indexer/shared";
 
 import { IndexerClientError, InvalidIndexerResponse } from "../exceptions/index.js";
 import { IIndexerClient } from "../internal.js";
