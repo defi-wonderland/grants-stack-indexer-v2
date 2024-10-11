@@ -1,5 +1,4 @@
-import { ChainId } from "@grants-stack-indexer/shared";
-import { Address } from "@grants-stack-indexer/shared/dist/src/internal.js";
+import type { Address, ChainId } from "@grants-stack-indexer/shared";
 
 import {
     NewPendingProjectRole,
