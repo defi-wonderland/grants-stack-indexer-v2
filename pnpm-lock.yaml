@@ -146,6 +146,24 @@ importers:
                 specifier: 2.0.0
                 version: 2.0.0(axios@1.7.7)
 
+    packages/processors:
+        dependencies:
+            "@grants-stack-indexer/metadata":
+                specifier: workspace:*
+                version: link:../metadata
+            "@grants-stack-indexer/pricing":
+                specifier: workspace:*
+                version: link:../pricing
+            "@grants-stack-indexer/repository":
+                specifier: workspace:*
+                version: link:../repository
+            "@grants-stack-indexer/shared":
+                specifier: workspace:*
+                version: link:../shared
+            viem:
+                specifier: 2.21.19
+                version: 2.21.19(typescript@5.5.4)(zod@3.23.8)
+
     packages/repository:
         dependencies:
             "@grants-stack-indexer/shared":
