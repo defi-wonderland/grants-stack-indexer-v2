@@ -96,6 +96,27 @@ importers:
                 specifier: 5.2.2
                 version: 5.2.2
 
+    packages/data-flow:
+        dependencies:
+            "@grants-stack-indexer/indexer-client":
+                specifier: workspace:*
+                version: link:../indexer-client
+            "@grants-stack-indexer/shared":
+                specifier: workspace:*
+                version: link:../shared
+            viem:
+                specifier: 2.21.19
+                version: 2.21.19(typescript@5.5.4)(zod@3.23.8)
+
+    packages/indexer-client:
+        dependencies:
+            "@grants-stack-indexer/shared":
+                specifier: workspace:*
+                version: link:../shared
+            graphql-request:
+                specifier: 7.1.0
+                version: 7.1.0(graphql@16.9.0)
+
     packages/metadata:
         dependencies:
             "@grants-stack-indexer/shared":
@@ -659,6 +680,14 @@ packages:
             }
         engines: { node: ^12.22.0 || ^14.17.0 || >=16.0.0 }
 
+    "@graphql-typed-document-node/core@3.2.0":
+        resolution:
+            {
+                integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==,
+            }
+        peerDependencies:
+            graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+
     "@humanwhocodes/config-array@0.11.14":
         resolution:
             {
@@ -744,6 +773,18 @@ packages:
         resolution:
             {
                 integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==,
+            }
+
+    "@molt/command@0.9.0":
+        resolution:
+            {
+                integrity: sha512-1JI8dAlpqlZoXyKWVQggX7geFNPxBpocHIXQCsnxDjKy+3WX4SGyZVJXuLlqRRrX7FmQCuuMAfx642ovXmPA9g==,
+            }
+
+    "@molt/types@0.2.0":
+        resolution:
+            {
+                integrity: sha512-p6ChnEZDGjg9PYPec9BK6Yp5/DdSrYQvXTBAtgrnqX6N36cZy37ql1c8Tc5LclfIYBNG7EZp8NBcRTYJwyi84g==,
             }
 
     "@noble/curves@1.2.0":
@@ -1224,6 +1265,12 @@ packages:
         resolution:
             {
                 integrity: sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==,
+            }
+
+    alge@0.8.1:
+        resolution:
+            {
+                integrity: sha512-kiV9nTt+XIauAXsowVygDxMZLplZxDWt0W8plE/nB32/V2ziM/P/TxDbSVK7FYIUt2Xo16h3/htDh199LNPCKQ==,
             }
 
     ansi-colors@4.1.1:
@@ -2247,6 +2294,32 @@ packages:
                 integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==,
             }
 
+    graphql-request@7.1.0:
+        resolution:
+            {
+                integrity: sha512-Ouu/lYVFhARS1aXeZoVJWnGT6grFJXTLwXJuK4mUGGRo0EUk1JkyYp43mdGmRgUVezpRm6V5Sq3t8jBDQcajng==,
+            }
+        hasBin: true
+        peerDependencies:
+            "@dprint/formatter": ^0.3.0
+            "@dprint/typescript": ^0.91.1
+            dprint: ^0.46.2
+            graphql: 14 - 16
+        peerDependenciesMeta:
+            "@dprint/formatter":
+                optional: true
+            "@dprint/typescript":
+                optional: true
+            dprint:
+                optional: true
+
+    graphql@16.9.0:
+        resolution:
+            {
+                integrity: sha512-GGTKBX4SD7Wdb8mqeDLni2oaRGYQWjWHGKPQ24ZMnUtKfcsVoiv4uX8+LJr1K6U5VW2Lu1BwJnj7uiori0YtRw==,
+            }
+        engines: { node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0 }
+
     has-flag@3.0.0:
         resolution:
             {
@@ -2641,6 +2714,12 @@ packages:
         resolution:
             {
                 integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==,
+            }
+
+    lodash.ismatch@4.4.0:
+        resolution:
+            {
+                integrity: sha512-fPMfXjGQEV9Xsq/8MTSgUf255gawYRbjwMyDbcvDhXgV7enSZA0hynz6vMPnpAb5iONEzBHBPsT+0zes5Z301g==,
             }
 
     lodash.isplainobject@4.0.6:
@@ -3276,6 +3355,19 @@ packages:
             }
         engines: { node: ">=8.10.0" }
 
+    readline-sync@1.4.10:
+        resolution:
+            {
+                integrity: sha512-gNva8/6UAe8QYepIQH/jQ2qn91Qj0B9sYjMBBs3QOB8F2CXcKgLxQaJRP76sWVRQt+QU+8fAkCbCvjjMFu7Ycw==,
+            }
+        engines: { node: ">= 0.8.0" }
+
+    remeda@1.61.0:
+        resolution:
+            {
+                integrity: sha512-caKfSz9rDeSKBQQnlJnVW3mbVdFgxgGWQKq1XlFokqjf+hQD5gxutLGTTY2A/x24UxVyJe9gH5fAkFI63ULw4A==,
+            }
+
     require-directory@2.1.1:
         resolution:
             {
@@ -3487,6 +3579,13 @@ packages:
             }
         engines: { node: ">=0.6.19" }
 
+    string-length@6.0.0:
+        resolution:
+            {
+                integrity: sha512-1U361pxZHEQ+FeSjzqRpV+cu2vTzYeWeafXFLykiFlv4Vc0n3njgU8HrMbyik5uwm77naWMuVG8fhEF+Ovb1Kg==,
+            }
+        engines: { node: ">=16" }
+
     string-width@4.2.3:
         resolution:
             {
@@ -3682,6 +3781,12 @@ packages:
         engines: { node: ">=4.2.0" }
         hasBin: true
 
+    ts-toolbelt@9.6.0:
+        resolution:
+            {
+                integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==,
+            }
+
     tsconfig-paths@3.15.0:
         resolution:
             {
@@ -3775,6 +3880,13 @@ packages:
                 integrity: sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==,
             }
         engines: { node: ">=10" }
+
+    type-fest@4.26.1:
+        resolution:
+            {
+                integrity: sha512-yOGpmOAL7CkKe/91I5O3gPICmJNLJ1G4zFYVAsRHg7M64biSnPtRj0WNQt++bRkjYOqjWXrhnUw1utzmVErAdg==,
+            }
+        engines: { node: ">=16" }
 
     typescript@5.2.2:
         resolution:
@@ -4427,6 +4539,10 @@ snapshots:
 
     "@eslint/js@8.56.0": {}
 
+    "@graphql-typed-document-node/core@3.2.0(graphql@16.9.0)":
+        dependencies:
+            graphql: 16.9.0
+
     "@humanwhocodes/config-array@0.11.14":
         dependencies:
             "@humanwhocodes/object-schema": 2.0.3
@@ -4483,6 +4599,24 @@ snapshots:
         dependencies:
             "@jridgewell/resolve-uri": 3.1.2
             "@jridgewell/sourcemap-codec": 1.5.0
+
+    "@molt/command@0.9.0":
+        dependencies:
+            "@molt/types": 0.2.0
+            alge: 0.8.1
+            chalk: 5.3.0
+            lodash.camelcase: 4.3.0
+            lodash.snakecase: 4.1.1
+            readline-sync: 1.4.10
+            string-length: 6.0.0
+            strip-ansi: 7.1.0
+            ts-toolbelt: 9.6.0
+            type-fest: 4.26.1
+            zod: 3.23.8
+
+    "@molt/types@0.2.0":
+        dependencies:
+            ts-toolbelt: 9.6.0
 
     "@noble/curves@1.2.0":
         dependencies:
@@ -4778,6 +4912,13 @@ snapshots:
             fast-uri: 3.0.1
             json-schema-traverse: 1.0.0
             require-from-string: 2.0.2
+
+    alge@0.8.1:
+        dependencies:
+            lodash.ismatch: 4.4.0
+            remeda: 1.61.0
+            ts-toolbelt: 9.6.0
+            zod: 3.23.8
 
     ansi-colors@4.1.1: {}
 
@@ -5396,6 +5537,15 @@ snapshots:
 
     graphemer@1.4.0: {}
 
+    graphql-request@7.1.0(graphql@16.9.0):
+        dependencies:
+            "@graphql-typed-document-node/core": 3.2.0(graphql@16.9.0)
+            "@molt/command": 0.9.0
+            graphql: 16.9.0
+            zod: 3.23.8
+
+    graphql@16.9.0: {}
+
     has-flag@3.0.0: {}
 
     has-flag@4.0.0: {}
@@ -5578,6 +5728,8 @@ snapshots:
             p-locate: 6.0.0
 
     lodash.camelcase@4.3.0: {}
+
+    lodash.ismatch@4.4.0: {}
 
     lodash.isplainobject@4.0.6: {}
 
@@ -5899,6 +6051,10 @@ snapshots:
         dependencies:
             picomatch: 2.3.1
 
+    readline-sync@1.4.10: {}
+
+    remeda@1.61.0: {}
+
     require-directory@2.1.1: {}
 
     require-from-string@2.0.2: {}
@@ -6009,6 +6165,10 @@ snapshots:
     std-env@3.7.0: {}
 
     string-argv@0.3.2: {}
+
+    string-length@6.0.0:
+        dependencies:
+            strip-ansi: 7.1.0
 
     string-width@4.2.3:
         dependencies:
@@ -6126,6 +6286,8 @@ snapshots:
             source-map-support: 0.5.21
             yn: 2.0.0
 
+    ts-toolbelt@9.6.0: {}
+
     tsconfig-paths@3.15.0:
         dependencies:
             "@types/json5": 0.0.29
@@ -6172,6 +6334,8 @@ snapshots:
     type-detect@4.1.0: {}
 
     type-fest@0.20.2: {}
+
+    type-fest@4.26.1: {}
 
     typescript@5.2.2: {}
 
