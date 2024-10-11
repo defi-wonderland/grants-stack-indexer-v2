@@ -39,6 +39,19 @@ export interface IRoundReadRepository {
     ): Promise<Round | undefined>;
 
     /**
+     * Retrieves a round by a specific role and role value.
+     * @param chainId The chain ID of the round.
+     * @param roleName The name of the role to filter by.
+     * @param roleValue The value of the role to filter by.
+     * @returns A promise that resolves to a Round object if found, or undefined if not found.
+     */
+    getRoundByRole(
+        chainId: ChainId,
+        roleName: RoundRoleNames,
+        roleValue: string,
+    ): Promise<Round | undefined>;
+
+    /**
      * Retrieves the match token address for a specific round.
      * @param chainId The chain ID of the round.
      * @param roundId The ID of the round.

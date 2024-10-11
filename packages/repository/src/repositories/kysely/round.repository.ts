@@ -61,7 +61,7 @@ export class KyselyRoundRepository implements IRoundRepository {
     /* @inheritdoc */
     async getRoundByRole(
         chainId: ChainId,
-        roleName: "admin" | "manager",
+        roleName: RoundRoleNames,
         roleValue: string,
     ): Promise<Round | undefined> {
         return this.db
@@ -160,6 +160,7 @@ export class KyselyRoundRepository implements IRoundRepository {
             .execute();
     }
 
+    /* @inheritdoc */
     async deleteManyRoundRolesByRoleAndAddress(
         chainId: ChainId,
         roundId: string,
