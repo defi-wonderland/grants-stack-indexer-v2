@@ -25,6 +25,8 @@ export type {
     PendingRoundRole,
 } from "./types/round.types.js";
 
+export type { Changeset } from "./types/index.js";
+
 export { KyselyRoundRepository, KyselyProjectRepository } from "./repositories/kysely/index.js";
 
 export { createKyselyPostgresDb as createKyselyDatabase } from "./internal.js";
