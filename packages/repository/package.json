@@ -1,5 +1,5 @@
 {
-    "name": "@grants-stack-indexer/metadata",
+    "name": "@grants-stack-indexer/repository",
     "version": "0.0.1",
     "private": true,
     "description": "",
@@ -29,10 +29,10 @@
     },
     "dependencies": {
         "@grants-stack-indexer/shared": "workspace:*",
-        "axios": "1.7.7",
-        "zod": "3.23.8"
+        "kysely": "0.27.4",
+        "pg": "8.13.0"
     },
     "devDependencies": {
-        "axios-mock-adapter": "2.0.0"
+        "@types/pg": "8.11.10"
     }
 }
