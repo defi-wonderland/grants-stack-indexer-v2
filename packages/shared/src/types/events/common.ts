@@ -1,8 +1,16 @@
+import { Hex } from "viem";
+
 import { Address } from "../../internal.js";
 import { AlloEvent, AlloEventParams, StrategyEvent, StrategyEventParams } from "./index.js";
 
 export type ContractName = "Strategy" | "Allo";
 export type AnyEvent = StrategyEvent | AlloEvent;
+
+type TransactionFields = {
+    hash: Hex;
+    transactionIndex: number;
+    from?: Address;
+};
 
 /**
  * This type is used to map contract names to their respective event names.
@@ -39,6 +47,7 @@ export type ProtocolEvent<T extends ContractName, E extends ContractToEventName<
     logIndex: number;
     params: EventParams<T, E>;
     srcAddress: Address;
+    transactionFields: TransactionFields;
 };
 
 export type AnyProtocolEvent = ProtocolEvent<ContractName, ContractToEventName<ContractName>>;
