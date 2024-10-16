@@ -1,9 +1,12 @@
-import { Chain, PublicClient, Transport } from "viem";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { EvmProvider } from "@grants-stack-indexer/chain-providers";
 import type { IMetadataProvider } from "@grants-stack-indexer/metadata";
 import type { IPricingProvider } from "@grants-stack-indexer/pricing";
-import type { IRoundReadRepository } from "@grants-stack-indexer/repository";
+import type {
+    IProjectReadRepository,
+    IRoundReadRepository,
+} from "@grants-stack-indexer/repository";
 import type { AlloEvent, ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
 
 import { AlloProcessor } from "../../src/allo/allo.processor.js";
@@ -22,24 +25,24 @@ vi.mock("../../src/allo/handlers/poolCreated.handler.js", () => {
 describe("AlloProcessor", () => {
     const mockChainId = 10 as ChainId;
     let processor: AlloProcessor;
-    let mockViemClient: PublicClient<Transport, Chain>;
+    let mockEvmProvider: EvmProvider;
     let mockPricingProvider: IPricingProvider;
     let mockMetadataProvider: IMetadataProvider;
     let mockRoundRepository: IRoundReadRepository;
 
     beforeEach(() => {
-        mockViemClient = {} as PublicClient<Transport, Chain>;
+        mockEvmProvider = {} as EvmProvider;
         mockPricingProvider = {} as IPricingProvider;
         mockMetadataProvider = {} as IMetadataProvider;
         mockRoundRepository = {} as IRoundReadRepository;
 
-        processor = new AlloProcessor(
-            mockChainId,
-            mockViemClient,
-            mockPricingProvider,
-            mockMetadataProvider,
-            mockRoundRepository,
-        );
+        processor = new AlloProcessor(mockChainId, {
+            evmProvider: mockEvmProvider,
+            pricingProvider: mockPricingProvider,
+            metadataProvider: mockMetadataProvider,
+            roundRepository: mockRoundRepository,
+            projectRepository: {} as IProjectReadRepository,
+        });
 
         // Reset mocks before each test
         vi.clearAllMocks();
@@ -56,7 +59,7 @@ describe("AlloProcessor", () => {
         await processor.process(mockEvent);
 
         expect(PoolCreatedHandler).toHaveBeenCalledWith(mockEvent, mockChainId, {
-            viemClient: mockViemClient,
+            evmProvider: mockEvmProvider,
             pricingProvider: mockPricingProvider,
             metadataProvider: mockMetadataProvider,
             roundRepository: mockRoundRepository,

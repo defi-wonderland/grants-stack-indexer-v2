@@ -1,23 +1,14 @@
-import { Chain, GetTransactionReturnType, parseUnits, PublicClient, Transport } from "viem";
+import { GetTransactionReturnType, parseUnits } from "viem";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { EvmProvider } from "@grants-stack-indexer/chain-providers";
+import type { IMetadataProvider } from "@grants-stack-indexer/metadata";
+import type { IPricingProvider } from "@grants-stack-indexer/pricing";
+import type { IRoundReadRepository, Round } from "@grants-stack-indexer/repository";
 import type { ChainId, DeepPartial, ProtocolEvent } from "@grants-stack-indexer/shared";
-import { IMetadataProvider } from "@grants-stack-indexer/metadata";
-import { IPricingProvider } from "@grants-stack-indexer/pricing";
-import { IRoundReadRepository, Round } from "@grants-stack-indexer/repository";
 import { mergeDeep } from "@grants-stack-indexer/shared";
 
 import { PoolCreatedHandler } from "../../../src/allo/handlers/poolCreated.handler.js";
-import * as strategy from "../../../src/helpers/strategy.js";
-
-vi.mock("../../../src/helpers/strategy.js", async (importOriginal) => {
-    const actual = await importOriginal<typeof import("../../../src/helpers/strategy.js")>();
-    return {
-        ...actual,
-        getDonationVotingMerkleDistributionDirectTransferStrategyTimings: vi.fn(),
-        getDirectGrantsStrategyTimings: vi.fn(),
-    };
-});
 
 // Function to create a mock event with optional overrides
 function createMockEvent(
@@ -38,10 +29,7 @@ function createMockEvent(
             strategyId: "0x9fa6890423649187b1f0e8bf4265f0305ce99523c3d11aa36b35a54617bb0ec0",
             amount: 0n,
             token: "0x4200000000000000000000000000000000000042",
-            metadata: {
-                pointer: "bafkreihrjyu5tney6wia2hmkertc74nzfpsgxw2epvnxm72bxj6ifnd4ku",
-                protocol: 1n,
-            },
+            metadata: ["bafkreihrjyu5tney6wia2hmkertc74nzfpsgxw2epvnxm72bxj6ifnd4ku", 1n],
         },
         transactionFields: {
             hash: "0xd2352acdcd59e312370831ea927d51a1917654697a72434cd905a60897a5bb8b",
@@ -54,16 +42,18 @@ function createMockEvent(
 }
 
 describe("PoolCreatedHandler", () => {
-    let mockViemClient: PublicClient<Transport, Chain>;
+    let mockEvmProvider: EvmProvider;
     let mockPricingProvider: IPricingProvider;
     let mockMetadataProvider: IMetadataProvider;
     let mockRoundRepository: IRoundReadRepository;
 
     beforeEach(() => {
-        mockViemClient = {
+        mockEvmProvider = {
             readContract: vi.fn(),
             getTransaction: vi.fn(),
-        } as unknown as PublicClient<Transport, Chain>;
+            multicall: vi.fn(),
+            getMulticall3Address: vi.fn().mockRejectedValue("0xmulticall3"),
+        } as unknown as EvmProvider;
         mockPricingProvider = {
             getTokenPrice: vi.fn(),
         };
@@ -92,7 +82,7 @@ describe("PoolCreatedHandler", () => {
         vi.spyOn(mockRoundRepository, "getPendingRoundRoles").mockResolvedValue([]);
 
         const handler = new PoolCreatedHandler(mockEvent, 10 as ChainId, {
-            viemClient: mockViemClient,
+            evmProvider: mockEvmProvider,
             pricingProvider: mockPricingProvider,
             metadataProvider: mockMetadataProvider,
             roundRepository: mockRoundRepository,
@@ -119,7 +109,7 @@ describe("PoolCreatedHandler", () => {
         vi.spyOn(mockRoundRepository, "getPendingRoundRoles").mockResolvedValue([]);
 
         const handler = new PoolCreatedHandler(mockEvent, 10 as ChainId, {
-            viemClient: mockViemClient,
+            evmProvider: mockEvmProvider,
             pricingProvider: mockPricingProvider,
             metadataProvider: mockMetadataProvider,
             roundRepository: mockRoundRepository,
@@ -139,10 +129,7 @@ describe("PoolCreatedHandler", () => {
             createdByAddress: mockEvent.transactionFields.from,
         });
         expect(mockPricingProvider.getTokenPrice).not.toHaveBeenCalled();
-        expect(strategy.getDirectGrantsStrategyTimings).not.toHaveBeenCalled();
-        expect(
-            strategy.getDonationVotingMerkleDistributionDirectTransferStrategyTimings,
-        ).not.toHaveBeenCalled();
+        expect(mockEvmProvider.multicall).not.toHaveBeenCalled();
     });
 
     it("process a DonationVotingMerkleDistributionDirectTransferStrategy", async () => {
@@ -165,15 +152,12 @@ describe("PoolCreatedHandler", () => {
             priceUsd: 100,
             timestampMs: 1708369911,
         });
-        vi.spyOn(
-            strategy,
-            "getDonationVotingMerkleDistributionDirectTransferStrategyTimings",
-        ).mockResolvedValue({
-            applicationsStartTime: new Date(),
-            applicationsEndTime: new Date(),
-            donationsStartTime: new Date(),
-            donationsEndTime: new Date(),
-        });
+        vi.spyOn(mockEvmProvider, "multicall").mockResolvedValue([
+            1609459200n,
+            1609459200n,
+            1609459200n,
+            1609459200n,
+        ]);
 
         vi.spyOn(mockRoundRepository, "getPendingRoundRoles")
             .mockResolvedValueOnce([
@@ -187,7 +171,7 @@ describe("PoolCreatedHandler", () => {
             .mockResolvedValue([]);
 
         const handler = new PoolCreatedHandler(mockEvent, 10 as ChainId, {
-            viemClient: mockViemClient,
+            evmProvider: mockEvmProvider,
             pricingProvider: mockPricingProvider,
             metadataProvider: mockMetadataProvider,
             roundRepository: mockRoundRepository,
@@ -223,6 +207,10 @@ describe("PoolCreatedHandler", () => {
                     matchingFundsAvailable: 1,
                 },
             },
+            applicationsStartTime: new Date("2021-01-01T00:00:00.000Z"),
+            applicationsEndTime: new Date("2021-01-01T00:00:00.000Z"),
+            donationsStartTime: new Date("2021-01-01T00:00:00.000Z"),
+            donationsEndTime: new Date("2021-01-01T00:00:00.000Z"),
             strategyAddress: mockEvent.params.contractAddress,
             strategyId: "0x9fa6890423649187b1f0e8bf4265f0305ce99523c3d11aa36b35a54617bb0ec0",
             strategyName: "allov2.DonationVotingMerkleDistributionDirectTransferStrategy",
@@ -236,6 +224,7 @@ describe("PoolCreatedHandler", () => {
         });
         expect(mockPricingProvider.getTokenPrice).toHaveBeenCalled();
         expect(mockMetadataProvider.getMetadata).toHaveBeenCalled();
+        expect(mockEvmProvider.multicall).toHaveBeenCalled();
     });
 
     it("fetches transaction sender if not present in event", async () => {
@@ -252,12 +241,12 @@ describe("PoolCreatedHandler", () => {
             timestampMs: 1708369911,
         });
         vi.spyOn(mockRoundRepository, "getPendingRoundRoles").mockResolvedValue([]);
-        vi.spyOn(mockViemClient, "getTransaction").mockResolvedValue({
+        vi.spyOn(mockEvmProvider, "getTransaction").mockResolvedValue({
             from: "0xcBf407C33d68a55CB594Ffc8f4fD1416Bba39DA5",
         } as unknown as GetTransactionReturnType);
 
         const handler = new PoolCreatedHandler(mockEvent, 10 as ChainId, {
-            viemClient: mockViemClient,
+            evmProvider: mockEvmProvider,
             pricingProvider: mockPricingProvider,
             metadataProvider: mockMetadataProvider,
             roundRepository: mockRoundRepository,
@@ -269,28 +258,25 @@ describe("PoolCreatedHandler", () => {
         expect(changeset.args.round.createdByAddress).toBe(
             "0xcBf407C33d68a55CB594Ffc8f4fD1416Bba39DA5",
         );
-        expect(mockViemClient.getTransaction).toHaveBeenCalledWith({
-            hash: "0xd2352acdcd59e312370831ea927d51a1917654697a72434cd905a60897a5bb8b",
-        });
+        expect(mockEvmProvider.getTransaction).toHaveBeenCalledWith(
+            "0xd2352acdcd59e312370831ea927d51a1917654697a72434cd905a60897a5bb8b",
+        );
     });
 
     it("handles an undefined metadata", async () => {
         const mockEvent = createMockEvent();
 
         vi.spyOn(mockMetadataProvider, "getMetadata").mockResolvedValue(undefined);
-        vi.spyOn(
-            strategy,
-            "getDonationVotingMerkleDistributionDirectTransferStrategyTimings",
-        ).mockResolvedValue({
-            applicationsStartTime: new Date(),
-            applicationsEndTime: new Date(),
-            donationsStartTime: new Date(),
-            donationsEndTime: new Date(),
-        });
+        vi.spyOn(mockEvmProvider, "multicall").mockResolvedValue([
+            1609459200n,
+            1609459200n,
+            1609459200n,
+            1609459200n,
+        ]);
         vi.spyOn(mockRoundRepository, "getPendingRoundRoles").mockResolvedValue([]);
 
         const handler = new PoolCreatedHandler(mockEvent, 10 as ChainId, {
-            viemClient: mockViemClient,
+            evmProvider: mockEvmProvider,
             pricingProvider: mockPricingProvider,
             metadataProvider: mockMetadataProvider,
             roundRepository: mockRoundRepository,
@@ -320,22 +306,21 @@ describe("PoolCreatedHandler", () => {
         expect(mockMetadataProvider.getMetadata).toHaveBeenCalled();
     });
 
-    it("returns empty changeset if token price fetch fails", async () => {
-        const mockEvent = createMockEvent({ params: { amount: 1n } });
+    it("throws an error if token price fetch fails", async () => {
+        const mockEvent = createMockEvent({ params: { amount: 1n, strategyId: "0xunknown" } });
 
         vi.spyOn(mockMetadataProvider, "getMetadata").mockResolvedValue(undefined);
 
         vi.spyOn(mockPricingProvider, "getTokenPrice").mockResolvedValue(undefined);
 
         const handler = new PoolCreatedHandler(mockEvent, 10 as ChainId, {
-            viemClient: mockViemClient,
+            evmProvider: mockEvmProvider,
             pricingProvider: mockPricingProvider,
             metadataProvider: mockMetadataProvider,
             roundRepository: mockRoundRepository,
         });
 
-        const result = await handler.handle();
-        expect(result).toHaveLength(0);
+        await expect(() => handler.handle()).rejects.toThrow("Token price not found");
     });
 
     it("handles pending round roles", async () => {
@@ -346,15 +331,12 @@ describe("PoolCreatedHandler", () => {
             priceUsd: 100,
             timestampMs: 1708369911,
         });
-        vi.spyOn(
-            strategy,
-            "getDonationVotingMerkleDistributionDirectTransferStrategyTimings",
-        ).mockResolvedValue({
-            applicationsStartTime: new Date(),
-            applicationsEndTime: new Date(),
-            donationsStartTime: new Date(),
-            donationsEndTime: new Date(),
-        });
+        vi.spyOn(mockEvmProvider, "multicall").mockResolvedValue([
+            1609459200n,
+            1609459200n,
+            1609459200n,
+            1609459200n,
+        ]);
 
         vi.spyOn(mockRoundRepository, "getPendingRoundRoles")
             .mockResolvedValueOnce([
@@ -384,7 +366,7 @@ describe("PoolCreatedHandler", () => {
             ]);
 
         const handler = new PoolCreatedHandler(mockEvent, 10 as ChainId, {
-            viemClient: mockViemClient,
+            evmProvider: mockEvmProvider,
             pricingProvider: mockPricingProvider,
             metadataProvider: mockMetadataProvider,
             roundRepository: mockRoundRepository,

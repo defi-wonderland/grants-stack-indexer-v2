@@ -1,9 +1,9 @@
-import { Address, PublicClient } from "viem";
-
-import { Branded } from "@grants-stack-indexer/shared";
+import type { EvmProvider } from "@grants-stack-indexer/chain-providers";
+import type { Address, Branded } from "@grants-stack-indexer/shared";
 
 import DirectGrantsLiteStrategy from "../abis/allo-v2/v1/DirectGrantsLiteStrategy.js";
 import DonationVotingMerkleDistributionDirectTransferStrategy from "../abis/allo-v2/v1/DonationVotingMerkleDistributionDirectTransferStrategy.js";
+import { StrategyTimings } from "../internal.js";
 import { getDateFromTimestamp } from "./utils.js";
 
 type SanitizedStrategyId = Branded<string, "SanitizedStrategyId">;
@@ -143,24 +143,19 @@ export function extractStrategyFromId(_id: Address): Strategy | undefined {
 
 //TODO: refactor this into the StrategyHandler when implemented
 export const getStrategyTimings = async (
-    viemClient: PublicClient,
+    evmProvider: EvmProvider,
     strategy: Strategy,
     strategyAddress: Address,
-): Promise<{
-    applicationsStartTime: Date | null;
-    applicationsEndTime: Date | null;
-    donationsStartTime: Date | null;
-    donationsEndTime: Date | null;
-}> => {
+): Promise<StrategyTimings> => {
     switch (strategy.name) {
         case "allov2.DonationVotingMerkleDistributionDirectTransferStrategy":
             return getDonationVotingMerkleDistributionDirectTransferStrategyTimings(
-                viemClient,
+                evmProvider,
                 strategyAddress,
             );
         case "allov2.DirectGrantsSimpleStrategy":
         case "allov2.DirectGrantsLiteStrategy":
-            return getDirectGrantsStrategyTimings(viemClient, strategyAddress);
+            return getDirectGrantsStrategyTimings(evmProvider, strategyAddress);
         default:
             return {
                 applicationsStartTime: null,
@@ -178,83 +173,52 @@ export const getStrategyTimings = async (
  * @returns The strategy data
  */
 export const getDonationVotingMerkleDistributionDirectTransferStrategyTimings = async (
-    viemClient: PublicClient,
+    evmProvider: EvmProvider,
     strategyId: Address,
-): Promise<{
-    applicationsStartTime: Date | null;
-    applicationsEndTime: Date | null;
-    donationsStartTime: Date | null;
-    donationsEndTime: Date | null;
-}> => {
-    let registrationStartTimeResolved: bigint;
-    let registrationEndTimeResolved: bigint;
-    let allocationStartTimeResolved: bigint;
-    let allocationEndTimeResolved: bigint;
+): Promise<StrategyTimings> => {
+    let results: [bigint, bigint, bigint, bigint] = [0n, 0n, 0n, 0n];
 
-    if (viemClient.chain?.contracts?.multicall3) {
-        const results = await viemClient.multicall({
-            contracts: [
-                {
-                    abi: DonationVotingMerkleDistributionDirectTransferStrategy,
-                    functionName: "registrationStartTime",
-                    address: strategyId,
-                },
-                {
-                    abi: DonationVotingMerkleDistributionDirectTransferStrategy,
-                    functionName: "registrationEndTime",
-                    address: strategyId,
-                },
-                {
-                    abi: DonationVotingMerkleDistributionDirectTransferStrategy,
-                    functionName: "allocationStartTime",
-                    address: strategyId,
-                },
-                {
-                    abi: DonationVotingMerkleDistributionDirectTransferStrategy,
-                    functionName: "allocationEndTime",
-                    address: strategyId,
-                },
-            ],
+    const contractCalls = [
+        {
+            abi: DonationVotingMerkleDistributionDirectTransferStrategy,
+            functionName: "registrationStartTime",
+            address: strategyId,
+        },
+        {
+            abi: DonationVotingMerkleDistributionDirectTransferStrategy,
+            functionName: "registrationEndTime",
+            address: strategyId,
+        },
+        {
+            abi: DonationVotingMerkleDistributionDirectTransferStrategy,
+            functionName: "allocationStartTime",
+            address: strategyId,
+        },
+        {
+            abi: DonationVotingMerkleDistributionDirectTransferStrategy,
+            functionName: "allocationEndTime",
+            address: strategyId,
+        },
+    ] as const;
+
+    if (evmProvider.getMulticall3Address()) {
+        results = await evmProvider.multicall({
+            contracts: contractCalls,
             allowFailure: false,
         });
-        registrationStartTimeResolved = results[0];
-        registrationEndTimeResolved = results[1];
-        allocationStartTimeResolved = results[2];
-        allocationEndTimeResolved = results[3];
     } else {
-        const results = await Promise.all([
-            viemClient.readContract({
-                abi: DonationVotingMerkleDistributionDirectTransferStrategy,
-                functionName: "registrationStartTime",
-                address: strategyId,
-            }),
-            viemClient.readContract({
-                abi: DonationVotingMerkleDistributionDirectTransferStrategy,
-                functionName: "registrationEndTime",
-                address: strategyId,
-            }),
-            viemClient.readContract({
-                abi: DonationVotingMerkleDistributionDirectTransferStrategy,
-                functionName: "allocationStartTime",
-                address: strategyId,
-            }),
-            viemClient.readContract({
-                abi: DonationVotingMerkleDistributionDirectTransferStrategy,
-                functionName: "allocationEndTime",
-                address: strategyId,
-            }),
-        ]);
-        registrationStartTimeResolved = results[0];
-        registrationEndTimeResolved = results[1];
-        allocationStartTimeResolved = results[2];
-        allocationEndTimeResolved = results[3];
+        results = (await Promise.all(
+            contractCalls.map((call) =>
+                evmProvider.readContract(call.address, call.abi, call.functionName),
+            ),
+        )) as [bigint, bigint, bigint, bigint];
     }
 
     return {
-        applicationsStartTime: getDateFromTimestamp(registrationStartTimeResolved),
-        applicationsEndTime: getDateFromTimestamp(registrationEndTimeResolved),
-        donationsStartTime: getDateFromTimestamp(allocationStartTimeResolved),
-        donationsEndTime: getDateFromTimestamp(allocationEndTimeResolved),
+        applicationsStartTime: getDateFromTimestamp(results[0]),
+        applicationsEndTime: getDateFromTimestamp(results[1]),
+        donationsStartTime: getDateFromTimestamp(results[2]),
+        donationsEndTime: getDateFromTimestamp(results[3]),
     };
 };
 
@@ -265,55 +229,40 @@ export const getDonationVotingMerkleDistributionDirectTransferStrategyTimings = 
  * @returns The strategy data
  */
 export const getDirectGrantsStrategyTimings = async (
-    viemClient: PublicClient,
+    evmProvider: EvmProvider,
     strategyAddress: Address,
-): Promise<{
-    applicationsStartTime: Date | null;
-    applicationsEndTime: Date | null;
-    donationsStartTime: Date | null;
-    donationsEndTime: Date | null;
-}> => {
-    let registrationStartTimeResolved: bigint;
-    let registrationEndTimeResolved: bigint;
+): Promise<StrategyTimings> => {
+    let results: [bigint, bigint] = [0n, 0n];
 
-    if (viemClient.chain?.contracts?.multicall3) {
-        const results = await viemClient.multicall({
-            contracts: [
-                {
-                    abi: DirectGrantsLiteStrategy,
-                    functionName: "registrationStartTime",
-                    address: strategyAddress,
-                },
-                {
-                    abi: DirectGrantsLiteStrategy,
-                    functionName: "registrationEndTime",
-                    address: strategyAddress,
-                },
-            ],
+    const contractCalls = [
+        {
+            abi: DirectGrantsLiteStrategy,
+            functionName: "registrationStartTime",
+            address: strategyAddress,
+        },
+        {
+            abi: DirectGrantsLiteStrategy,
+            functionName: "registrationEndTime",
+            address: strategyAddress,
+        },
+    ] as const;
+
+    if (evmProvider.getMulticall3Address()) {
+        results = await evmProvider.multicall({
+            contracts: contractCalls,
             allowFailure: false,
         });
-        registrationStartTimeResolved = results[0];
-        registrationEndTimeResolved = results[1];
     } else {
-        const results = await Promise.all([
-            viemClient.readContract({
-                abi: DirectGrantsLiteStrategy,
-                functionName: "registrationStartTime",
-                address: strategyAddress,
-            }),
-            viemClient.readContract({
-                abi: DirectGrantsLiteStrategy,
-                functionName: "registrationEndTime",
-                address: strategyAddress,
-            }),
-        ]);
-        registrationStartTimeResolved = results[0];
-        registrationEndTimeResolved = results[1];
+        results = (await Promise.all(
+            contractCalls.map((call) =>
+                evmProvider.readContract(call.address, call.abi, call.functionName),
+            ),
+        )) as [bigint, bigint];
     }
 
     return {
-        applicationsStartTime: getDateFromTimestamp(registrationStartTimeResolved),
-        applicationsEndTime: getDateFromTimestamp(registrationEndTimeResolved),
+        applicationsStartTime: getDateFromTimestamp(results[0]),
+        applicationsEndTime: getDateFromTimestamp(results[1]),
         donationsStartTime: null,
         donationsEndTime: null,
     };

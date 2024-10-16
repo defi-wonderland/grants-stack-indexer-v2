@@ -22,8 +22,5 @@ export type PoolCreatedParams = {
     strategyId: Address;
     token: Address;
     amount: bigint;
-    metadata: {
-        pointer: string;
-        protocol: bigint;
-    };
+    metadata: [pointer: string, protocol: bigint];
 };
