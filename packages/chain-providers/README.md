@@ -64,7 +64,7 @@ Available methods
 
 -   `getMulticall3Address()`
 -   `getBlockNumber()`
--   `getBlockByNumber(blockNumber: number)`
+-   `getBlockByNumber(blockNumber: bigint)`
 -   `readContract(contractAddress: Address, abi: TAbi functionName: TFunctionName, args?: TArgs)`
 -   `batchRequest(abi: AbiWithConstructor,bytecode: Hex, args: ContractConstructorArgs<typeof abi>, constructorReturnParams: ReturnType)`
 -   `multicall(args: MulticallParameters<contracts, allowFailure>)`

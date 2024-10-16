@@ -1,5 +1,5 @@
-import MockAdapter from "axios-mock-adapter";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import axios, { isAxiosError } from "axios";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Address, NATIVE_TOKEN_ADDRESS } from "@grants-stack-indexer/shared";
 
@@ -10,20 +10,40 @@ import {
     UnsupportedChainException,
 } from "../../src/external.js";
 
+const mock = vi.hoisted(() => ({
+    get: vi.fn(),
+    post: vi.fn(),
+}));
+
+vi.mock("axios", async (importActual) => {
+    const actual = await importActual<typeof import("axios")>();
+
+    const mockAxios = {
+        default: {
+            ...actual.default,
+            create: vi.fn(() => ({
+                ...actual.default.create(),
+                get: mock.get,
+                post: mock.post,
+            })),
+        },
+        isAxiosError: actual.isAxiosError, // Return it directly from the mock
+    };
+
+    return mockAxios;
+});
 describe("CoingeckoProvider", () => {
     let provider: CoingeckoProvider;
-    let mock: MockAdapter;
 
     beforeEach(() => {
         provider = new CoingeckoProvider({
             apiKey: "test-api-key",
             apiType: "demo",
         });
-        mock = new MockAdapter(provider["axios"]);
     });
 
     afterEach(() => {
-        mock.reset();
+        vi.restoreAllMocks();
     });
 
     describe("getTokenPrice", () => {
@@ -31,7 +51,7 @@ describe("CoingeckoProvider", () => {
             const mockResponse = {
                 prices: [[1609459200000, 100]],
             };
-            mock.onGet().reply(200, mockResponse);
+            mock.get.mockResolvedValueOnce({ status: 200, data: mockResponse });
 
             const result = await provider.getTokenPrice(
                 1,
@@ -46,7 +66,7 @@ describe("CoingeckoProvider", () => {
             };
 
             expect(result).toEqual(expectedPrice);
-            expect(mock.history.get[0].url).toContain(
+            expect(mock.get).toHaveBeenCalledWith(
                 "/coins/ethereum/contract/0x1234567890123456789012345678901234567890/market_chart/range?vs_currency=usd&from=1609459200&to=1609545600&precision=full",
             );
         });
@@ -55,7 +75,7 @@ describe("CoingeckoProvider", () => {
             const mockResponse = {
                 prices: [[1609459200000, 100]],
             };
-            mock.onGet().reply(200, mockResponse);
+            mock.get.mockResolvedValueOnce({ status: 200, data: mockResponse });
 
             const result = await provider.getTokenPrice(
                 10,
@@ -70,7 +90,7 @@ describe("CoingeckoProvider", () => {
             };
 
             expect(result).toEqual(expectedPrice);
-            expect(mock.history.get[0].url).toContain(
+            expect(mock.get).toHaveBeenCalledWith(
                 "/coins/ethereum/market_chart/range?vs_currency=usd&from=1609459200&to=1609545600&precision=full",
             );
         });
@@ -79,7 +99,7 @@ describe("CoingeckoProvider", () => {
             const mockResponse = {
                 prices: [],
             };
-            mock.onGet().reply(200, mockResponse);
+            mock.get.mockResolvedValueOnce({ status: 200, data: mockResponse });
 
             const result = await provider.getTokenPrice(
                 1,
@@ -103,7 +123,11 @@ describe("CoingeckoProvider", () => {
         });
 
         it("return undefined if 400 family error", async () => {
-            mock.onGet().replyOnce(400, "Bad Request");
+            mock.get.mockRejectedValueOnce({
+                status: 400,
+                data: "Bad Request",
+                isAxiosError: true,
+            });
 
             const result = await provider.getTokenPrice(
                 1,
@@ -126,9 +150,12 @@ describe("CoingeckoProvider", () => {
             ).rejects.toThrow(UnsupportedChainException);
         });
 
-        it("should throw NetworkException for 500 family errors", async () => {
-            mock.onGet().reply(500, "Internal Server Error");
-
+        it("throws NetworkException for 500 family errors", async () => {
+            mock.get.mockRejectedValueOnce({
+                status: 500,
+                data: "Internal Server Error",
+                isAxiosError: true,
+            });
             await expect(
                 provider.getTokenPrice(
                     1,
@@ -140,7 +167,11 @@ describe("CoingeckoProvider", () => {
         });
 
         it("throw NetworkException for network errors", async () => {
-            mock.onGet().networkErrorOnce();
+            mock.get.mockRejectedValueOnce({
+                status: 500,
+                data: "Network Error",
+                isAxiosError: true,
+            });
 
             await expect(
                 provider.getTokenPrice(
