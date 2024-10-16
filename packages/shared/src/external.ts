@@ -6,3 +6,6 @@ export {
     ALLO_NATIVE_TOKEN,
     isAlloNativeToken,
 } from "./constants/index.js";
+
+export type { DeepPartial } from "./utils/testing.js";
+export { mergeDeep } from "./utils/testing.js";

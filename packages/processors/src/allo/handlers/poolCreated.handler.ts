@@ -11,7 +11,12 @@ import {
 
 import type { IMetadataProvider } from "@grants-stack-indexer/metadata";
 import type { IPricingProvider } from "@grants-stack-indexer/pricing";
-import type { Changeset, IRoundReadRepository, NewRound } from "@grants-stack-indexer/repository";
+import type {
+    Changeset,
+    IRoundReadRepository,
+    NewRound,
+    PendingRoundRole,
+} from "@grants-stack-indexer/repository";
 import type { ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
 import { isAlloNativeToken } from "@grants-stack-indexer/shared/";
 
@@ -222,6 +227,7 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
      */
     private async handlePendingRoles(chainId: ChainId, roundId: string): Promise<Changeset[]> {
         const changes: Changeset[] = [];
+        const allPendingRoles: PendingRoundRole[] = [];
 
         for (const roleName of ["admin", "manager"] as const) {
             const pendingRoles = await this.roundRepository.getPendingRoundRoles(chainId, roleName);
@@ -239,13 +245,15 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
                     },
                 });
             }
+            allPendingRoles.push(...pendingRoles);
+        }
 
-            if (pendingRoles.length > 0) {
-                changes.push({
-                    type: "DeletePendingRoundRoles",
-                    args: { ids: pendingRoles.map((r) => r.id!) },
-                });
-            }
+        const pendingRoleIds = [...new Set(allPendingRoles.map((r) => r.id!))];
+        if (pendingRoleIds.length > 0) {
+            changes.push({
+                type: "DeletePendingRoundRoles",
+                args: { ids: pendingRoleIds },
+            });
         }
 
         return changes;
@@ -267,6 +275,6 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
             throw new Error("Token price not found");
         }
 
-        return calculateAmountInUsd(amount, tokenPrice, token.decimals);
+        return calculateAmountInUsd(amount, tokenPrice.priceUsd, token.decimals);
     }
 }

@@ -10,7 +10,15 @@ export default defineConfig({
         coverage: {
             provider: "v8",
             reporter: ["text", "json", "html"],
-            exclude: ["node_modules", "dist", "src/index.ts", ...configDefaults.exclude],
+            exclude: [
+                "node_modules",
+                "dist",
+                "src/index.ts",
+                "src/internal.ts",
+                "src/external.ts",
+                "**/abis/**",
+                ...configDefaults.exclude,
+            ],
         },
     },
     resolve: {

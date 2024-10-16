@@ -1,7 +1,5 @@
 import { formatUnits, parseUnits } from "viem";
 
-import { TokenPrice } from "@grants-stack-indexer/pricing";
-
 /**
  * Calculates the amount in USD
  * @param amount - The amount to convert to USD
@@ -12,13 +10,13 @@ import { TokenPrice } from "@grants-stack-indexer/pricing";
  */
 export const calculateAmountInUsd = (
     amount: bigint,
-    tokenPrice: TokenPrice,
+    tokenPriceInUsd: number,
     tokenDecimals: number,
     truncateDecimals?: number,
 ): number => {
     const amountInUsd = Number(
         formatUnits(
-            amount * parseUnits(tokenPrice.priceUsd.toString(), tokenDecimals),
+            amount * parseUnits(tokenPriceInUsd.toString(), tokenDecimals),
             tokenDecimals * 2,
         ),
     );

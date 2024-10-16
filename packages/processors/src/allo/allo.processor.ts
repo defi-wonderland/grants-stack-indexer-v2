@@ -18,7 +18,7 @@ export class AlloProcessor implements IProcessor<"Allo", AlloEvent> {
         private readonly roundRepository: IRoundReadRepository,
     ) {}
 
-    process(event: ProtocolEvent<"Allo", AlloEvent>): Promise<Changeset[]> {
+    async process(event: ProtocolEvent<"Allo", AlloEvent>): Promise<Changeset[]> {
         switch (event.eventName) {
             case "PoolCreated":
                 return new PoolCreatedHandler(event, this.chainId, {
@@ -28,7 +28,7 @@ export class AlloProcessor implements IProcessor<"Allo", AlloEvent> {
                     roundRepository: this.roundRepository,
                 }).handle();
             default:
-                throw new Error("Unknown event name");
+                throw new Error(`Unknown event name: ${event.eventName}`);
         }
     }
 }
