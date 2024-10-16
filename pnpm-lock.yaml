@@ -160,6 +160,9 @@ importers:
 
     packages/processors:
         dependencies:
+            "@grants-stack-indexer/chain-providers":
+                specifier: workspace:*
+                version: link:../chain-providers
             "@grants-stack-indexer/metadata":
                 specifier: workspace:*
                 version: link:../metadata

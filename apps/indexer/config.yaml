@@ -9,10 +9,10 @@ contracts:
       handler: src/handlers/Allo.ts
       events:
           - event: PoolCreated(uint256 indexed poolId, bytes32 indexed profileId, address strategy, address token, uint256 amount, (uint256,string) metadata)
-          - event: RoleGranted(uint64 indexed roleId, address indexed account, uint32 delay, uint48 since, bool newMember)
           - event: PoolMetadataUpdated(uint256 indexed poolId, (uint256,string) metadata)
           - event: PoolFunded(uint256 indexed poolId, uint256 amount, uint256 fee)
-          - event: RoleRevoked(uint64 indexed roleId, address indexed account)
+          - event: RoleGranted(bytes32 indexed role, address indexed account, address indexed sender);
+          - event: RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender);
     - name: Registry
       handler: src/handlers/Registry.ts
       events:
@@ -20,6 +20,9 @@ contracts:
           - event: ProfileMetadataUpdated(bytes32 indexed profileId, (uint256,string) metadata)
           - event: ProfileNameUpdated(bytes32 indexed profileId, string name, address anchor)
           - event: ProfileOwnerUpdated(bytes32 indexed profileId, address owner)
+          - event: RoleGranted(bytes32 indexed role, address indexed account, address indexed sender);
+          - event: RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender);
+
     - name: Strategy
       handler: src/handlers/Strategy.ts
       events:

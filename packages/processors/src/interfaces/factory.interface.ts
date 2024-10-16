@@ -2,7 +2,7 @@ import { PublicClient } from "viem";
 
 import { IMetadataProvider } from "@grants-stack-indexer/metadata";
 import { IPricingProvider } from "@grants-stack-indexer/pricing";
-import { Changeset } from "@grants-stack-indexer/repository";
+import { Changeset, IProjectReadRepository } from "@grants-stack-indexer/repository";
 import { ContractName, ContractToEventName, ProtocolEvent } from "@grants-stack-indexer/shared";
 
 export interface IEventHandler {
@@ -14,6 +14,9 @@ export interface IEventHandlerFactory<C extends ContractName, E extends Contract
         event: ProtocolEvent<C, E>,
         pricingProvider: IPricingProvider,
         metadataProvider: IMetadataProvider,
+        repositories: {
+            project: IProjectReadRepository;
+        },
         viemProvider: PublicClient,
     ): IEventHandler;
 }
