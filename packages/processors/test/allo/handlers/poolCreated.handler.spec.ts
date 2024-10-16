@@ -398,31 +398,43 @@ describe("PoolCreatedHandler", () => {
         expect(changeset.type).toBe("InsertRound");
 
         expect(result.filter((c) => c.type === "InsertRoundRole")).toHaveLength(3);
-        expect(result.filter((c) => c.type === "InsertRoundRole")[0].args.roundRole).toMatchObject({
-            chainId: 10 as ChainId,
-            roundId: "10",
-            role: "admin",
-            address: "0x1133eA7Af70876e64665ecD07C0A0476d09465a1",
-            createdAtBlock: 116385565n,
-        });
-        expect(result.filter((c) => c.type === "InsertRoundRole")[1].args.roundRole).toMatchObject({
-            chainId: 10 as ChainId,
-            roundId: "10",
-            role: "manager",
-            address: "0x1234567890123456789012345678901234567890",
-            createdAtBlock: 116385565n,
-        });
-        expect(result.filter((c) => c.type === "InsertRoundRole")[2].args.roundRole).toMatchObject({
-            chainId: 10 as ChainId,
-            roundId: "10",
-            role: "manager",
-            address: "0xAaBBccdDeEFf0000000000000000000000000000",
-            createdAtBlock: 116385565n,
-        });
+        expect(result.filter((c) => c.type === "InsertRoundRole")[0]?.args.roundRole).toMatchObject(
+            {
+                chainId: 10 as ChainId,
+                roundId: "10",
+                role: "admin",
+                address: "0x1133eA7Af70876e64665ecD07C0A0476d09465a1",
+                createdAtBlock: 116385565n,
+            },
+        );
+        expect(result.filter((c) => c.type === "InsertRoundRole")[1]?.args.roundRole).toMatchObject(
+            {
+                chainId: 10 as ChainId,
+                roundId: "10",
+                role: "manager",
+                address: "0x1234567890123456789012345678901234567890",
+                createdAtBlock: 116385565n,
+            },
+        );
+        expect(result.filter((c) => c.type === "InsertRoundRole")[2]?.args.roundRole).toMatchObject(
+            {
+                chainId: 10 as ChainId,
+                roundId: "10",
+                role: "manager",
+                address: "0xAaBBccdDeEFf0000000000000000000000000000",
+                createdAtBlock: 116385565n,
+            },
+        );
         expect(result.filter((c) => c.type === "DeletePendingRoundRoles")).toHaveLength(1);
-        expect(result.filter((c) => c.type === "DeletePendingRoundRoles")[0].args.ids).toContain(1);
-        expect(result.filter((c) => c.type === "DeletePendingRoundRoles")[0].args.ids).toContain(2);
-        expect(result.filter((c) => c.type === "DeletePendingRoundRoles")[0].args.ids).toContain(3);
+        expect(result.filter((c) => c.type === "DeletePendingRoundRoles")[0]?.args.ids).toContain(
+            1,
+        );
+        expect(result.filter((c) => c.type === "DeletePendingRoundRoles")[0]?.args.ids).toContain(
+            2,
+        );
+        expect(result.filter((c) => c.type === "DeletePendingRoundRoles")[0]?.args.ids).toContain(
+            3,
+        );
     });
 
     it.skip("handles a native token");

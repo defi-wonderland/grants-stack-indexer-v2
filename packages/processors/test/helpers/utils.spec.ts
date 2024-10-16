@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getDateFromTimestamp } from "../../src/helpers/utils.ts";
+import { getDateFromTimestamp } from "../../src/helpers/utils.js";
 
 describe("utils", () => {
     describe("getDateFromTimestamp", () => {

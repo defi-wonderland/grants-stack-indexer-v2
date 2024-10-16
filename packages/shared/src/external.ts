@@ -9,3 +9,4 @@ export {
 
 export type { DeepPartial } from "./utils/testing.js";
 export { mergeDeep } from "./utils/testing.js";
+export type { ILogger, Logger } from "./internal.js";

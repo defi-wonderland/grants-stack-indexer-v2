@@ -17,27 +17,29 @@ describe("EventsFetcher", () => {
         eventsFetcher = new EventsFetcher(indexerClientMock);
     });
 
-    it("should fetch events by block number and log index", async () => {
+    it("fetches events by block number and log index", async () => {
         const mockEvents: AnyProtocolEvent[] = [
             {
-                chain_id: 1,
-                block_number: 12345,
-                block_timestamp: 123123123,
-                contract_name: "Allo",
-                event_name: "PoolCreated",
-                src_address: "0x1234567890123456789012345678901234567890",
-                log_index: 0,
+                chainId: 1,
+                blockNumber: 12345,
+                blockTimestamp: 123123123,
+                contractName: "Allo",
+                eventName: "PoolCreated",
+                srcAddress: "0x1234567890123456789012345678901234567890",
+                logIndex: 0,
                 params: { contractAddress: "0x1234" },
+                transactionFields: { hash: "0x1234", transactionIndex: 0 },
             },
             {
-                chain_id: 1,
-                block_number: 12345,
-                block_timestamp: 123123123,
-                contract_name: "Allo",
-                event_name: "PoolCreated",
-                src_address: "0x1234567890123456789012345678901234567890",
-                log_index: 0,
+                chainId: 1,
+                blockNumber: 12345,
+                blockTimestamp: 123123123,
+                contractName: "Allo",
+                eventName: "PoolCreated",
+                srcAddress: "0x1234567890123456789012345678901234567890",
+                logIndex: 0,
                 params: { contractAddress: "0x1234" },
+                transactionFields: { hash: "0x1234", transactionIndex: 1 },
             },
         ];
         const chainId = 1n;
@@ -62,7 +64,7 @@ describe("EventsFetcher", () => {
         expect(result).toEqual(mockEvents);
     });
 
-    it("should handle errors thrown by indexer client", async () => {
+    it("handles errors thrown by indexer client", async () => {
         const chainId = 1n;
         const blockNumber = 1000n;
         const logIndex = 0;

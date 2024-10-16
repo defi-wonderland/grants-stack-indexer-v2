@@ -1,5 +1,3 @@
-/* Based on total-typescript no-dom library config */
-/* https://github.com/total-typescript/tsconfig */
 {
     "extends": "../../tsconfig.build.json",
     "compilerOptions": {
