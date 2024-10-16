@@ -1,4 +1,3 @@
-import axios, { isAxiosError } from "axios";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Address, NATIVE_TOKEN_ADDRESS } from "@grants-stack-indexer/shared";
