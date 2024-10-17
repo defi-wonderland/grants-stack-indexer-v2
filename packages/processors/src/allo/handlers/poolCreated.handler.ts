@@ -2,7 +2,7 @@ import { Address, getAddress, parseUnits, zeroAddress } from "viem";
 
 import type { Changeset, NewRound, PendingRoundRole } from "@grants-stack-indexer/repository";
 import type { ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
-import { isAlloNativeToken } from "@grants-stack-indexer/shared/";
+import { isAlloNativeToken } from "@grants-stack-indexer/shared";
 
 import type { IEventHandler, ProcessorDependencies, StrategyTimings } from "../../internal.js";
 import { getRoundRoles } from "../../helpers/roles.js";

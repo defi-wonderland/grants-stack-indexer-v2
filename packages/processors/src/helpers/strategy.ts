@@ -14,6 +14,7 @@ type Strategy = {
     groups: string[];
 };
 
+//TODO: refactor this into a mapping in Shared package from ID to the corresponding handler class
 /*
  * Extracts the strategy from the ID.
  * @param _id - The ID of the strategy.
