@@ -143,6 +143,9 @@ export function extractStrategyFromId(_id: Address): Strategy | undefined {
 }
 
 //TODO: refactor this into the StrategyHandler when implemented
+// see if we can use a common interface or abstract class for all strategies
+// so we don't have to do this switch statement
+// most of the strategies don't need to fetch anything and just return null for all the times
 export const getStrategyTimings = async (
     evmProvider: EvmProvider,
     strategy: Strategy,
@@ -169,7 +172,7 @@ export const getStrategyTimings = async (
 
 /**
  * Gets the strategy data for the DonationVotingMerkleDistributionDirectTransferStrategy
- * @param viemClient - The viem client
+ * @param evmProvider - The evm provider
  * @param strategyId - The address of the strategy
  * @returns The strategy data
  */
@@ -225,7 +228,7 @@ export const getDonationVotingMerkleDistributionDirectTransferStrategyTimings = 
 
 /**
  * Gets the strategy data for the DirectGrantsStrategy
- * @param viemClient - The viem client
+ * @param evmProvider - The evm provider
  * @param strategyAddress - The address of the strategy
  * @returns The strategy data
  */

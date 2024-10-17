@@ -11,6 +11,7 @@ import type { AlloEvent, ChainId, ProtocolEvent } from "@grants-stack-indexer/sh
 
 import { AlloProcessor } from "../../src/allo/allo.processor.js";
 import { PoolCreatedHandler } from "../../src/allo/handlers/poolCreated.handler.js";
+import { UnsupportedEventException } from "../../src/internal.js";
 
 // Mock the handlers
 vi.mock("../../src/allo/handlers/poolCreated.handler.js", () => {
@@ -71,8 +72,6 @@ describe("AlloProcessor", () => {
             eventName: "UnknownEvent",
         } as unknown as ProtocolEvent<"Allo", AlloEvent>;
 
-        await expect(() => processor.process(mockEvent)).rejects.toThrow(
-            "Unknown event name: UnknownEvent",
-        );
+        await expect(() => processor.process(mockEvent)).rejects.toThrow(UnsupportedEventException);
     });
 });

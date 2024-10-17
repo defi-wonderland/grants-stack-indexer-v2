@@ -2,6 +2,7 @@ import { parseGwei } from "viem";
 import { describe, expect, it, test } from "vitest";
 
 import { calculateAmountInUsd } from "../../src/helpers/tokenMath.js";
+import { InvalidArgument } from "../../src/internal.js";
 
 describe("calculateAmountInUsd", () => {
     it("calculate USD amount for 18 decimal token with integer price", () => {
@@ -102,8 +103,12 @@ describe("calculateAmountInUsd", () => {
         const tokenPriceInUsd = 100;
         const tokenDecimals = 18;
 
-        expect(() => calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals, -1)).toThrow();
-        expect(() => calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals, 19)).toThrow();
+        expect(() => calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals, -1)).toThrow(
+            InvalidArgument,
+        );
+        expect(() => calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals, 19)).toThrow(
+            InvalidArgument,
+        );
     });
 
     test("migrated cases", () => {

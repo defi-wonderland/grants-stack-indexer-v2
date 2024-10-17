@@ -2,6 +2,7 @@ import { Changeset } from "@grants-stack-indexer/repository";
 import { AlloEvent, ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
 
 import type { IProcessor, ProcessorDependencies } from "../internal.js";
+import { UnsupportedEventException } from "../internal.js";
 import { PoolCreatedHandler } from "./handlers/index.js";
 
 export class AlloProcessor implements IProcessor<"Allo", AlloEvent> {
@@ -15,7 +16,7 @@ export class AlloProcessor implements IProcessor<"Allo", AlloEvent> {
             case "PoolCreated":
                 return new PoolCreatedHandler(event, this.chainId, this.dependencies).handle();
             default:
-                throw new Error(`Unknown event name: ${event.eventName}`);
+                throw new UnsupportedEventException("Allo", event.eventName);
         }
     }
 }
