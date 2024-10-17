@@ -58,12 +58,11 @@ describe("AlloProcessor", () => {
 
         await processor.process(mockEvent);
 
-        expect(PoolCreatedHandler).toHaveBeenCalledWith(mockEvent, mockChainId, {
-            evmProvider: mockEvmProvider,
-            pricingProvider: mockPricingProvider,
-            metadataProvider: mockMetadataProvider,
-            roundRepository: mockRoundRepository,
-        });
+        expect(PoolCreatedHandler).toHaveBeenCalledWith(
+            mockEvent,
+            mockChainId,
+            processor["dependencies"],
+        );
         expect(PoolCreatedHandler.prototype.handle).toHaveBeenCalled();
     });
 

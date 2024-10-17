@@ -13,12 +13,7 @@ export class AlloProcessor implements IProcessor<"Allo", AlloEvent> {
     async process(event: ProtocolEvent<"Allo", AlloEvent>): Promise<Changeset[]> {
         switch (event.eventName) {
             case "PoolCreated":
-                return new PoolCreatedHandler(event, this.chainId, {
-                    evmProvider: this.dependencies.evmProvider,
-                    pricingProvider: this.dependencies.pricingProvider,
-                    metadataProvider: this.dependencies.metadataProvider,
-                    roundRepository: this.dependencies.roundRepository,
-                }).handle();
+                return new PoolCreatedHandler(event, this.chainId, this.dependencies).handle();
             default:
                 throw new Error(`Unknown event name: ${event.eventName}`);
         }

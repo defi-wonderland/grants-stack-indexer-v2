@@ -94,7 +94,7 @@ describe("PoolCreatedHandler", () => {
         expect(changeset.type).toBe("InsertRound");
         expect(changeset.args.round).toMatchObject({
             fundedAmount: fundedAmount,
-            fundedAmountInUsd: 1000,
+            fundedAmountInUsd: "1000",
         });
         expect(mockPricingProvider.getTokenPrice).toHaveBeenCalled();
         expect(mockMetadataProvider.getMetadata).toHaveBeenCalled();
@@ -188,13 +188,13 @@ describe("PoolCreatedHandler", () => {
             id: "10",
             tags: ["allo-v2", "grants-stack"],
             totalDonationsCount: 0,
-            totalAmountDonatedInUsd: 0,
+            totalAmountDonatedInUsd: "0",
             uniqueDonorsCount: 0,
             matchTokenAddress: mockEvent.params.token,
             matchAmount: parseUnits("1", 18),
-            matchAmountInUsd: 100,
+            matchAmountInUsd: "100",
             fundedAmount: 0n,
-            fundedAmountInUsd: 0,
+            fundedAmountInUsd: "0",
             applicationMetadataCid: "bafkreihrjyu5tney6wia2hmkertc74nzfpsgxw2epvnxm72bxj6ifnd4ku",
             applicationMetadata: {
                 version: "1.0.0",
@@ -291,9 +291,9 @@ describe("PoolCreatedHandler", () => {
             id: "10",
             tags: ["allo-v2"],
             matchAmount: 0n,
-            matchAmountInUsd: 0,
+            matchAmountInUsd: "0",
             fundedAmount: 0n,
-            fundedAmountInUsd: 0,
+            fundedAmountInUsd: "0",
             applicationMetadataCid: "bafkreihrjyu5tney6wia2hmkertc74nzfpsgxw2epvnxm72bxj6ifnd4ku",
             applicationMetadata: {},
             roundMetadataCid: "bafkreihrjyu5tney6wia2hmkertc74nzfpsgxw2epvnxm72bxj6ifnd4ku",

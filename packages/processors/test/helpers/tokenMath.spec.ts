@@ -10,7 +10,7 @@ describe("calculateAmountInUsd", () => {
         const tokenDecimals = 18;
 
         const result = calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals);
-        expect(result).toBe(100);
+        expect(result).toBe("100");
     });
 
     it("calculate USD amount for 18 decimal token with float price", () => {
@@ -19,7 +19,7 @@ describe("calculateAmountInUsd", () => {
         const tokenDecimals = 18;
 
         const result = calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals);
-        expect(result).toBeCloseTo(41.025, 5);
+        expect(result).toBe("41.025");
     });
 
     it("calculate USD amount for 8 decimal token with integer price", () => {
@@ -28,7 +28,7 @@ describe("calculateAmountInUsd", () => {
         const tokenDecimals = 8;
 
         const result = calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals);
-        expect(result).toBe(50);
+        expect(result).toBe("50");
     });
 
     // Test case for 8 decimal token with float price
@@ -38,7 +38,7 @@ describe("calculateAmountInUsd", () => {
         const tokenDecimals = 8;
 
         const result = calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals);
-        expect(result).toBeCloseTo(19.125, 5);
+        expect(result).toBe("19.125");
     });
 
     it("correctly calculate USD amount for 1gwei token amount", () => {
@@ -47,7 +47,7 @@ describe("calculateAmountInUsd", () => {
         const tokenDecimals = 18;
 
         const result = calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals);
-        expect(result).toBe(0.000001);
+        expect(result).toBe("0.000001");
     });
 
     it("correctly truncate decimals when specified", () => {
@@ -56,7 +56,27 @@ describe("calculateAmountInUsd", () => {
         const tokenDecimals = 18;
 
         const result = calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals, 4);
-        expect(result).toBe(1.5185);
+        expect(result).toBe("1.5185");
+    });
+
+    it("handle token price with 19 decimal digits", () => {
+        const amount = 1000000000000000000n; // 1 token
+        const tokenPriceInUsd = 1e-19; // 19 decimal places
+        const tokenDecimals = 18;
+
+        const result = calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals);
+
+        expect(result).toBe("0.0000000000000000001");
+    });
+
+    it("handle scientific notation token price with interspersed non-zero digits in result", () => {
+        const amount = 123456789012345678n; // 0.123456789012345678 tokens
+        const tokenPriceInUsd = 1.23e-15; // 0.00000000000000123
+        const tokenDecimals = 18;
+
+        const result = calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals);
+
+        expect(result).toBe("0.00000000000000015185");
     });
 
     it("return zero for zero token amount", () => {
@@ -65,7 +85,7 @@ describe("calculateAmountInUsd", () => {
         const tokenDecimals = 18;
 
         const result = calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals);
-        expect(result).toBe(0);
+        expect(result).toBe("0");
     });
 
     it("should return zero for zero token price", () => {
@@ -74,7 +94,7 @@ describe("calculateAmountInUsd", () => {
         const tokenDecimals = 18;
 
         const result = calculateAmountInUsd(amount, tokenPriceInUsd, tokenDecimals);
-        expect(result).toBe(0);
+        expect(result).toBe("0");
     });
 
     it("throw an error for invalid truncate decimals", () => {
@@ -87,12 +107,12 @@ describe("calculateAmountInUsd", () => {
     });
 
     test("migrated cases", () => {
-        expect(calculateAmountInUsd(3400000000000000000n, 1, 18, 8)).toBe(3.4);
+        expect(calculateAmountInUsd(3400000000000000000n, 1, 18, 8)).toBe("3.4");
 
-        expect(calculateAmountInUsd(50000000000n, 1, 18, 8)).toBe(0.00000005);
+        expect(calculateAmountInUsd(50000000000n, 1, 18, 8)).toBe("0.00000005");
 
-        expect(calculateAmountInUsd(3400000000000000000n, 0.5, 18, 8)).toBe(1.7);
+        expect(calculateAmountInUsd(3400000000000000000n, 0.5, 18, 8)).toBe("1.7");
 
-        expect(calculateAmountInUsd(3400000000000000000n, 2, 18, 8)).toBe(6.8);
+        expect(calculateAmountInUsd(3400000000000000000n, 2, 18, 8)).toBe("6.8");
     });
 });

@@ -1,4 +1,4 @@
-import { formatUnits, parseUnits } from "viem";
+import { BigNumber } from "@grants-stack-indexer/shared";
 
 /**
  * Calculates the amount in USD
@@ -10,23 +10,22 @@ import { formatUnits, parseUnits } from "viem";
  */
 export const calculateAmountInUsd = (
     amount: bigint,
-    tokenPriceInUsd: number,
+    tokenPriceInUsd: string | number,
     tokenDecimals: number,
     truncateDecimals?: number,
-): number => {
-    const amountInUsd = Number(
-        formatUnits(
-            amount * parseUnits(tokenPriceInUsd.toString(), tokenDecimals),
-            tokenDecimals * 2,
-        ),
-    );
+): string => {
+    const amountBN = new BigNumber(amount.toString());
+    const tokenPriceBN = new BigNumber(tokenPriceInUsd.toString());
+    const scaleFactor = new BigNumber(10).pow(tokenDecimals);
 
-    if (truncateDecimals) {
+    let amountInUsd = amountBN.multipliedBy(tokenPriceBN).dividedBy(scaleFactor);
+
+    if (truncateDecimals !== undefined) {
         if (truncateDecimals < 0 || truncateDecimals > 18) {
             throw new Error("Truncate decimals must be between 0 and 18");
         }
-        return Number(amountInUsd.toFixed(truncateDecimals));
+        amountInUsd = amountInUsd.decimalPlaces(truncateDecimals);
     }
 
-    return amountInUsd;
+    return amountInUsd.toString();
 };

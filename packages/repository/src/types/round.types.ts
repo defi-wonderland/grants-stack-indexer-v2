@@ -16,9 +16,9 @@ export type Round = {
     chainId: ChainId;
     matchAmount: bigint;
     matchTokenAddress: Address;
-    matchAmountInUsd: number;
+    matchAmountInUsd: string;
     fundedAmount: bigint;
-    fundedAmountInUsd: number;
+    fundedAmountInUsd: string;
     applicationMetadataCid: string;
     applicationMetadata: unknown | null;
     roundMetadataCid: string | null;
@@ -30,7 +30,7 @@ export type Round = {
     createdByAddress: Address;
     createdAtBlock: bigint;
     updatedAtBlock: bigint;
-    totalAmountDonatedInUsd: number;
+    totalAmountDonatedInUsd: string;
     totalDonationsCount: number;
     totalDistributed: bigint;
     uniqueDonorsCount: number;

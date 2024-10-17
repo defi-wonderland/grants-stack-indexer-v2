@@ -78,7 +78,7 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
         };
 
         let matchAmount = 0n;
-        let matchAmountInUsd = 0;
+        let matchAmountInUsd = "0";
 
         if (strategy) {
             strategyTimings = await getStrategyTimings(evmProvider, strategy, strategyAddress);
@@ -102,7 +102,7 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
             }
         }
 
-        let fundedAmountInUsd = 0;
+        let fundedAmountInUsd = "0";
 
         if (token !== null && fundedAmount > 0n) {
             fundedAmountInUsd = await this.getTokenAmountInUsd(
@@ -122,7 +122,7 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
             id: poolId.toString(),
             tags: ["allo-v2", ...(parsedRoundMetadata.success ? ["grants-stack"] : [])],
             totalDonationsCount: 0,
-            totalAmountDonatedInUsd: 0,
+            totalAmountDonatedInUsd: "0",
             uniqueDonorsCount: 0,
             matchTokenAddress,
             matchAmount,
@@ -209,7 +209,7 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
         token: { address: Address; decimals: number },
         amount: bigint,
         timestamp: number,
-    ): Promise<number> {
+    ): Promise<string> {
         const { pricingProvider } = this.dependencies;
         const tokenPrice = await pricingProvider.getTokenPrice(
             this.chainId,

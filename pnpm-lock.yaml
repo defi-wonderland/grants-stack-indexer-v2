@@ -200,6 +200,9 @@ importers:
 
     packages/shared:
         dependencies:
+            bignumber.js:
+                specifier: 9.1.2
+                version: 9.1.2
             viem:
                 specifier: 2.21.19
                 version: 2.21.19(typescript@5.5.4)(zod@3.23.8)
@@ -1522,6 +1525,12 @@ packages:
         resolution:
             {
                 integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==,
+            }
+
+    bignumber.js@9.1.2:
+        resolution:
+            {
+                integrity: sha512-2/mKyZH9K85bzOEfhXDBFZTGd1CTs+5IHpeFQo9luiBG7hghdC851Pj2WAhb6E3R6b9tZj/XKhbg4fum+Kepug==,
             }
 
     binary-extensions@2.3.0:
@@ -5359,6 +5368,8 @@ snapshots:
     balanced-match@1.0.2: {}
 
     base64-js@1.5.1: {}
+
+    bignumber.js@9.1.2: {}
 
     binary-extensions@2.3.0: {}
 

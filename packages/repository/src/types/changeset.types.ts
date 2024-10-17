@@ -88,7 +88,7 @@ export type Changeset =
               chainId: ChainId;
               roundId: string;
               fundedAmount: bigint;
-              fundedAmountInUsd: number;
+              fundedAmountInUsd: string;
           };
       }
     | {
@@ -96,7 +96,7 @@ export type Changeset =
           args: {
               chainId: ChainId;
               roundId: Address;
-              amountInUsd: number;
+              amountInUsd: string;
           };
       }
     | {
