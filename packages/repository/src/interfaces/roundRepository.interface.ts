@@ -106,7 +106,7 @@ export interface IRoundRepository extends IRoundReadRepository {
             roundId: string;
         },
         amount: bigint,
-        amountInUsd: number,
+        amountInUsd: string,
     ): Promise<void>;
 
     /**

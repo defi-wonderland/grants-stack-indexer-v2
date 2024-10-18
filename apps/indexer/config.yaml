@@ -1,6 +1,12 @@
 name: Allo Indexer
 unordered_multichain_mode: true
 raw_events: true
+
+field_selection:
+    transaction_fields:
+        - "hash"
+        - "transactionIndex"
+        - "from"
 ##########################
 #       CONTRACTS        #
 ##########################

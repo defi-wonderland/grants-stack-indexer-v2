@@ -14,6 +14,7 @@ import {
 import { arrayAbiFixture, structAbiFixture } from "../../fixtures/batchRequest.fixture.js";
 
 const mockClient = {
+    getTransaction: vi.fn(),
     getBalance: vi.fn(),
     getBlockNumber: vi.fn(),
     getGasPrice: vi.fn(),
@@ -68,6 +69,20 @@ describe("EvmProvider", () => {
         expect(() => {
             new EvmProvider([], defaultMockChain, mockLogger);
         }).toThrowError(RpcUrlsEmpty);
+    });
+
+    describe("getTransaction", () => {
+        it("returns the transaction for the given hash", async () => {
+            viemProvider = new EvmProvider(defaultRpcUrls, defaultMockChain, mockLogger);
+            const hash = "0x123456789";
+            const expectedTransaction = { from: "0x123456789", to: "0x987654321" };
+            vi.spyOn(mockClient, "getTransaction").mockResolvedValue(expectedTransaction);
+
+            const transaction = await viemProvider.getTransaction(hash);
+
+            expect(transaction).toBe(expectedTransaction);
+            expect(mockClient.getTransaction).toHaveBeenCalledWith({ hash });
+        });
     });
 
     describe("getBalance", () => {

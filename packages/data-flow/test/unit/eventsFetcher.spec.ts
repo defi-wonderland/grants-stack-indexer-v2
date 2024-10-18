@@ -28,6 +28,7 @@ describe("EventsFetcher", () => {
                 srcAddress: "0x1234567890123456789012345678901234567890",
                 logIndex: 0,
                 params: { contractAddress: "0x1234" },
+                transactionFields: { hash: "0x1234", transactionIndex: 0 },
             },
             {
                 chainId: 1,
@@ -38,6 +39,7 @@ describe("EventsFetcher", () => {
                 srcAddress: "0x1234567890123456789012345678901234567890",
                 logIndex: 0,
                 params: { contractAddress: "0x1234" },
+                transactionFields: { hash: "0x1234", transactionIndex: 1 },
             },
         ];
         const chainId = 1n;

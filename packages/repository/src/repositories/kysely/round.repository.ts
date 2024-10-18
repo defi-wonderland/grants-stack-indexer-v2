@@ -111,7 +111,7 @@ export class KyselyRoundRepository implements IRoundRepository {
             roundId: string;
         },
         amount: bigint,
-        amountInUsd: number,
+        amountInUsd: string,
     ): Promise<void> {
         await this.db
             .withSchema(this.schemaName)

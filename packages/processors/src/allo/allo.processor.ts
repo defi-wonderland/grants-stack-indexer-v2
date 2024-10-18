@@ -1,11 +1,22 @@
 import { Changeset } from "@grants-stack-indexer/repository";
-import { AlloEvent, ProtocolEvent } from "@grants-stack-indexer/shared";
+import { AlloEvent, ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
 
-import type { IProcessor } from "../internal.js";
+import type { IProcessor, ProcessorDependencies } from "../internal.js";
+import { UnsupportedEventException } from "../internal.js";
+import { PoolCreatedHandler } from "./handlers/index.js";
 
 export class AlloProcessor implements IProcessor<"Allo", AlloEvent> {
-    //TODO: Implement
-    process(_event: ProtocolEvent<"Allo", AlloEvent>): Promise<Changeset> {
-        throw new Error("Method not implemented.");
+    constructor(
+        private readonly chainId: ChainId,
+        private readonly dependencies: ProcessorDependencies,
+    ) {}
+
+    async process(event: ProtocolEvent<"Allo", AlloEvent>): Promise<Changeset[]> {
+        switch (event.eventName) {
+            case "PoolCreated":
+                return new PoolCreatedHandler(event, this.chainId, this.dependencies).handle();
+            default:
+                throw new UnsupportedEventException("Allo", event.eventName);
+        }
     }
 }

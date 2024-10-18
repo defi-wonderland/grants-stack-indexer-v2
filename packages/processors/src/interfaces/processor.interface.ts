@@ -7,5 +7,5 @@ export interface IProcessor<C extends ContractName, E extends ContractToEventNam
      * @param event - The event to process.
      * @returns A promise that resolves to a changeset.
      */
-    process(event: ProtocolEvent<C, E>): Promise<Changeset>;
+    process(event: ProtocolEvent<C, E>): Promise<Changeset[]>;
 }
