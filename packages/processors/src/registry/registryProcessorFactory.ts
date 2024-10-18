@@ -10,7 +10,7 @@ export class RegistryHandlerFactory implements IEventHandlerFactory<"Registry", 
         event: ProtocolEvent<"Registry", RegistryEvent>,
         chainId: ChainId,
         dependencies: ProcessorDependencies,
-    ): IEventHandler {
+    ): IEventHandler<"Registry", RegistryEvent> {
         if (isRoleGranted(event)) {
             return new RoleGrantedHandler(event, chainId, dependencies);
         }

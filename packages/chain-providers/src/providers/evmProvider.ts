@@ -16,6 +16,7 @@ import {
     fallback,
     FallbackTransport,
     GetBlockReturnType,
+    GetTransactionReturnType,
     Hex,
     http,
     HttpTransport,
@@ -63,6 +64,10 @@ export class EvmProvider {
      */
     getMulticall3Address(): Address | undefined {
         return this.chain?.contracts?.multicall3?.address;
+    }
+
+    async getTransaction(hash: Hex): Promise<GetTransactionReturnType> {
+        return this.client.getTransaction({ hash });
     }
 
     /**

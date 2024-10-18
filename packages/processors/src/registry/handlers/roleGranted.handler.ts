@@ -6,10 +6,10 @@ import { ALLO_OWNER_ROLE, ChainId, ProtocolEvent } from "@grants-stack-indexer/s
 import { IEventHandler } from "../../internal.js";
 import { ProcessorDependencies } from "../../types/processor.types.js";
 
-export class RoleGrantedHandler implements IEventHandler {
+export class RoleGrantedHandler implements IEventHandler<"Registry", "RoleGranted"> {
     constructor(
-        private readonly event: ProtocolEvent<"Registry", "RoleGranted">,
-        private readonly chainId: ChainId,
+        readonly event: ProtocolEvent<"Registry", "RoleGranted">,
+        readonly chainId: ChainId,
         private readonly dependencies: ProcessorDependencies,
     ) {}
     async handle(): Promise<Changeset[]> {

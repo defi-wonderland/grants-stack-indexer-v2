@@ -1,19 +1,18 @@
-import { PublicClient } from "viem";
+import { Changeset } from "@grants-stack-indexer/repository";
+import { ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
 
-import { IMetadataProvider } from "@grants-stack-indexer/metadata";
-import { IPricingProvider } from "@grants-stack-indexer/pricing";
-import { Changeset, IProjectReadRepository } from "@grants-stack-indexer/repository";
-import { ProtocolEvent } from "@grants-stack-indexer/shared";
+import { IEventHandler, ProcessorDependencies } from "../../internal.js";
 
-import { IEventHandler } from "../../internal.js";
+type Dependencies = Pick<
+    ProcessorDependencies,
+    "projectRepository" | "evmProvider" | "pricingProvider"
+>;
 
-export class ProfileCreatedHandler implements IEventHandler {
+export class ProfileCreatedHandler implements IEventHandler<"Registry", "ProfileCreated"> {
     constructor(
-        private readonly event: ProtocolEvent<"Registry", "ProfileCreated">,
-        private readonly pricingProvider: IPricingProvider,
-        private readonly metadataProvider: IMetadataProvider,
-        private readonly projectRepository: IProjectReadRepository,
-        private readonly viemProvider: PublicClient,
+        readonly event: ProtocolEvent<"Registry", "ProfileCreated">,
+        readonly chainId: ChainId,
+        private dependencies: Dependencies,
     ) {}
     async handle(): Promise<Changeset[]> {
         return [];
