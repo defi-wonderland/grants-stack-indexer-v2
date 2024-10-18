@@ -1,9 +1,12 @@
-import { PublicClient } from "viem";
+import { Changeset } from "@grants-stack-indexer/repository";
+import {
+    ChainId,
+    ContractName,
+    ContractToEventName,
+    ProtocolEvent,
+} from "@grants-stack-indexer/shared";
 
-import { IMetadataProvider } from "@grants-stack-indexer/metadata";
-import { IPricingProvider } from "@grants-stack-indexer/pricing";
-import { Changeset, IProjectReadRepository } from "@grants-stack-indexer/repository";
-import { ContractName, ContractToEventName, ProtocolEvent } from "@grants-stack-indexer/shared";
+import { ProcessorDependencies } from "../types/processor.types.js";
 
 export interface IEventHandler {
     handle(): Promise<Changeset[]>;
@@ -12,11 +15,7 @@ export interface IEventHandler {
 export interface IEventHandlerFactory<C extends ContractName, E extends ContractToEventName<C>> {
     createHandler(
         event: ProtocolEvent<C, E>,
-        pricingProvider: IPricingProvider,
-        metadataProvider: IMetadataProvider,
-        repositories: {
-            project: IProjectReadRepository;
-        },
-        viemProvider: PublicClient,
+        chainId: ChainId,
+        dependencies: ProcessorDependencies,
     ): IEventHandler;
 }

@@ -1,34 +1,18 @@
-// registry processor factory for each of the events
-
-import { PublicClient } from "viem";
-
-import { IMetadataProvider } from "@grants-stack-indexer/metadata";
-import { IPricingProvider } from "@grants-stack-indexer/pricing";
-import { IProjectReadRepository } from "@grants-stack-indexer/repository";
-import { ProtocolEvent, RegistryEvent } from "@grants-stack-indexer/shared";
+import { ChainId, ProtocolEvent, RegistryEvent } from "@grants-stack-indexer/shared";
 
 import { UnsupportedEventException } from "../exceptions/unsupportedEvent.exception.js";
 import { IEventHandler, IEventHandlerFactory } from "../internal.js";
+import { ProcessorDependencies } from "../types/processor.types.js";
 import { RoleGrantedHandler } from "./handlers/roleGranted.handler.js";
 
 export class RegistryHandlerFactory implements IEventHandlerFactory<"Registry", RegistryEvent> {
     public createHandler(
         event: ProtocolEvent<"Registry", RegistryEvent>,
-        pricingProvider: IPricingProvider,
-        metadataProvider: IMetadataProvider,
-        repositories: {
-            project: IProjectReadRepository;
-        },
-        viemProvider: PublicClient,
+        chainId: ChainId,
+        dependencies: ProcessorDependencies,
     ): IEventHandler {
         if (isRoleGranted(event)) {
-            return new RoleGrantedHandler(
-                event,
-                pricingProvider,
-                metadataProvider,
-                repositories.project,
-                viemProvider,
-            );
+            return new RoleGrantedHandler(event, chainId, dependencies);
         }
         throw new UnsupportedEventException("Registry", event.eventName as string);
     }

@@ -1,19 +1,16 @@
-import { getAddress, PublicClient } from "viem";
+import { getAddress } from "viem";
 
-import { IMetadataProvider } from "@grants-stack-indexer/metadata";
-import { IPricingProvider } from "@grants-stack-indexer/pricing";
-import { Changeset, IProjectReadRepository } from "@grants-stack-indexer/repository";
+import { Changeset } from "@grants-stack-indexer/repository";
 import { ALLO_OWNER_ROLE, ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
 
 import { IEventHandler } from "../../internal.js";
+import { ProcessorDependencies } from "../../types/processor.types.js";
 
 export class RoleGrantedHandler implements IEventHandler {
     constructor(
         private readonly event: ProtocolEvent<"Registry", "RoleGranted">,
-        private readonly pricingProvider: IPricingProvider,
-        private readonly metadataProvider: IMetadataProvider,
-        private readonly projectRepository: IProjectReadRepository,
-        private readonly viemProvider: PublicClient,
+        private readonly chainId: ChainId,
+        private readonly dependencies: ProcessorDependencies,
     ) {}
     async handle(): Promise<Changeset[]> {
         const role = this.event.params.role.toLocaleLowerCase();
@@ -22,8 +19,8 @@ export class RoleGrantedHandler implements IEventHandler {
         }
 
         const account = getAddress(this.event.params.account);
-        const project = await this.projectRepository.getProjectById(
-            this.event.chainId as ChainId,
+        const project = await this.dependencies.projectRepository.getProjectById(
+            this.chainId,
             role,
         );
         // The member role for an Allo V2 profile, is the profileId itself.
@@ -37,7 +34,7 @@ export class RoleGrantedHandler implements IEventHandler {
                     type: "InsertProjectRole",
                     args: {
                         projectRole: {
-                            chainId: this.event.chainId as ChainId,
+                            chainId: this.chainId,
                             projectId: project.id,
                             address: account,
                             role: "member",
@@ -53,7 +50,7 @@ export class RoleGrantedHandler implements IEventHandler {
                 type: "InsertPendingProjectRole",
                 args: {
                     pendingProjectRole: {
-                        chainId: this.event.chainId as ChainId,
+                        chainId: this.chainId,
                         role: role,
                         address: account,
                         createdAtBlock: BigInt(this.event.blockNumber),
