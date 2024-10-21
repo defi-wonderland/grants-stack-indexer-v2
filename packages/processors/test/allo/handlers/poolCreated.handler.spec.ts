@@ -5,10 +5,13 @@ import type { EvmProvider } from "@grants-stack-indexer/chain-providers";
 import type { IMetadataProvider } from "@grants-stack-indexer/metadata";
 import type { IPricingProvider } from "@grants-stack-indexer/pricing";
 import type { IRoundReadRepository, Round } from "@grants-stack-indexer/repository";
-import type { ChainId, DeepPartial, ProtocolEvent } from "@grants-stack-indexer/shared";
+import type { ChainId, DeepPartial, ProtocolEvent, TokenCode } from "@grants-stack-indexer/shared";
 import { mergeDeep } from "@grants-stack-indexer/shared";
 
-import { PoolCreatedHandler } from "../../../src/allo/handlers/poolCreated.handler.js";
+import {
+    PoolCreatedHandler,
+    TIMESTAMP_DELTA_RANGE,
+} from "../../../src/allo/handlers/poolCreated.handler.js";
 
 // Function to create a mock event with optional overrides
 function createMockEvent(
@@ -419,6 +422,79 @@ describe("PoolCreatedHandler", () => {
         );
     });
 
-    it.skip("handles a native token");
-    it.skip("handles an unknown token");
+    it("handles a native token", async () => {
+        const mockEvent = createMockEvent({
+            params: { token: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" },
+        });
+
+        vi.spyOn(mockMetadataProvider, "getMetadata").mockResolvedValue({
+            round: {
+                name: "Test Round",
+                roundType: "private",
+                quadraticFundingConfig: {
+                    matchingFundsAvailable: 1,
+                },
+            },
+            application: {
+                version: "1.0.0",
+            },
+        });
+        vi.spyOn(mockPricingProvider, "getTokenPrice").mockResolvedValue({
+            priceUsd: 2500,
+            timestampMs: 1708369911,
+        });
+        vi.spyOn(mockEvmProvider, "multicall").mockResolvedValue([
+            1609459200n,
+            1609459200n,
+            1609459200n,
+            1609459200n,
+        ]);
+
+        vi.spyOn(mockRoundRepository, "getPendingRoundRoles").mockResolvedValue([]);
+
+        const handler = new PoolCreatedHandler(mockEvent, 10 as ChainId, {
+            evmProvider: mockEvmProvider,
+            pricingProvider: mockPricingProvider,
+            metadataProvider: mockMetadataProvider,
+            roundRepository: mockRoundRepository,
+        });
+
+        await handler.handle();
+
+        expect(mockPricingProvider.getTokenPrice).toHaveBeenCalledWith(
+            "ETH" as TokenCode,
+            1708369911,
+            1708369911 + TIMESTAMP_DELTA_RANGE,
+        );
+    });
+
+    it("handles an unknown token", async () => {
+        const fundedAmount = parseUnits("10", 18);
+        const mockEvent = createMockEvent({
+            params: {
+                amount: fundedAmount,
+                token: "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE",
+                strategyId: "0xunknown",
+            },
+        });
+
+        vi.spyOn(mockRoundRepository, "getPendingRoundRoles").mockResolvedValue([]);
+
+        const handler = new PoolCreatedHandler(mockEvent, 10 as ChainId, {
+            evmProvider: mockEvmProvider,
+            pricingProvider: mockPricingProvider,
+            metadataProvider: mockMetadataProvider,
+            roundRepository: mockRoundRepository,
+        });
+
+        const result = await handler.handle();
+
+        const changeset = result[0] as { type: "InsertRound"; args: { round: Round } };
+        expect(changeset.type).toBe("InsertRound");
+        expect(changeset.args.round).toMatchObject({
+            fundedAmount: fundedAmount,
+            fundedAmountInUsd: "0", //since it's an unknown token
+        });
+        expect(mockPricingProvider.getTokenPrice).not.toHaveBeenCalled();
+    });
 });

@@ -602,3 +602,7 @@ export const TOKENS: {
         },
     },
 } as const;
+
+export const getToken = (chainId: number, tokenAddress: Address): Token | undefined => {
+    return TOKENS[chainId]?.[tokenAddress];
+};
