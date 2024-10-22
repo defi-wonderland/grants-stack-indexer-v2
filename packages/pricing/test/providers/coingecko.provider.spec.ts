@@ -1,13 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { Address, NATIVE_TOKEN_ADDRESS } from "@grants-stack-indexer/shared";
+import { TokenCode } from "@grants-stack-indexer/shared";
 
 import type { TokenPrice } from "../../src/external.js";
-import {
-    CoingeckoProvider,
-    NetworkException,
-    UnsupportedChainException,
-} from "../../src/external.js";
+import { CoingeckoProvider, NetworkException, UnsupportedToken } from "../../src/external.js";
 
 const mock = vi.hoisted(() => ({
     get: vi.fn(),
@@ -53,32 +49,7 @@ describe("CoingeckoProvider", () => {
             mock.get.mockResolvedValueOnce({ status: 200, data: mockResponse });
 
             const result = await provider.getTokenPrice(
-                1,
-                "0x1234567890123456789012345678901234567890" as Address,
-                1609459200000,
-                1609545600000,
-            );
-
-            const expectedPrice: TokenPrice = {
-                timestampMs: 1609459200000,
-                priceUsd: 100,
-            };
-
-            expect(result).toEqual(expectedPrice);
-            expect(mock.get).toHaveBeenCalledWith(
-                "/coins/ethereum/contract/0x1234567890123456789012345678901234567890/market_chart/range?vs_currency=usd&from=1609459200&to=1609545600&precision=full",
-            );
-        });
-
-        it("return token price for a supported chain and native token", async () => {
-            const mockResponse = {
-                prices: [[1609459200000, 100]],
-            };
-            mock.get.mockResolvedValueOnce({ status: 200, data: mockResponse });
-
-            const result = await provider.getTokenPrice(
-                10,
-                NATIVE_TOKEN_ADDRESS,
+                "ETH" as TokenCode,
                 1609459200000,
                 1609545600000,
             );
@@ -101,8 +72,7 @@ describe("CoingeckoProvider", () => {
             mock.get.mockResolvedValueOnce({ status: 200, data: mockResponse });
 
             const result = await provider.getTokenPrice(
-                1,
-                "0x1234567890123456789012345678901234567890" as Address,
+                "ETH" as TokenCode,
                 1609459200000,
                 1609545600000,
             );
@@ -112,8 +82,7 @@ describe("CoingeckoProvider", () => {
 
         it("return undefined when endTimestamp is greater than startTimestamp", async () => {
             const result = await provider.getTokenPrice(
-                1,
-                "0x1234567890123456789012345678901234567890" as Address,
+                "ETH" as TokenCode,
                 1609545600000, // startTimestamp
                 1609459200000, // endTimestamp
             );
@@ -129,8 +98,7 @@ describe("CoingeckoProvider", () => {
             });
 
             const result = await provider.getTokenPrice(
-                1,
-                "0x1234567890123456789012345678901234567890" as Address,
+                "ETH" as TokenCode,
                 1609459200000,
                 1609545600000,
             );
@@ -138,15 +106,10 @@ describe("CoingeckoProvider", () => {
             expect(result).toBeUndefined();
         });
 
-        it("throw UnsupportedChainException for unsupported chain", async () => {
+        it("throw UnsupportedTokenException for unsupported token", async () => {
             await expect(() =>
-                provider.getTokenPrice(
-                    999999, // Unsupported chain ID
-                    "0x1234567890123456789012345678901234567890" as Address,
-                    1609459200000,
-                    1609545600000,
-                ),
-            ).rejects.toThrow(UnsupportedChainException);
+                provider.getTokenPrice("UNSUPPORTED" as TokenCode, 1609459200000, 1609545600000),
+            ).rejects.toThrow(UnsupportedToken);
         });
 
         it("throws NetworkException for 500 family errors", async () => {
@@ -156,12 +119,7 @@ describe("CoingeckoProvider", () => {
                 isAxiosError: true,
             });
             await expect(
-                provider.getTokenPrice(
-                    1,
-                    "0x1234567890123456789012345678901234567890" as Address,
-                    1609459200000,
-                    1609545600000,
-                ),
+                provider.getTokenPrice("ETH" as TokenCode, 1609459200000, 1609545600000),
             ).rejects.toThrow(NetworkException);
         });
 
@@ -173,12 +131,7 @@ describe("CoingeckoProvider", () => {
             });
 
             await expect(
-                provider.getTokenPrice(
-                    1,
-                    "0x1234567890123456789012345678901234567890" as Address,
-                    1609459200000,
-                    1609545600000,
-                ),
+                provider.getTokenPrice("ETH" as TokenCode, 1609459200000, 1609545600000),
             ).rejects.toThrow(NetworkException);
         });
     });

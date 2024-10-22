@@ -5,4 +5,5 @@ export {
     UnsupportedChainException,
     NetworkException,
     UnknownPricingException,
+    UnsupportedToken,
 } from "./internal.js";

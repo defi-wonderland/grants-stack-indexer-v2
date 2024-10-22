@@ -1,8 +1,9 @@
-import { Address, getAddress, parseUnits, zeroAddress } from "viem";
+import { getAddress, parseUnits, zeroAddress } from "viem";
 
 import type { Changeset, NewRound, PendingRoundRole } from "@grants-stack-indexer/repository";
-import type { ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
+import type { ChainId, ProtocolEvent, Token } from "@grants-stack-indexer/shared";
 import { isAlloNativeToken } from "@grants-stack-indexer/shared";
+import { getToken } from "@grants-stack-indexer/shared/dist/src/internal.js";
 
 import type { IEventHandler, ProcessorDependencies, StrategyTimings } from "../../internal.js";
 import { getRoundRoles } from "../../helpers/roles.js";
@@ -17,7 +18,7 @@ type Dependencies = Pick<
 >;
 
 // sometimes coingecko returns no prices for 1 hour range, 2 hours works better
-const TIMESTAMP_DELTA_RANGE = 2 * 60 * 60 * 1000;
+export const TIMESTAMP_DELTA_RANGE = 2 * 60 * 60 * 1000;
 
 /**
  /**
@@ -62,13 +63,7 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
 
         const strategy = extractStrategyFromId(strategyId);
 
-        // TODO: get token for the chain
-        const token = {
-            address: matchTokenAddress,
-            decimals: 18, //TODO: get decimals from token
-            symbol: "USDC", //TODO: get symbol from token
-            name: "USDC", //TODO: get name from token
-        };
+        const token = getToken(this.chainId, matchTokenAddress);
 
         let strategyTimings: StrategyTimings = {
             applicationsStartTime: null,
@@ -87,7 +82,7 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
             if (
                 strategy.name === "allov2.DonationVotingMerkleDistributionDirectTransferStrategy" &&
                 parsedRoundMetadata.success &&
-                token !== null
+                token
             ) {
                 matchAmount = parseUnits(
                     parsedRoundMetadata.data.quadraticFundingConfig.matchingFundsAvailable.toString(),
@@ -104,7 +99,7 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
 
         let fundedAmountInUsd = "0";
 
-        if (token !== null && fundedAmount > 0n) {
+        if (token && fundedAmount > 0n) {
             fundedAmountInUsd = await this.getTokenAmountInUsd(
                 token,
                 fundedAmount,
@@ -206,14 +201,13 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
     }
 
     private async getTokenAmountInUsd(
-        token: { address: Address; decimals: number },
+        token: Token,
         amount: bigint,
         timestamp: number,
     ): Promise<string> {
         const { pricingProvider } = this.dependencies;
         const tokenPrice = await pricingProvider.getTokenPrice(
-            this.chainId,
-            token.address,
+            token.priceSourceCode,
             timestamp,
             timestamp + TIMESTAMP_DELTA_RANGE,
         );

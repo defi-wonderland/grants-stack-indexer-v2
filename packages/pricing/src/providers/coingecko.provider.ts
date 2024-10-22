@@ -1,18 +1,16 @@
 import { isNativeError } from "util/types";
 import axios, { AxiosInstance, isAxiosError } from "axios";
 
-import { Address, isNativeToken } from "@grants-stack-indexer/shared";
+import { TokenCode } from "@grants-stack-indexer/shared";
 
 import { IPricingProvider } from "../interfaces/index.js";
 import {
-    CoingeckoPlatformId,
     CoingeckoPriceChartData,
-    CoingeckoSupportedChainId,
     CoingeckoTokenId,
     NetworkException,
     TokenPrice,
     UnknownPricingException,
-    UnsupportedChainException,
+    UnsupportedToken,
 } from "../internal.js";
 
 type CoingeckoOptions = {
@@ -25,32 +23,33 @@ const getApiTypeConfig = (apiType: "demo" | "pro"): { baseURL: string; authHeade
         ? { baseURL: "https://api.coingecko.com/api/v3", authHeader: "x-cg-demo-api-key" }
         : { baseURL: "https://pro-api.coingecko.com/api/v3/", authHeader: "x-cg-pro-api-key" };
 
-const platforms: { [key in CoingeckoSupportedChainId]: CoingeckoPlatformId } = {
-    1: "ethereum" as CoingeckoPlatformId,
-    10: "optimistic-ethereum" as CoingeckoPlatformId,
-    100: "xdai" as CoingeckoPlatformId,
-    250: "fantom" as CoingeckoPlatformId,
-    42161: "arbitrum-one" as CoingeckoPlatformId,
-    43114: "avalanche" as CoingeckoPlatformId,
-    713715: "sei-network" as CoingeckoPlatformId,
-    1329: "sei-network" as CoingeckoPlatformId,
-    42: "lukso" as CoingeckoPlatformId,
-    42220: "celo" as CoingeckoPlatformId,
-    1088: "metis" as CoingeckoPlatformId,
-};
-
-const nativeTokens: { [key in CoingeckoSupportedChainId]: CoingeckoTokenId } = {
-    1: "ethereum" as CoingeckoTokenId,
-    10: "ethereum" as CoingeckoTokenId,
-    100: "xdai" as CoingeckoTokenId,
-    250: "fantom" as CoingeckoTokenId,
-    42161: "ethereum" as CoingeckoTokenId,
-    43114: "avalanche-2" as CoingeckoTokenId,
-    713715: "sei-network" as CoingeckoTokenId,
-    1329: "sei-network" as CoingeckoTokenId,
-    42: "lukso-token" as CoingeckoTokenId,
-    42220: "celo" as CoingeckoTokenId,
-    1088: "metis-token" as CoingeckoTokenId,
+const TokenMapping: { [key: string]: CoingeckoTokenId | undefined } = {
+    USDC: "usd-coin" as CoingeckoTokenId,
+    DAI: "dai" as CoingeckoTokenId,
+    ETH: "ethereum" as CoingeckoTokenId,
+    eBTC: "ebtc" as CoingeckoTokenId,
+    USDGLO: "glo-dollar" as CoingeckoTokenId,
+    GIST: "dai" as CoingeckoTokenId,
+    OP: "optimism" as CoingeckoTokenId,
+    LYX: "lukso-token-2" as CoingeckoTokenId,
+    WLYX: "wrapped-lyx-universalswaps" as CoingeckoTokenId,
+    XDAI: "xdai" as CoingeckoTokenId,
+    MATIC: "polygon-ecosystem-token" as CoingeckoTokenId,
+    DATA: "streamr" as CoingeckoTokenId,
+    FTM: "fantom" as CoingeckoTokenId,
+    GcV: undefined,
+    USDT: "tether" as CoingeckoTokenId,
+    LUSD: "liquity-usd" as CoingeckoTokenId,
+    MUTE: "mute" as CoingeckoTokenId,
+    GTC: "gitcoin" as CoingeckoTokenId,
+    METIS: "metis" as CoingeckoTokenId,
+    SEI: "sei-network" as CoingeckoTokenId,
+    ARB: "arbitrum" as CoingeckoTokenId,
+    CELO: "celo" as CoingeckoTokenId,
+    CUSD: "celo-dollar" as CoingeckoTokenId,
+    AVAX: "avalanche-2" as CoingeckoTokenId,
+    MTK: undefined,
+    WSEI: "wrapped-sei" as CoingeckoTokenId,
 };
 
 /**
@@ -80,13 +79,13 @@ export class CoingeckoProvider implements IPricingProvider {
 
     /* @inheritdoc */
     async getTokenPrice(
-        chainId: number,
-        tokenAddress: Address,
+        tokenCode: TokenCode,
         startTimestampMs: number,
         endTimestampMs: number,
     ): Promise<TokenPrice | undefined> {
-        if (!this.isSupportedChainId(chainId)) {
-            throw new UnsupportedChainException(chainId);
+        const tokenId = TokenMapping[tokenCode];
+        if (!tokenId) {
+            throw new UnsupportedToken(tokenCode);
         }
 
         if (startTimestampMs > endTimestampMs) {
@@ -96,7 +95,7 @@ export class CoingeckoProvider implements IPricingProvider {
         const startTimestampSecs = Math.floor(startTimestampMs / 1000);
         const endTimestampSecs = Math.floor(endTimestampMs / 1000);
 
-        const path = this.getApiPath(chainId, tokenAddress, startTimestampSecs, endTimestampSecs);
+        const path = `/coins/${tokenId}/market_chart/range?vs_currency=usd&from=${startTimestampSecs}&to=${endTimestampSecs}&precision=full`;
 
         //TODO: handle retries
         try {
@@ -129,29 +128,5 @@ export class CoingeckoProvider implements IPricingProvider {
                 isNativeError(error) ? error.stack : undefined,
             );
         }
-    }
-
-    /*
-     * @returns Whether the given chain ID is supported by the Coingecko API.
-     */
-    private isSupportedChainId(chainId: number): chainId is CoingeckoSupportedChainId {
-        return chainId in platforms;
-    }
-
-    /*
-     * @returns The API endpoint path for the given parameters.
-     */
-    private getApiPath(
-        chainId: CoingeckoSupportedChainId,
-        tokenAddress: Address,
-        startTimestampSecs: number,
-        endTimestampSecs: number,
-    ): string {
-        const platform = platforms[chainId];
-        const nativeTokenId = nativeTokens[chainId];
-
-        return isNativeToken(tokenAddress)
-            ? `/coins/${nativeTokenId}/market_chart/range?vs_currency=usd&from=${startTimestampSecs}&to=${endTimestampSecs}&precision=full`
-            : `/coins/${platform}/contract/${tokenAddress.toLowerCase()}/market_chart/range?vs_currency=usd&from=${startTimestampSecs}&to=${endTimestampSecs}&precision=full`;
     }
 }
