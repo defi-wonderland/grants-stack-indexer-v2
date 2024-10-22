@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ChainId, ProtocolEvent, RegistryEvent } from "@grants-stack-indexer/shared";
 
 import { ProcessorDependencies, UnsupportedEventException } from "../../src/internal.js";
-import { ProfileCreatedHandler } from "../../src/registry/handlers/profileCreated.hanlder.js";
+import { ProfileCreatedHandler } from "../../src/registry/handlers/profileCreated.handler.js";
 import { RoleGrantedHandler } from "../../src/registry/handlers/roleGranted.handler.js";
 import { RegistryProcessor } from "../../src/registry/registry.processor.js";
 

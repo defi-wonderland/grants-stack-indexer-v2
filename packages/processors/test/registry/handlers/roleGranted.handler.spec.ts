@@ -82,7 +82,7 @@ describe("RoleGrantedHandler", () => {
         mockedEvent["params"]["role"] = "0x1231231234" as Bytes32String;
         const event = mockedEvent;
 
-        mockProjectRepository.getProjectById.mockResolvedValueOnce(null);
+        mockProjectRepository.getProjectById.mockResolvedValueOnce(undefined);
 
         const handler = new RoleGrantedHandler(event, chainId, dependencies);
 
@@ -112,7 +112,7 @@ describe("RoleGrantedHandler", () => {
         await expect(handler.handle()).rejects.toThrow(InvalidAddressError);
     });
 
-    it("should throw an error if projectRepository throws an error", async () => {
+    it("throws an error if projectRepository throws an error", async () => {
         mockedEvent["params"]["role"] = "0x1231231234" as Bytes32String;
         const event = mockedEvent;
 

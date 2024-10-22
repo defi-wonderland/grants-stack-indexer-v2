@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Registry } from "../../generated";
 
-// Handler for ProfileNameUpdated event
+// Handler for RoleGranted event
 Registry.RoleGranted.handler(async ({}) => {});
 
-// Handler for ProfileOwnerUpdated event
+// Handler for RoleRevoked event
 Registry.RoleRevoked.handler(async ({}) => {});
 
 // Handler for ProfileCreated event

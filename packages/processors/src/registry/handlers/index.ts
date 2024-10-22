@@ -1,2 +1,2 @@
-export * from "./profileCreated.hanlder.js";
+export * from "./profileCreated.handler.js";
 export * from "./roleGranted.handler.js";

@@ -8,9 +8,11 @@ import { ProjectMetadata, ProjectMetadataSchema } from "../../schemas/projectMet
 
 type Dependencies = Pick<
     ProcessorDependencies,
-    "projectRepository" | "evmProvider" | "pricingProvider" | "metadataProvider"
+    "projectRepository" | "evmProvider" | "metadataProvider"
 >;
-
+/**
+ * Handles the ProfileCreated event for the Registry contract from Allo protocol.
+ */
 export class ProfileCreatedHandler implements IEventHandler<"Registry", "ProfileCreated"> {
     constructor(
         readonly event: ProtocolEvent<"Registry", "ProfileCreated">,
@@ -18,9 +20,10 @@ export class ProfileCreatedHandler implements IEventHandler<"Registry", "Profile
         private dependencies: Dependencies,
     ) {}
     async handle(): Promise<Changeset[]> {
+        const { metadataProvider, evmProvider, projectRepository } = this.dependencies;
         const profileId = this.event.params.profileId;
         const metadataCid = this.event.params.metadata[1];
-        const metadata = await this.dependencies.metadataProvider.getMetadata(metadataCid);
+        const metadata = await metadataProvider.getMetadata(metadataCid);
 
         const parsedMetadata = ProjectMetadataSchema.safeParse(metadata);
 
@@ -42,11 +45,9 @@ export class ProfileCreatedHandler implements IEventHandler<"Registry", "Profile
             });
         }
 
-        const tx = await this.dependencies.evmProvider.getTransaction(
-            this.event.transactionFields.hash,
-        );
-
-        const createdBy = tx.from;
+        const createdBy =
+            this.event.transactionFields.from ??
+            (await evmProvider.getTransaction(this.event.transactionFields.hash)).from;
         const programTags = isProgram ? ["program"] : [];
 
         const changes: Changeset[] = [
@@ -85,11 +86,10 @@ export class ProfileCreatedHandler implements IEventHandler<"Registry", "Profile
             },
         ];
 
-        const pendingProjectRoles =
-            await this.dependencies.projectRepository.getPendingProjectRolesByRole(
-                this.chainId,
-                profileId,
-            );
+        const pendingProjectRoles = await projectRepository.getPendingProjectRolesByRole(
+            this.chainId,
+            profileId,
+        );
 
         if (pendingProjectRoles.length !== 0) {
             for (const role of pendingProjectRoles) {
