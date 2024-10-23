@@ -4,6 +4,7 @@ export {
     NATIVE_TOKEN_ADDRESS,
     isNativeToken,
     ALLO_NATIVE_TOKEN,
+    ALLO_OWNER_ROLE,
     isAlloNativeToken,
 } from "./constants/index.js";
 

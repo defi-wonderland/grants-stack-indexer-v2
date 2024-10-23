@@ -1,9 +1,16 @@
 import { Hex } from "viem";
 
 import { Address } from "../../internal.js";
-import { AlloEvent, AlloEventParams, StrategyEvent, StrategyEventParams } from "./index.js";
+import {
+    AlloEvent,
+    AlloEventParams,
+    RegistryEvent,
+    RegistryEventParams,
+    StrategyEvent,
+    StrategyEventParams,
+} from "./index.js";
 
-export type ContractName = "Strategy" | "Allo";
+export type ContractName = "Strategy" | "Allo" | "Registry";
 export type AnyEvent = StrategyEvent | AlloEvent;
 
 type TransactionFields = {
@@ -19,7 +26,9 @@ export type ContractToEventName<T extends ContractName> = T extends "Allo"
     ? AlloEvent
     : T extends "Strategy"
       ? StrategyEvent
-      : never;
+      : T extends "Registry"
+        ? RegistryEvent
+        : never;
 
 /**
  * This type is used to map contract names to their respective event parameters.
@@ -32,7 +41,11 @@ export type EventParams<T extends ContractName, E extends ContractToEventName<T>
       ? E extends StrategyEvent
           ? StrategyEventParams<E>
           : never
-      : never;
+      : T extends "Registry"
+        ? E extends RegistryEvent
+            ? RegistryEventParams<E>
+            : never
+        : never;
 
 /**
  * This type is used to represent a protocol event.
@@ -48,15 +61,13 @@ export type ProtocolEvent<T extends ContractName, E extends ContractToEventName<
     params: EventParams<T, E>;
     srcAddress: Address;
     transactionFields: TransactionFields;
-    // strategyId should be defined for Strategy events or PoolCreated events in Allo
-    strategyId: T extends "Strategy"
-        ? Address
-        : T extends "Allo"
-          ? E extends "PoolCreated"
-              ? Address
-              : never
-          : never;
-};
+} & (T extends "Strategy" // strategyId should be defined for Strategy events or PoolCreated events in Allo
+    ? { strategyId: Address }
+    : T extends "Allo"
+      ? E extends "PoolCreated"
+          ? { strategyId: Address }
+          : object
+      : object);
 
 /**
  * TODO: This type is currently only used in the EventsFetcher and IndexerClient.

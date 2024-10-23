@@ -7,10 +7,10 @@ import { getToken } from "@grants-stack-indexer/shared/dist/src/internal.js";
 
 import type { IEventHandler, ProcessorDependencies, StrategyTimings } from "../../internal.js";
 import { getRoundRoles } from "../../helpers/roles.js";
-import { RoundMetadataSchema } from "../../helpers/schemas.js";
 import { extractStrategyFromId, getStrategyTimings } from "../../helpers/strategy.js";
 import { calculateAmountInUsd } from "../../helpers/tokenMath.js";
 import { TokenPriceNotFoundError } from "../../internal.js";
+import { RoundMetadataSchema } from "../../schemas/index.js";
 
 type Dependencies = Pick<
     ProcessorDependencies,
