@@ -35,7 +35,7 @@ describe("RegistryProcessor", () => {
         vi.resetAllMocks();
     });
 
-    it("should throw UnsupportedEventException for unsupported events", async () => {
+    it("throws UnsupportedEventException for unsupported events", async () => {
         const event: ProtocolEvent<"Registry", RegistryEvent> = {
             eventName: "UnsupportedEvent",
         } as unknown as ProtocolEvent<"Registry", RegistryEvent>;

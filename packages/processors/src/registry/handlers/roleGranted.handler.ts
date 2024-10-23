@@ -17,7 +17,7 @@ export class RoleGrantedHandler implements IEventHandler<"Registry", "RoleGrante
     ) {}
     async handle(): Promise<Changeset[]> {
         const { projectRepository } = this.dependencies;
-        const role = this.event.params.role.toLocaleLowerCase();
+        const role = this.event.params.role.toLowerCase();
         if (role === ALLO_OWNER_ROLE) {
             return [];
         }
@@ -26,8 +26,8 @@ export class RoleGrantedHandler implements IEventHandler<"Registry", "RoleGrante
         const project = await projectRepository.getProjectById(this.chainId, role);
 
         // The member role for an Allo V2 profile, is the profileId itself.
-        // If a project exists with that id, we create the member role
-        // If it doesn't exists we create a pending project role. This can happens
+        // If a project exist with that id, we create the member role
+        // If it doesn't exist we create a pending project role. This can happen
         // when a new project is created, since in Allo V2 the RoleGranted event for a member is
         // emitted before the ProfileCreated event.
         if (project) {
