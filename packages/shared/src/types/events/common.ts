@@ -48,6 +48,14 @@ export type ProtocolEvent<T extends ContractName, E extends ContractToEventName<
     params: EventParams<T, E>;
     srcAddress: Address;
     transactionFields: TransactionFields;
+    // strategyId should be defined for Strategy events or PoolCreated events in Allo
+    strategyId: T extends "Strategy"
+        ? Address
+        : T extends "Allo"
+          ? E extends "PoolCreated"
+              ? Address
+              : never
+          : never;
 };
 
 export type AnyProtocolEvent = ProtocolEvent<ContractName, ContractToEventName<ContractName>>;
