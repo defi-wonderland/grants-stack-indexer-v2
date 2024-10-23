@@ -66,8 +66,8 @@ export type ProtocolEvent<T extends ContractName, E extends ContractToEventName<
     : T extends "Allo"
       ? E extends "PoolCreated"
           ? { strategyId: Address }
-          : Record<string, never>
-      : Record<string, never>);
+          : object
+      : object);
 
 /**
  * TODO: This type is currently only used in the EventsFetcher and IndexerClient.

@@ -24,7 +24,7 @@ describe("RoleGrantedHandler", () => {
     const blockNumber = 123456; // Example blockNumber
     const mockedAccount = "0x48f33AE41E1762e1688125C4f1C536B1491dF803";
     const mockedSender = "0xc0969723D577D31aB4bdF7e53C540c11298c56AF";
-    const mockedEvent: ProtocolEvent<"Registry", "RoleGranted"> = {
+    const mockedEvent = {
         blockTimestamp: 123123123,
         chainId: 10,
         contractName: "Registry",
@@ -41,7 +41,7 @@ describe("RoleGrantedHandler", () => {
             hash: "0x123",
             transactionIndex: 1,
         },
-    };
+    } as ProtocolEvent<"Registry", "RoleGranted">;
 
     it("returns an empty array if role is ALLO_OWNER_ROLE", async () => {
         const event = mockedEvent;
