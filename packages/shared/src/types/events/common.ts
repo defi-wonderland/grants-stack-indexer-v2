@@ -58,4 +58,8 @@ export type ProtocolEvent<T extends ContractName, E extends ContractToEventName<
           : never;
 };
 
-export type AnyProtocolEvent = ProtocolEvent<ContractName, ContractToEventName<ContractName>>;
+//TODO: check if this is the best way
+export type AnyProtocolEvent = Omit<
+    ProtocolEvent<ContractName, ContractToEventName<ContractName>>,
+    "strategyId"
+>;
