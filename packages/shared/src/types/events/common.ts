@@ -61,6 +61,21 @@ export type ProtocolEvent<T extends ContractName, E extends ContractToEventName<
     params: EventParams<T, E>;
     srcAddress: Address;
     transactionFields: TransactionFields;
-};
+} & (T extends "Strategy" // strategyId should be defined for Strategy events or PoolCreated events in Allo
+    ? { strategyId: Address }
+    : T extends "Allo"
+      ? E extends "PoolCreated"
+          ? { strategyId: Address }
+          : Record<string, never>
+      : Record<string, never>);
 
-export type AnyProtocolEvent = ProtocolEvent<ContractName, ContractToEventName<ContractName>>;
+/**
+ * TODO: This type is currently only used in the EventsFetcher and IndexerClient.
+ * In the future, we should evaluate if a more decoupled or generic type is needed
+ * to improve flexibility and reduce dependencies across different parts of the system.
+ * Consider creating separate event types for different contexts if necessary.
+ */
+export type AnyProtocolEvent = Omit<
+    ProtocolEvent<ContractName, ContractToEventName<ContractName>>,
+    "strategyId"
+>;

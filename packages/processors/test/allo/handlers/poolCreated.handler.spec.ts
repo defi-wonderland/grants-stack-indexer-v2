@@ -26,19 +26,19 @@ function createMockEvent(
         logIndex: 221,
         srcAddress: "0x1133eA7Af70876e64665ecD07C0A0476d09465a1",
         params: {
-            contractAddress: "0xD545fbA3f43EcA447CC7FBF41D4A8F0f575F2491",
+            strategy: "0xD545fbA3f43EcA447CC7FBF41D4A8F0f575F2491",
             poolId: 10n,
             profileId: "0xcc3509068dfb6604965939f100e57dde21e9d764d8ce4b34284bbe9364b1f5ed",
-            strategyId: "0x9fa6890423649187b1f0e8bf4265f0305ce99523c3d11aa36b35a54617bb0ec0",
             amount: 0n,
             token: "0x4200000000000000000000000000000000000042",
-            metadata: ["bafkreihrjyu5tney6wia2hmkertc74nzfpsgxw2epvnxm72bxj6ifnd4ku", 1n],
+            metadata: [1n, "bafkreihrjyu5tney6wia2hmkertc74nzfpsgxw2epvnxm72bxj6ifnd4ku"],
         },
         transactionFields: {
             hash: "0xd2352acdcd59e312370831ea927d51a1917654697a72434cd905a60897a5bb8b",
             transactionIndex: 6,
             from: "0xcBf407C33d68a55CB594Ffc8f4fD1416Bba39DA5",
         },
+        strategyId: "0x9fa6890423649187b1f0e8bf4265f0305ce99523c3d11aa36b35a54617bb0ec0",
     };
 
     return mergeDeep(defaultEvent, overrides) as ProtocolEvent<"Allo", "PoolCreated">;
@@ -75,7 +75,8 @@ describe("PoolCreatedHandler", () => {
     it("process an event with initial funds", async () => {
         const fundedAmount = parseUnits("10", 18);
         const mockEvent = createMockEvent({
-            params: { amount: fundedAmount, strategyId: "0xunknown" },
+            params: { amount: fundedAmount },
+            strategyId: "0xunknown",
         });
 
         vi.spyOn(mockPricingProvider, "getTokenPrice").mockResolvedValue({
@@ -105,7 +106,7 @@ describe("PoolCreatedHandler", () => {
 
     it("process an unknown strategyId", async () => {
         const mockEvent = createMockEvent({
-            params: { strategyId: "0xunknown" },
+            strategyId: "0xunknown",
         });
 
         vi.spyOn(mockMetadataProvider, "getMetadata").mockResolvedValue(undefined);
@@ -126,7 +127,7 @@ describe("PoolCreatedHandler", () => {
             chainId: 10,
             id: "10",
             tags: ["allo-v2"],
-            strategyAddress: mockEvent.params.contractAddress,
+            strategyAddress: mockEvent.params.strategy,
             strategyId: "0xunknown",
             strategyName: "",
             createdByAddress: mockEvent.transactionFields.from,
@@ -214,7 +215,7 @@ describe("PoolCreatedHandler", () => {
             applicationsEndTime: new Date("2021-01-01T00:00:00.000Z"),
             donationsStartTime: new Date("2021-01-01T00:00:00.000Z"),
             donationsEndTime: new Date("2021-01-01T00:00:00.000Z"),
-            strategyAddress: mockEvent.params.contractAddress,
+            strategyAddress: mockEvent.params.strategy,
             strategyId: "0x9fa6890423649187b1f0e8bf4265f0305ce99523c3d11aa36b35a54617bb0ec0",
             strategyName: "allov2.DonationVotingMerkleDistributionDirectTransferStrategy",
             createdByAddress: mockEvent.transactionFields.from,
@@ -232,7 +233,7 @@ describe("PoolCreatedHandler", () => {
 
     it("fetches transaction sender if not present in event", async () => {
         const mockEvent = createMockEvent({
-            params: { strategyId: "0xunknown" },
+            strategyId: "0xunknown",
             transactionFields: {
                 hash: "0xd2352acdcd59e312370831ea927d51a1917654697a72434cd905a60897a5bb8b",
                 from: undefined,
@@ -310,7 +311,7 @@ describe("PoolCreatedHandler", () => {
     });
 
     it("throws an error if token price fetch fails", async () => {
-        const mockEvent = createMockEvent({ params: { amount: 1n, strategyId: "0xunknown" } });
+        const mockEvent = createMockEvent({ params: { amount: 1n }, strategyId: "0xunknown" });
 
         vi.spyOn(mockMetadataProvider, "getMetadata").mockResolvedValue(undefined);
 
@@ -474,8 +475,8 @@ describe("PoolCreatedHandler", () => {
             params: {
                 amount: fundedAmount,
                 token: "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE",
-                strategyId: "0xunknown",
             },
+            strategyId: "0xunknown",
         });
 
         vi.spyOn(mockRoundRepository, "getPendingRoundRoles").mockResolvedValue([]);

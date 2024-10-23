@@ -65,8 +65,8 @@ importers:
                 specifier: 4.3.10
                 version: 4.3.10
             envio:
-                specifier: 2.4.1
-                version: 2.4.1
+                specifier: 2.5.2
+                version: 2.5.2
             ethers:
                 specifier: 6.8.0
                 version: 6.8.0
@@ -2005,42 +2005,42 @@ packages:
             }
         engines: { node: ">=6" }
 
-    envio-darwin-arm64@2.4.1:
+    envio-darwin-arm64@2.5.2:
         resolution:
             {
-                integrity: sha512-uwwKhThFH9dZhQKd6kmleeTyl//GlJGvhFXuhuJ7xn93oGbOOy3hsoYfJZSbVmb0SSSJkgWdAKN82mYHNfdVwQ==,
+                integrity: sha512-O/+sgImwhQJXlaypMgESWRUzVlkA3dH+2JpdI1LcIVuCpRN/OvBUbRxDHOU79uxeGXvUeeCn1zSGukod6hxG7g==,
             }
         cpu: [arm64]
         os: [darwin]
 
-    envio-darwin-x64@2.4.1:
+    envio-darwin-x64@2.5.2:
         resolution:
             {
-                integrity: sha512-SKqI2hQmjmqlDYCwFaEK6TDJMLL/UE/wWlUIzsAY5drJQTwAL0mBXzUfQM8JbMgDoxeWyKNegUV1vCuTmCDREw==,
+                integrity: sha512-/K1XCoIXnjTG4LWUqUUPpSdIBFC1tsryQLp1c040YNnsqVmE9EJufclUL0dc2Rf8SNqC/XgNPGWlndcBDSJWFw==,
             }
         cpu: [x64]
         os: [darwin]
 
-    envio-linux-arm64@2.4.1:
+    envio-linux-arm64@2.5.2:
         resolution:
             {
-                integrity: sha512-ujUUifyKM4kHkHfcudeH8iIf5xPiW9t+IzMCgY4gug2fs3Z3biyhmeaylYNpvNiIoQ58vZqJ23fBKaUn7CPPog==,
+                integrity: sha512-OqrxwwdfN0mcipnq8TQYQL9yZHoHgr7QB8tILjkjtRhz9LOhyjjqlwmNKiDjbpQ8nR2odORKvTlJGEvHb2AO5A==,
             }
         cpu: [arm64]
         os: [linux]
 
-    envio-linux-x64@2.4.1:
+    envio-linux-x64@2.5.2:
         resolution:
             {
-                integrity: sha512-aeVQ9I4zum6X+kBeJrFev/bTDePZRSlt6HytcnqJd7+iWagQggUejhcrSccp2eRSeQ95sGp+F+lQOFfWJHyEJQ==,
+                integrity: sha512-qpJDjNeY8b8o1v47ulQgu0RGiN8T3BTg2veCRQHeHgpBqh1f7otPEqX2apADo5K+wYlUsH9HXJfbf25SLEQBdw==,
             }
         cpu: [x64]
         os: [linux]
 
-    envio@2.4.1:
+    envio@2.5.2:
         resolution:
             {
-                integrity: sha512-GsHv4S/mAzr//XCyTHFBnfd1CZFlfaG+wcWJkpeguzhnttNSOMJXCR4UPG0PxV2cZYiA3eVrOSPn58fTzk2G5g==,
+                integrity: sha512-fWHmggBijehdtOkSErHgASUiEhPwDi4ouxOdgHsi0B/DkabgwTYwa8Z+pBhf324exHhGRhAVxZwBtoKI98MUGA==,
             }
         hasBin: true
 
@@ -5631,24 +5631,24 @@ snapshots:
 
     env-paths@2.2.1: {}
 
-    envio-darwin-arm64@2.4.1:
+    envio-darwin-arm64@2.5.2:
         optional: true
 
-    envio-darwin-x64@2.4.1:
+    envio-darwin-x64@2.5.2:
         optional: true
 
-    envio-linux-arm64@2.4.1:
+    envio-linux-arm64@2.5.2:
         optional: true
 
-    envio-linux-x64@2.4.1:
+    envio-linux-x64@2.5.2:
         optional: true
 
-    envio@2.4.1:
+    envio@2.5.2:
         optionalDependencies:
-            envio-darwin-arm64: 2.4.1
-            envio-darwin-x64: 2.4.1
-            envio-linux-arm64: 2.4.1
-            envio-linux-x64: 2.4.1
+            envio-darwin-arm64: 2.5.2
+            envio-darwin-x64: 2.5.2
+            envio-linux-arm64: 2.5.2
+            envio-linux-x64: 2.5.2
 
     environment@1.1.0: {}
 
