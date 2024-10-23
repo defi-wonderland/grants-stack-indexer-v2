@@ -40,15 +40,15 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
 
     async handle(): Promise<Changeset[]> {
         const { metadataProvider, evmProvider } = this.dependencies;
-        const [metadataPointer] = this.event.params.metadata;
+        const metadataPointer = this.event.params.metadata[1];
         const {
             poolId,
-            strategyId,
             token: tokenAddress,
-            contractAddress: strategyAddress,
+            strategy: strategyAddress,
             amount: fundedAmount,
         } = this.event.params;
         const { hash: txHash, from: txFrom } = this.event.transactionFields;
+        const strategyId = this.event.strategyId;
 
         const metadata = await metadataProvider.getMetadata<{
             round?: unknown;

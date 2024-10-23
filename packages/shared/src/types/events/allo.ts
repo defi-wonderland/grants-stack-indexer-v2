@@ -16,11 +16,10 @@ export type AlloEventParams<T extends AlloEvent> = T extends "PoolCreated"
 // =============================== Event Parameters ============================
 // =============================================================================
 export type PoolCreatedParams = {
-    contractAddress: Address;
+    strategy: Address;
     poolId: bigint;
     profileId: Address;
-    strategyId: Address;
     token: Address;
     amount: bigint;
-    metadata: [pointer: string, protocol: bigint];
+    metadata: [protocol: bigint, pointer: string];
 };
