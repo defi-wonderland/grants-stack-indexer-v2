@@ -1,11 +1,22 @@
 import { Changeset } from "@grants-stack-indexer/repository";
-import { ProtocolEvent, StrategyEvent } from "@grants-stack-indexer/shared";
+import { ChainId, ProtocolEvent, StrategyEvent } from "@grants-stack-indexer/shared";
 
-import type { IProcessor } from "../internal.js";
+import type { IProcessor, ProcessorDependencies } from "../internal.js";
+import { StrategyHandlerFactory } from "./strategyHandler.factory.js";
 
 export class StrategyProcessor implements IProcessor<"Strategy", StrategyEvent> {
-    process(_event: ProtocolEvent<"Strategy", StrategyEvent>): Promise<Changeset[]> {
-        //TODO: Implement
-        throw new Error("Method not implemented.");
+    constructor(
+        private readonly chainId: ChainId,
+        private readonly dependencies: ProcessorDependencies,
+    ) {}
+
+    async process(event: ProtocolEvent<"Strategy", StrategyEvent>): Promise<Changeset[]> {
+        const strategyId = event.strategyId;
+
+        return StrategyHandlerFactory.createHandler(
+            this.chainId,
+            this.dependencies,
+            strategyId,
+        ).handle(event);
     }
 }
