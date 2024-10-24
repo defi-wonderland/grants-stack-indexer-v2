@@ -25,6 +25,14 @@ export type {
     PendingRoundRole,
 } from "./types/round.types.js";
 
+export type {
+    ApplicationStatus,
+    StatusSnapshot,
+    Application,
+    NewApplication,
+    PartialApplication,
+} from "./types/application.types.js";
+
 export type { Changeset } from "./types/index.js";
 
 export { KyselyRoundRepository, KyselyProjectRepository } from "./repositories/kysely/index.js";
