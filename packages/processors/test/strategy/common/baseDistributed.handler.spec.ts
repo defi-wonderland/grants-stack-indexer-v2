@@ -3,18 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { IRoundReadRepository, Round } from "@grants-stack-indexer/repository";
 import { ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
 
-import { AbstractDistributedHandler } from "../../../src/strategy/common/abstractDistributed.handler.js";
-
-// Mock subclass for testing
-class TestDistributedHandler extends AbstractDistributedHandler {
-    constructor(
-        event: ProtocolEvent<"Strategy", "Distributed">,
-        chainId: ChainId,
-        dependencies: { roundRepository: IRoundReadRepository },
-    ) {
-        super(event, chainId, dependencies);
-    }
-}
+import { BaseDistributedHandler } from "../../../src/strategy/common/baseDistributed.handler.js";
 
 function createMockEvent(
     overrides: Partial<ProtocolEvent<"Strategy", "Distributed">> = {},
@@ -44,8 +33,8 @@ function createMockEvent(
     return { ...defaultEvent, ...overrides };
 }
 
-describe("AbstractDistributedHandler", () => {
-    let handler: TestDistributedHandler;
+describe("BaseDistributedHandler", () => {
+    let handler: BaseDistributedHandler;
     let mockRoundRepository: IRoundReadRepository;
     let mockEvent: ProtocolEvent<"Strategy", "Distributed">;
     const chainId = 10 as ChainId;
@@ -62,7 +51,7 @@ describe("AbstractDistributedHandler", () => {
 
         vi.spyOn(mockRoundRepository, "getRoundByStrategyAddress").mockResolvedValue(mockRound);
 
-        handler = new TestDistributedHandler(mockEvent, chainId, {
+        handler = new BaseDistributedHandler(mockEvent, chainId, {
             roundRepository: mockRoundRepository,
         });
 
@@ -85,7 +74,7 @@ describe("AbstractDistributedHandler", () => {
 
         vi.spyOn(mockRoundRepository, "getRoundByStrategyAddress").mockResolvedValue(undefined);
 
-        handler = new TestDistributedHandler(mockEvent, chainId, {
+        handler = new BaseDistributedHandler(mockEvent, chainId, {
             roundRepository: mockRoundRepository,
         });
 

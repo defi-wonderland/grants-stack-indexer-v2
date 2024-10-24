@@ -1,1 +1,1 @@
-export * from "./abstractDistributed.handler.js";
+export * from "./baseDistributed.handler.js";

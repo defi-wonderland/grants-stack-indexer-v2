@@ -7,9 +7,7 @@ import { IEventHandler, ProcessorDependencies } from "../../internal.js";
 
 type Dependencies = Pick<ProcessorDependencies, "roundRepository">;
 
-export abstract class AbstractDistributedHandler
-    implements IEventHandler<"Strategy", "Distributed">
-{
+export class BaseDistributedHandler implements IEventHandler<"Strategy", "Distributed"> {
     constructor(
         readonly event: ProtocolEvent<"Strategy", "Distributed">,
         private readonly chainId: ChainId,
