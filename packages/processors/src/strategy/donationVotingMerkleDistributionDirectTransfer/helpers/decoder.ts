@@ -1,5 +1,7 @@
 import { decodeAbiParameters, Hex } from "viem";
 
+import { Address } from "@grants-stack-indexer/shared";
+
 import { DVMDApplicationData } from "../types/index.js";
 
 const DVMD_EVENT_DATA_DECODER = [
@@ -27,8 +29,8 @@ export const decodeDVMDApplicationData = (encodedData: Hex): DVMDApplicationData
 
     const results: DVMDApplicationData = {
         recipientsCounter: values[1].toString(),
-        anchorAddress: decodedData[0],
-        recipientAddress: decodedData[1],
+        anchorAddress: decodedData[0] as Address,
+        recipientAddress: decodedData[1] as Address,
         metadata: {
             protocol: Number(decodedData[2].protocol),
             pointer: decodedData[2].pointer,

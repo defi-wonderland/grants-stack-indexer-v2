@@ -32,9 +32,7 @@ export class DVMDRegisteredHandler implements IEventHandler<"Strategy", "Registe
         const project = await projectRepository.getProjectByAnchor(this.chainId, anchorAddress);
 
         if (!project) {
-            throw new ProjectNotFound(
-                `Project not found for chainId: ${this.chainId} and anchorAddress: ${anchorAddress}`,
-            );
+            throw new ProjectNotFound(this.chainId, anchorAddress);
         }
 
         const strategyAddress = getAddress(this.event.srcAddress);
@@ -44,12 +42,11 @@ export class DVMDRegisteredHandler implements IEventHandler<"Strategy", "Registe
         );
 
         if (!round) {
-            throw new RoundNotFound(
-                `Round not found for chainId: ${this.chainId} and strategyAddress: ${strategyAddress}`,
-            );
+            throw new RoundNotFound(this.chainId, strategyAddress);
         }
 
         const values = decodeDVMDApplicationData(encodedData);
+        // ID is defined as recipientsCounter - 1, which is a value emitted by the strategy
         const id = (Number(values.recipientsCounter) - 1).toString();
 
         const metadata = await metadataProvider.getMetadata(values.metadata.pointer);
@@ -70,7 +67,7 @@ export class DVMDRegisteredHandler implements IEventHandler<"Strategy", "Registe
                 {
                     status: "PENDING",
                     updatedAtBlock: blockNumber.toString(),
-                    updatedAt: new Date(blockTimestamp * 1000),
+                    updatedAt: new Date(blockTimestamp * 1000), // timestamp is in seconds, convert to ms
                 },
             ],
             distributionTransaction: null,

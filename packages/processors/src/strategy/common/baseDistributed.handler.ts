@@ -7,6 +7,18 @@ import { IEventHandler, ProcessorDependencies } from "../../internal.js";
 
 type Dependencies = Pick<ProcessorDependencies, "roundRepository">;
 
+/**
+ * BaseDistributedHandler: Processes 'Distributed' events
+ *
+ * - Handles distribution events across all strategies.
+ * - Creates a changeset to increment the total distributed amount for a round.
+ * - Serves as a base class as all strategies share the same logic for this event.
+ *
+ * @dev:
+ * - Strategy handlers that want to handle the Distributed event should create an instance of this class corresponding to the event.
+ *
+ */
+
 export class BaseDistributedHandler implements IEventHandler<"Strategy", "Distributed"> {
     constructor(
         readonly event: ProtocolEvent<"Strategy", "Distributed">,
@@ -23,6 +35,7 @@ export class BaseDistributedHandler implements IEventHandler<"Strategy", "Distri
         );
 
         if (!round) {
+            //TODO: add logging that round was not found
             return [];
         }
 

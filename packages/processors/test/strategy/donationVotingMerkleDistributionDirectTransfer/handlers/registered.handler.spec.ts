@@ -13,9 +13,6 @@ import { ChainId, DeepPartial, mergeDeep, ProtocolEvent } from "@grants-stack-in
 import { ProjectNotFound, RoundNotFound } from "../../../../src/exceptions/index.js";
 import { DVMDRegisteredHandler } from "../../../../src/strategy/donationVotingMerkleDistributionDirectTransfer/handlers/index.js";
 
-// Mock dependencies and helpers
-// vi.mock("../../../../src/strategy/donationVotingMerkleDistributionDirectTransfer/helpers/decoder");
-
 function createMockEvent(
     overrides: DeepPartial<ProtocolEvent<"Strategy", "Registered">> = {},
 ): ProtocolEvent<"Strategy", "Registered"> {
