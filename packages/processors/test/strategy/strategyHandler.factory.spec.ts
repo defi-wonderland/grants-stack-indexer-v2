@@ -7,9 +7,8 @@ import { IPricingProvider } from "@grants-stack-indexer/pricing";
 import { IProjectReadRepository, IRoundReadRepository } from "@grants-stack-indexer/repository";
 import { ChainId } from "@grants-stack-indexer/shared";
 
-import { ProcessorDependencies, UnsupportedStrategy } from "../../src/internal.js";
-import { DVMDDirectTransferHandler } from "../../src/strategy/donationVotingMerkleDistributionDirectTransfer/dvmdDirectTransfer.handler.js";
-import { StrategyHandlerFactory } from "../../src/strategy/strategyHandler.factory.js";
+import { ProcessorDependencies, StrategyHandlerFactory } from "../../src/internal.js";
+import { DVMDDirectTransferStrategyHandler } from "../../src/strategy/donationVotingMerkleDistributionDirectTransfer/dvmdDirectTransfer.handler.js";
 
 describe("StrategyHandlerFactory", () => {
     const chainId = 10 as ChainId;
@@ -55,20 +54,20 @@ describe("StrategyHandlerFactory", () => {
             );
 
             expect(handler).toBeDefined();
-            expect(handler).toBeInstanceOf(DVMDDirectTransferHandler);
+            expect(handler).toBeInstanceOf(DVMDDirectTransferStrategyHandler);
         });
     });
 
     it.skip("creates a DirectGrantsLiteHandler");
     it.skip("creates a DirectGrantsSimpleHandler");
 
-    it("throws an error if the strategy id is not supported", () => {
-        expect(() =>
-            StrategyHandlerFactory.createHandler(
-                chainId,
-                mockProcessorDependencies,
-                "0xnot-supported",
-            ),
-        ).toThrow(UnsupportedStrategy);
+    it("returns undefined if the strategy id is not supported", () => {
+        const handler = StrategyHandlerFactory.createHandler(
+            chainId,
+            mockProcessorDependencies,
+            "0xnot-supported",
+        );
+
+        expect(handler).toBeUndefined();
     });
 });

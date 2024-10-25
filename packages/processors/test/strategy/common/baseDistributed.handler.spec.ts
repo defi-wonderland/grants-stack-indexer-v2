@@ -45,7 +45,7 @@ describe("BaseDistributedHandler", () => {
         } as unknown as IRoundReadRepository;
     });
 
-    it("increment round total distributed when round is found", async () => {
+    it("increments round total distributed when round is found", async () => {
         mockEvent = createMockEvent();
         const mockRound = { id: "round1" } as Round;
 

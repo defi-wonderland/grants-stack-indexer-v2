@@ -1,4 +1,4 @@
-import { getAddress, parseUnits, zeroAddress } from "viem";
+import { getAddress, zeroAddress } from "viem";
 
 import type { Changeset, NewRound, PendingRoundRole } from "@grants-stack-indexer/repository";
 import type { ChainId, ProtocolEvent, Token } from "@grants-stack-indexer/shared";
@@ -7,10 +7,10 @@ import { getToken } from "@grants-stack-indexer/shared/dist/src/internal.js";
 
 import type { IEventHandler, ProcessorDependencies, StrategyTimings } from "../../internal.js";
 import { getRoundRoles } from "../../helpers/roles.js";
-import { extractStrategyFromId, getStrategyTimings } from "../../helpers/strategy.js";
 import { calculateAmountInUsd } from "../../helpers/tokenMath.js";
 import { TokenPriceNotFoundError } from "../../internal.js";
 import { RoundMetadataSchema } from "../../schemas/index.js";
+import { StrategyHandlerFactory } from "../../strategy/strategyHandler.factory.js";
 
 type Dependencies = Pick<
     ProcessorDependencies,
@@ -61,7 +61,13 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
             ? zeroAddress
             : checksummedTokenAddress;
 
-        const strategy = extractStrategyFromId(strategyId);
+        const strategyHandler = StrategyHandlerFactory.createHandler(
+            this.chainId,
+            this.dependencies as ProcessorDependencies,
+            strategyId,
+        );
+
+        // const strategy = extractStrategyFromId(strategyId);
 
         const token = getToken(this.chainId, matchTokenAddress);
 
@@ -72,26 +78,17 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
             donationsEndTime: null,
         };
 
-        let matchAmount = 0n;
-        let matchAmountInUsd = "0";
+        let matchAmount = {
+            matchAmount: 0n,
+            matchAmountInUsd: "0",
+        };
 
-        if (strategy) {
-            strategyTimings = await getStrategyTimings(evmProvider, strategy, strategyAddress);
-
-            //TODO: when creating strategy handlers, should this be moved there?
-            if (
-                strategy.name === "allov2.DonationVotingMerkleDistributionDirectTransferStrategy" &&
-                parsedRoundMetadata.success &&
-                token
-            ) {
-                matchAmount = parseUnits(
-                    parsedRoundMetadata.data.quadraticFundingConfig.matchingFundsAvailable.toString(),
-                    token.decimals,
-                );
-
-                matchAmountInUsd = await this.getTokenAmountInUsd(
+        if (strategyHandler) {
+            strategyTimings = await strategyHandler.fetchStrategyTimings(strategyAddress);
+            if (parsedRoundMetadata.success && token) {
+                matchAmount = await strategyHandler.fetchMatchAmount(
+                    Number(parsedRoundMetadata.data.quadraticFundingConfig.matchingFundsAvailable),
                     token,
-                    matchAmount,
                     this.event.blockTimestamp,
                 );
             }
@@ -120,8 +117,8 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
             totalAmountDonatedInUsd: "0",
             uniqueDonorsCount: 0,
             matchTokenAddress,
-            matchAmount,
-            matchAmountInUsd,
+            matchAmount: matchAmount.matchAmount,
+            matchAmountInUsd: matchAmount.matchAmountInUsd,
             fundedAmount,
             fundedAmountInUsd,
             applicationMetadataCid: metadataPointer,
@@ -132,7 +129,7 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
             ...roundRoles,
             strategyAddress,
             strategyId,
-            strategyName: strategy?.name ?? "",
+            strategyName: strategyHandler?.name ?? "",
             createdByAddress: getAddress(createdBy),
             createdAtBlock: BigInt(this.event.blockNumber),
             updatedAtBlock: BigInt(this.event.blockNumber),
