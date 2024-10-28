@@ -2,15 +2,12 @@ import { getAddress, zeroAddress } from "viem";
 
 import type { Changeset, NewRound, PendingRoundRole } from "@grants-stack-indexer/repository";
 import type { ChainId, ProtocolEvent, Token } from "@grants-stack-indexer/shared";
-import { isAlloNativeToken } from "@grants-stack-indexer/shared";
-import { getToken } from "@grants-stack-indexer/shared/dist/src/internal.js";
+import { getToken, isAlloNativeToken } from "@grants-stack-indexer/shared";
 
 import type { IEventHandler, ProcessorDependencies, StrategyTimings } from "../../internal.js";
-import { getRoundRoles } from "../../helpers/roles.js";
-import { calculateAmountInUsd } from "../../helpers/tokenMath.js";
-import { TokenPriceNotFoundError } from "../../internal.js";
+import { calculateAmountInUsd, getRoundRoles } from "../../helpers/index.js";
+import { StrategyHandlerFactory, TokenPriceNotFoundError } from "../../internal.js";
 import { RoundMetadataSchema } from "../../schemas/index.js";
-import { StrategyHandlerFactory } from "../../strategy/strategyHandler.factory.js";
 
 type Dependencies = Pick<
     ProcessorDependencies,

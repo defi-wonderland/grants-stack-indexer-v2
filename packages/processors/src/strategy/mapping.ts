@@ -3,6 +3,12 @@ import { Hex } from "viem";
 import type { StrategyHandlerConstructor } from "../internal.js";
 import { DVMDDirectTransferStrategyHandler } from "./donationVotingMerkleDistributionDirectTransfer/dvmdDirectTransfer.handler.js";
 
+/**
+ * This mapping connects strategy IDs to their corresponding handler classes.
+ * When a new strategy event is received, the system uses this mapping to instantiate the appropriate handler
+ * based on the strategy ID from the event. Each handler implements specific logic for processing events
+ * from that strategy type.
+ */
 const strategyIdToHandler: Readonly<Record<string, StrategyHandlerConstructor>> = {
     "0x6f9291df02b2664139cec5703c124e4ebce32879c74b6297faa1468aa5ff9ebf":
         DVMDDirectTransferStrategyHandler, // DonationVotingMerkleDistributionDirectTransferStrategyv1.0

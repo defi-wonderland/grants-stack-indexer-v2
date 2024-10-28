@@ -36,6 +36,7 @@ export class BaseDistributedHandler implements IEventHandler<"Strategy", "Distri
 
         if (!round) {
             //TODO: add logging that round was not found
+            console.log("Round not found for strategy address", strategyAddress);
             return [];
         }
 

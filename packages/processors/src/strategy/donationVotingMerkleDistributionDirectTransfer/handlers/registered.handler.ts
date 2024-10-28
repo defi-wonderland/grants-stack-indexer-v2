@@ -9,7 +9,7 @@ import {
     ProjectNotFound,
     RoundNotFound,
 } from "../../../internal.js";
-import { decodeDVMDApplicationData } from "../helpers/decoder.js";
+import { decodeDVMDApplicationData } from "../helpers/index.js";
 
 type Dependencies = Pick<
     ProcessorDependencies,
