@@ -67,8 +67,6 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
             strategyId,
         );
 
-        // const strategy = extractStrategyFromId(strategyId);
-
         const token = getToken(this.chainId, matchTokenAddress);
 
         let strategyTimings: StrategyTimings = {
@@ -78,7 +76,7 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
             donationsEndTime: null,
         };
 
-        let matchAmount = {
+        let matchAmountObj = {
             matchAmount: 0n,
             matchAmountInUsd: "0",
         };
@@ -86,7 +84,7 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
         if (strategyHandler) {
             strategyTimings = await strategyHandler.fetchStrategyTimings(strategyAddress);
             if (parsedRoundMetadata.success && token) {
-                matchAmount = await strategyHandler.fetchMatchAmount(
+                matchAmountObj = await strategyHandler.fetchMatchAmount(
                     Number(parsedRoundMetadata.data.quadraticFundingConfig.matchingFundsAvailable),
                     token,
                     this.event.blockTimestamp,
@@ -117,8 +115,8 @@ export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> 
             totalAmountDonatedInUsd: "0",
             uniqueDonorsCount: 0,
             matchTokenAddress,
-            matchAmount: matchAmount.matchAmount,
-            matchAmountInUsd: matchAmount.matchAmountInUsd,
+            matchAmount: matchAmountObj.matchAmount,
+            matchAmountInUsd: matchAmountObj.matchAmountInUsd,
             fundedAmount,
             fundedAmountInUsd,
             applicationMetadataCid: metadataPointer,

@@ -23,7 +23,6 @@ export class StrategyHandlerFactory {
         const _strategyId = strategyId.toLowerCase() as Hex;
         const StrategyHandlerClass = getHandler(_strategyId);
 
-        console.log("StrategyHandlerClass", StrategyHandlerClass);
         return StrategyHandlerClass ? new StrategyHandlerClass(chainId, dependencies) : undefined;
     }
 }

@@ -17,6 +17,7 @@ export abstract class BaseStrategyHandler implements IStrategyHandler<StrategyEv
         this.name = name;
     }
 
+    /** @inheritdoc */
     async fetchStrategyTimings(_strategyAddress: Address): Promise<StrategyTimings> {
         return {
             applicationsStartTime: null,
@@ -26,6 +27,7 @@ export abstract class BaseStrategyHandler implements IStrategyHandler<StrategyEv
         };
     }
 
+    /** @inheritdoc */
     async fetchMatchAmount(
         _matchingFundsAvailable: number,
         _token: Token,

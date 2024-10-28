@@ -129,7 +129,14 @@ export class DVMDDirectTransferStrategyHandler extends BaseStrategyHandler {
         };
     }
 
-    /** @inheritdoc */
+    /**
+     * Get the amount in USD for a given token and amount and timestamp
+     * @param token - The token
+     * @param amount - The amount
+     * @param timestamp - The timestamp
+     * @returns The amount in USD
+     * @throws TokenPriceNotFoundError if the token price is not found
+     */
     private async getTokenAmountInUsd(
         token: Token,
         amount: bigint,

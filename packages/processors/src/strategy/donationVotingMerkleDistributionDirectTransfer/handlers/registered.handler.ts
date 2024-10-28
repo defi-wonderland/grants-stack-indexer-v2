@@ -16,6 +16,17 @@ type Dependencies = Pick<
     "roundRepository" | "projectRepository" | "metadataProvider"
 >;
 
+/**
+ * Handles the Registered event for the Donation Voting Merkle Distribution Direct Transfer strategy.
+ *
+ * This handler performs the following core actions when a project registers for a round:
+ * - Validates that both the project and round exist
+ * - Decodes the application data from the event
+ * - Retrieves the application metadata
+ * - Creates a new application record with PENDING status
+ * - Links the application to both the project and round
+ */
+
 export class DVMDRegisteredHandler implements IEventHandler<"Strategy", "Registered"> {
     constructor(
         readonly event: ProtocolEvent<"Strategy", "Registered">,
@@ -23,6 +34,7 @@ export class DVMDRegisteredHandler implements IEventHandler<"Strategy", "Registe
         private readonly dependencies: Dependencies,
     ) {}
 
+    /** @inheritdoc */
     async handle(): Promise<Changeset[]> {
         const { projectRepository, roundRepository, metadataProvider } = this.dependencies;
         const { data: encodedData, recipientId, sender } = this.event.params;
