@@ -16,4 +16,4 @@ export { BigNumber } from "./internal.js";
 export type { BigNumberType } from "./internal.js";
 
 export type { TokenCode, Token } from "./internal.js";
-export { TOKENS } from "./tokens/tokens.js";
+export { TOKENS, getToken } from "./tokens/tokens.js";

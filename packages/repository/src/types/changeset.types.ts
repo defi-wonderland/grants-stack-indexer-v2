@@ -1,5 +1,6 @@
 import type { Address, ChainId } from "@grants-stack-indexer/shared";
 
+import { NewApplication } from "./application.types.js";
 import {
     NewPendingProjectRole,
     NewProject,
@@ -139,4 +140,8 @@ export type Changeset =
           args: {
               roundRole: Pick<RoundRole, "chainId" | "roundId" | "role" | "address">;
           };
+      }
+    | {
+          type: "InsertApplication";
+          args: NewApplication;
       };

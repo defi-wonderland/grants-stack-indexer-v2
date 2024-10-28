@@ -27,7 +27,7 @@ describe("EventsFetcher", () => {
                 eventName: "PoolCreated",
                 srcAddress: "0x1234567890123456789012345678901234567890",
                 logIndex: 0,
-                params: { contractAddress: "0x1234" },
+                params: { contractAddress: "0x1234", tokenAddress: "0x1234", amount: 1000 },
                 transactionFields: { hash: "0x1234", transactionIndex: 0 },
             },
             {
@@ -38,7 +38,11 @@ describe("EventsFetcher", () => {
                 eventName: "PoolCreated",
                 srcAddress: "0x1234567890123456789012345678901234567890",
                 logIndex: 0,
-                params: { contractAddress: "0x1234" },
+                params: {
+                    contractAddress: "0x1234",
+                    tokenAddress: "0x1234",
+                    amount: 1000,
+                },
                 transactionFields: { hash: "0x1234", transactionIndex: 1 },
             },
         ];
