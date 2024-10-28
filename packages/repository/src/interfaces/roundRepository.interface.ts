@@ -91,7 +91,10 @@ export interface IRoundRepository extends IRoundReadRepository {
      * @param round The partial round data to update.
      * @returns A promise that resolves when the update is complete.
      */
-    updateRound(where: { id: string; chainId: ChainId }, round: PartialRound): Promise<void>;
+    updateRound(
+        where: { id: string; chainId: ChainId } | { chainId: ChainId; strategyAddress: Address },
+        round: PartialRound,
+    ): Promise<void>;
 
     /**
      * Increments the funds for a specific round.

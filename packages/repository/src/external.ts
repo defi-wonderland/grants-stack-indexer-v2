@@ -4,6 +4,8 @@ export type {
     IRoundReadRepository,
     IProjectRepository,
     IProjectReadRepository,
+    IApplicationRepository,
+    IApplicationReadRepository,
     DatabaseConfig,
 } from "./internal.js";
 
@@ -35,6 +37,10 @@ export type {
 
 export type { Changeset } from "./types/index.js";
 
-export { KyselyRoundRepository, KyselyProjectRepository } from "./repositories/kysely/index.js";
+export {
+    KyselyRoundRepository,
+    KyselyProjectRepository,
+    KyselyApplicationRepository,
+} from "./repositories/kysely/index.js";
 
 export { createKyselyPostgresDb as createKyselyDatabase } from "./internal.js";
