@@ -1,6 +1,6 @@
 import type { Address, ChainId } from "@grants-stack-indexer/shared";
 
-import { NewApplication } from "./application.types.js";
+import { NewApplication, PartialApplication } from "./application.types.js";
 import {
     NewPendingProjectRole,
     NewProject,
@@ -93,28 +93,11 @@ export type Changeset =
           };
       }
     | {
-          type: "IncrementRoundDonationStats";
-          args: {
-              chainId: ChainId;
-              roundId: Address;
-              amountInUsd: string;
-          };
-      }
-    | {
           type: "IncrementRoundTotalDistributed";
           args: {
               chainId: ChainId;
               roundId: string;
               amount: bigint;
-          };
-      }
-    | {
-          type: "IncrementApplicationDonationStats";
-          args: {
-              chainId: ChainId;
-              roundId: Address;
-              applicationId: string;
-              amountInUsd: number;
           };
       }
     | {
@@ -144,4 +127,13 @@ export type Changeset =
     | {
           type: "InsertApplication";
           args: NewApplication;
+      }
+    | {
+          type: "UpdateApplication";
+          args: {
+              chainId: ChainId;
+              roundId: string;
+              applicationId: string;
+              application: PartialApplication;
+          };
       };
