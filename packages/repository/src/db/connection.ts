@@ -1,5 +1,5 @@
-import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
-import { Pool, PoolConfig } from "pg";
+import { CamelCasePlugin, Kysely, PostgresDialect, WithSchemaPlugin } from "kysely";
+import pg from "pg";
 
 import {
     PendingProjectRole as PendingProjectRoleTable,
@@ -10,8 +10,11 @@ import {
     Round as RoundTable,
 } from "../internal.js";
 
-export interface DatabaseConfig extends PoolConfig {
+const { Pool } = pg;
+
+export interface DatabaseConfig extends pg.PoolConfig {
     connectionString: string;
+    withSchema?: string;
 }
 
 export interface Database {
@@ -27,9 +30,14 @@ export interface Database {
  * Creates and configures a Kysely database instance for PostgreSQL.
  *
  * @param config - The database configuration object extending PoolConfig.
+ * @param config.connectionString - The connection string for the database.
+ * @param config.withSchema - The schema to use for the database. Defaults to `public`.
  * @returns A configured Kysely instance for the Database.
  *
  * This function sets up a PostgreSQL database connection using Kysely ORM.
+ *
+ * It uses the `CamelCasePlugin` to convert all table names to camel case.
+ * It uses the `WithSchemaPlugin` to automatically prefix all table names with the schema name on queries.
  *
  * @example
  * const dbConfig: DatabaseConfig = {
@@ -48,5 +56,10 @@ export const createKyselyPostgresDb = (config: DatabaseConfig): Kysely<Database>
         }),
     });
 
-    return new Kysely<Database>({ dialect, plugins: [new CamelCasePlugin()] });
+    const withSchema = config.withSchema ?? "public";
+
+    return new Kysely<Database>({
+        dialect,
+        plugins: [new CamelCasePlugin(), new WithSchemaPlugin(withSchema)],
+    });
 };

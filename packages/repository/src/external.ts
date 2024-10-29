@@ -38,3 +38,6 @@ export type { Changeset } from "./types/index.js";
 export { KyselyRoundRepository, KyselyProjectRepository } from "./repositories/kysely/index.js";
 
 export { createKyselyPostgresDb as createKyselyDatabase } from "./internal.js";
+
+export { migrateToLatest, resetDatabase } from "./db/index.js";
+export type { MigrationConfig } from "./db/index.js";
