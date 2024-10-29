@@ -1,7 +1,7 @@
 import { getAddress } from "viem";
 
 import { Changeset, NewApplication } from "@grants-stack-indexer/repository";
-import { ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
+import { ChainId, ProcessorEvent } from "@grants-stack-indexer/shared";
 
 import {
     IEventHandler,
@@ -29,7 +29,7 @@ type Dependencies = Pick<
 
 export class DVMDRegisteredHandler implements IEventHandler<"Strategy", "Registered"> {
     constructor(
-        readonly event: ProtocolEvent<"Strategy", "Registered">,
+        readonly event: ProcessorEvent<"Strategy", "Registered">,
         private readonly chainId: ChainId,
         private readonly dependencies: Dependencies,
     ) {}

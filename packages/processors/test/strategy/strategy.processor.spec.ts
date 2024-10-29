@@ -7,7 +7,7 @@ import type {
     IProjectReadRepository,
     IRoundReadRepository,
 } from "@grants-stack-indexer/repository";
-import type { ChainId, ProtocolEvent, StrategyEvent } from "@grants-stack-indexer/shared";
+import type { ChainId, ProcessorEvent, StrategyEvent } from "@grants-stack-indexer/shared";
 
 import { StrategyProcessor, UnsupportedStrategy } from "../../src/internal.js";
 
@@ -41,7 +41,7 @@ describe("StrategyProcessor", () => {
         const mockEvent = {
             eventName: "UnknownEvent",
             strategyId: "0xunknown",
-        } as unknown as ProtocolEvent<"Strategy", StrategyEvent>;
+        } as unknown as ProcessorEvent<"Strategy", StrategyEvent>;
 
         await expect(() => processor.process(mockEvent)).rejects.toThrow(UnsupportedStrategy);
     });

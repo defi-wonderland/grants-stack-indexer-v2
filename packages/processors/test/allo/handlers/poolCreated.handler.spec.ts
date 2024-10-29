@@ -5,7 +5,7 @@ import type { EvmProvider } from "@grants-stack-indexer/chain-providers";
 import type { IMetadataProvider } from "@grants-stack-indexer/metadata";
 import type { IPricingProvider } from "@grants-stack-indexer/pricing";
 import type { IRoundReadRepository, Round } from "@grants-stack-indexer/repository";
-import type { ChainId, DeepPartial, ProtocolEvent, TokenCode } from "@grants-stack-indexer/shared";
+import type { ChainId, DeepPartial, ProcessorEvent, TokenCode } from "@grants-stack-indexer/shared";
 import { mergeDeep } from "@grants-stack-indexer/shared";
 
 import {
@@ -15,9 +15,9 @@ import {
 
 // Function to create a mock event with optional overrides
 function createMockEvent(
-    overrides: DeepPartial<ProtocolEvent<"Allo", "PoolCreated">> = {},
-): ProtocolEvent<"Allo", "PoolCreated"> {
-    const defaultEvent: ProtocolEvent<"Allo", "PoolCreated"> = {
+    overrides: DeepPartial<ProcessorEvent<"Allo", "PoolCreated">> = {},
+): ProcessorEvent<"Allo", "PoolCreated"> {
+    const defaultEvent: ProcessorEvent<"Allo", "PoolCreated"> = {
         blockNumber: 116385567,
         blockTimestamp: 1708369911,
         chainId: 10 as ChainId,
@@ -41,7 +41,7 @@ function createMockEvent(
         strategyId: "0x9fa6890423649187b1f0e8bf4265f0305ce99523c3d11aa36b35a54617bb0ec0",
     };
 
-    return mergeDeep(defaultEvent, overrides) as ProtocolEvent<"Allo", "PoolCreated">;
+    return mergeDeep(defaultEvent, overrides) as ProcessorEvent<"Allo", "PoolCreated">;
 }
 
 describe("PoolCreatedHandler", () => {

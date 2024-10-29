@@ -1,5 +1,5 @@
 import type { Changeset } from "@grants-stack-indexer/repository";
-import { ContractName, ContractToEventName, ProtocolEvent } from "@grants-stack-indexer/shared";
+import { ContractName, ContractToEventName, ProcessorEvent } from "@grants-stack-indexer/shared";
 
 export interface IProcessor<C extends ContractName, E extends ContractToEventName<C>> {
     /**
@@ -7,5 +7,5 @@ export interface IProcessor<C extends ContractName, E extends ContractToEventNam
      * @param event - The event to process.
      * @returns A promise that resolves to a changeset.
      */
-    process(event: ProtocolEvent<C, E>): Promise<Changeset[]>;
+    process(event: ProcessorEvent<C, E>): Promise<Changeset[]>;
 }

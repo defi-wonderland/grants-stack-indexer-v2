@@ -4,7 +4,7 @@ import { Changeset } from "@grants-stack-indexer/repository";
 import {
     Address,
     ChainId,
-    ProtocolEvent,
+    ProcessorEvent,
     StrategyEvent,
     Token,
 } from "@grants-stack-indexer/shared";
@@ -44,17 +44,17 @@ export class DVMDDirectTransferStrategyHandler extends BaseStrategyHandler {
     }
 
     /** @inheritdoc */
-    async handle(event: ProtocolEvent<"Strategy", StrategyEvent>): Promise<Changeset[]> {
+    async handle(event: ProcessorEvent<"Strategy", StrategyEvent>): Promise<Changeset[]> {
         switch (event.eventName) {
             case "Registered":
                 return new DVMDRegisteredHandler(
-                    event as ProtocolEvent<"Strategy", "Registered">,
+                    event as ProcessorEvent<"Strategy", "Registered">,
                     this.chainId,
                     this.dependencies,
                 ).handle();
             case "Distributed":
                 return new BaseDistributedHandler(
-                    event as ProtocolEvent<"Strategy", "Distributed">,
+                    event as ProcessorEvent<"Strategy", "Distributed">,
                     this.chainId,
                     this.dependencies,
                 ).handle();

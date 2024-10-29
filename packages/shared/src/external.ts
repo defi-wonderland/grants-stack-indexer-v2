@@ -17,3 +17,5 @@ export type { BigNumberType } from "./internal.js";
 
 export type { TokenCode, Token } from "./internal.js";
 export { TOKENS, getToken } from "./tokens/tokens.js";
+
+export { isAlloEvent, isRegistryEvent, isStrategyEvent } from "./internal.js";

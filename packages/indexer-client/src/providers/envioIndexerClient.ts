@@ -1,6 +1,6 @@
 import { gql, GraphQLClient } from "graphql-request";
 
-import { AnyProtocolEvent } from "@grants-stack-indexer/shared";
+import { AnyIndexerFetchedEvent, ChainId } from "@grants-stack-indexer/shared";
 
 import { IndexerClientError, InvalidIndexerResponse } from "../exceptions/index.js";
 import { IIndexerClient } from "../internal.js";
@@ -17,11 +17,11 @@ export class EnvioIndexerClient implements IIndexerClient {
     }
     /* @inheritdoc */
     public async getEventsAfterBlockNumberAndLogIndex(
-        chainId: bigint,
-        blockNumber: bigint,
+        chainId: ChainId,
+        blockNumber: number,
         logIndex: number,
         limit: number = 100,
-    ): Promise<AnyProtocolEvent[]> {
+    ): Promise<AnyIndexerFetchedEvent[]> {
         try {
             const response = (await this.client.request(
                 gql`
@@ -51,7 +51,7 @@ export class EnvioIndexerClient implements IIndexerClient {
                     }
                 `,
                 { chainId, blockNumber, logIndex, limit },
-            )) as { data: { raw_events: AnyProtocolEvent[] } };
+            )) as { data: { raw_events: AnyIndexerFetchedEvent[] } };
             if (response?.data?.raw_events) {
                 return response.data.raw_events;
             } else {

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { ChainId, ProtocolEvent, RegistryEvent } from "@grants-stack-indexer/shared";
+import type { ChainId, ProcessorEvent, RegistryEvent } from "@grants-stack-indexer/shared";
 
 import { ProcessorDependencies, UnsupportedEventException } from "../../src/internal.js";
 import { ProfileCreatedHandler } from "../../src/registry/handlers/profileCreated.handler.js";
@@ -36,9 +36,9 @@ describe("RegistryProcessor", () => {
     });
 
     it("throws UnsupportedEventException for unsupported events", async () => {
-        const event: ProtocolEvent<"Registry", RegistryEvent> = {
+        const event: ProcessorEvent<"Registry", RegistryEvent> = {
             eventName: "UnsupportedEvent",
-        } as unknown as ProtocolEvent<"Registry", RegistryEvent>;
+        } as unknown as ProcessorEvent<"Registry", RegistryEvent>;
 
         const processor = new RegistryProcessor(chainId, dependencies);
 
@@ -46,9 +46,9 @@ describe("RegistryProcessor", () => {
     });
 
     it("should call ProfileCreatedHandler", async () => {
-        const event: ProtocolEvent<"Registry", "ProfileCreated"> = {
+        const event: ProcessorEvent<"Registry", "ProfileCreated"> = {
             eventName: "ProfileCreated",
-        } as ProtocolEvent<"Registry", "ProfileCreated">;
+        } as ProcessorEvent<"Registry", "ProfileCreated">;
 
         vi.spyOn(ProfileCreatedHandler.prototype, "handle").mockResolvedValue([]);
 
@@ -60,9 +60,9 @@ describe("RegistryProcessor", () => {
     });
 
     it("should call RoleGrantedHandler", async () => {
-        const event: ProtocolEvent<"Registry", "RoleGranted"> = {
+        const event: ProcessorEvent<"Registry", "RoleGranted"> = {
             eventName: "RoleGranted",
-        } as ProtocolEvent<"Registry", "RoleGranted">;
+        } as ProcessorEvent<"Registry", "RoleGranted">;
 
         vi.spyOn(RoleGrantedHandler.prototype, "handle").mockResolvedValue([]);
 

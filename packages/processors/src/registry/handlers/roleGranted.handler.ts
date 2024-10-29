@@ -1,7 +1,7 @@
 import { getAddress } from "viem";
 
 import { Changeset } from "@grants-stack-indexer/repository";
-import { ALLO_OWNER_ROLE, ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
+import { ALLO_OWNER_ROLE, ChainId, ProcessorEvent } from "@grants-stack-indexer/shared";
 
 import { IEventHandler } from "../../internal.js";
 import { ProcessorDependencies } from "../../types/processor.types.js";
@@ -11,7 +11,7 @@ import { ProcessorDependencies } from "../../types/processor.types.js";
  */
 export class RoleGrantedHandler implements IEventHandler<"Registry", "RoleGranted"> {
     constructor(
-        readonly event: ProtocolEvent<"Registry", "RoleGranted">,
+        readonly event: ProcessorEvent<"Registry", "RoleGranted">,
         readonly chainId: ChainId,
         private readonly dependencies: ProcessorDependencies,
     ) {}

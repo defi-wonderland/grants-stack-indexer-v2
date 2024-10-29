@@ -1,7 +1,7 @@
 import { getAddress } from "viem";
 
 import { Changeset, ProjectType } from "@grants-stack-indexer/repository";
-import { ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
+import { ChainId, ProcessorEvent } from "@grants-stack-indexer/shared";
 
 import { IEventHandler, ProcessorDependencies } from "../../internal.js";
 import { ProjectMetadata, ProjectMetadataSchema } from "../../schemas/projectMetadata.js";
@@ -15,7 +15,7 @@ type Dependencies = Pick<
  */
 export class ProfileCreatedHandler implements IEventHandler<"Registry", "ProfileCreated"> {
     constructor(
-        readonly event: ProtocolEvent<"Registry", "ProfileCreated">,
+        readonly event: ProcessorEvent<"Registry", "ProfileCreated">,
         readonly chainId: ChainId,
         private dependencies: Dependencies,
     ) {}

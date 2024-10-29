@@ -10,3 +10,4 @@ export * from "./allo/index.js";
 
 // Strategy
 export * from "./strategy/index.js";
+export * from "./registry/index.js";

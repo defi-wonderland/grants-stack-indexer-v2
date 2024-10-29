@@ -110,9 +110,24 @@ importers:
 
     packages/data-flow:
         dependencies:
+            "@grants-stack-indexer/chain-providers":
+                specifier: workspace:*
+                version: link:../chain-providers
             "@grants-stack-indexer/indexer-client":
                 specifier: workspace:*
                 version: link:../indexer-client
+            "@grants-stack-indexer/metadata":
+                specifier: workspace:*
+                version: link:../metadata
+            "@grants-stack-indexer/pricing":
+                specifier: workspace:*
+                version: link:../pricing
+            "@grants-stack-indexer/processors":
+                specifier: workspace:*
+                version: link:../processors
+            "@grants-stack-indexer/repository":
+                specifier: workspace:*
+                version: link:../repository
             "@grants-stack-indexer/shared":
                 specifier: workspace:*
                 version: link:../shared

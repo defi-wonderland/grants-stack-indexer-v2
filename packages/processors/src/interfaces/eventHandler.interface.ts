@@ -2,7 +2,7 @@ import type { Changeset } from "@grants-stack-indexer/repository";
 import type {
     ContractName,
     ContractToEventName,
-    ProtocolEvent,
+    ProcessorEvent,
 } from "@grants-stack-indexer/shared";
 
 /**
@@ -14,7 +14,7 @@ export interface IEventHandler<C extends ContractName, E extends ContractToEvent
     /**
      * The event to handle.
      */
-    readonly event: ProtocolEvent<C, E>;
+    readonly event: ProcessorEvent<C, E>;
 
     /**
      * Handles the event.
