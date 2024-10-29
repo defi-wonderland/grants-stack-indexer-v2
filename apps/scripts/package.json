@@ -23,7 +23,7 @@
         "script:db:migrate": "tsx src/migrateDb.script.ts",
         "script:db:reset": "tsx src/resetDb.script.ts",
         "test": "vitest run --config vitest.config.ts --passWithNoTests",
-        "test:cov": "vitest run --config vitest.config.ts --coverage"
+        "test:cov": "vitest run --config vitest.config.ts --coverage --passWithNoTests"
     },
     "dependencies": {
         "@grants-stack-indexer/repository": "workspace:*",
