@@ -108,3 +108,5 @@ export async function down(db: Kysely<any>): Promise<void> {
     - Check migration logs
     - Ensure no conflicting changes
     - Verify schema consistency
+
+TODO: add E2E tests for the scripts
