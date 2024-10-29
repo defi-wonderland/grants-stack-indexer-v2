@@ -16,7 +16,9 @@ import {
     RoundRole,
 } from "./round.types.js";
 
-export type Changeset =
+//TODO: see if in the future we move out of inline object types for changesets
+
+type ProjectChangeset =
     | {
           type: "InsertProject";
           args: {
@@ -60,7 +62,9 @@ export type Changeset =
           args: {
               projectRole: Pick<ProjectRole, "chainId" | "projectId" | "role" | "address">;
           };
-      }
+      };
+
+type RoundChangeset =
     | {
           type: "InsertRound";
           args: {
@@ -123,7 +127,9 @@ export type Changeset =
           args: {
               roundRole: Pick<RoundRole, "chainId" | "roundId" | "role" | "address">;
           };
-      }
+      };
+
+type ApplicationChangeset =
     | {
           type: "InsertApplication";
           args: NewApplication;
@@ -137,3 +143,7 @@ export type Changeset =
               application: PartialApplication;
           };
       };
+
+//TODO: add changeset for Donation and Payout tables
+
+export type Changeset = ProjectChangeset | RoundChangeset | ApplicationChangeset;
