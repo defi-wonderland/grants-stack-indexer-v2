@@ -62,6 +62,7 @@ export class DataLoader implements IDataLoader {
         for (const changeset of changesets) {
             result.numExecuted++;
             try {
+                //TODO: inside each handler, we should add zod validation that the args match the expected type
                 await this.handlers[changeset.type](changeset as never);
                 result.changesets.push(changeset.type);
                 result.numSuccessful++;

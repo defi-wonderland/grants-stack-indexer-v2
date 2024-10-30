@@ -1,4 +1,4 @@
-import { IRoundRepository } from "@grants-stack-indexer/repository";
+import { IRoundRepository, RoundChangeset } from "@grants-stack-indexer/repository";
 
 import { ChangesetHandler } from "../types/index.js";
 
@@ -7,15 +7,7 @@ import { ChangesetHandler } from "../types/index.js";
  * Each handler corresponds to a specific Round changeset type.
  */
 export type RoundHandlers = {
-    InsertRound: ChangesetHandler<"InsertRound">;
-    UpdateRound: ChangesetHandler<"UpdateRound">;
-    UpdateRoundByStrategyAddress: ChangesetHandler<"UpdateRoundByStrategyAddress">;
-    IncrementRoundFundedAmount: ChangesetHandler<"IncrementRoundFundedAmount">;
-    IncrementRoundTotalDistributed: ChangesetHandler<"IncrementRoundTotalDistributed">;
-    InsertPendingRoundRole: ChangesetHandler<"InsertPendingRoundRole">;
-    DeletePendingRoundRoles: ChangesetHandler<"DeletePendingRoundRoles">;
-    InsertRoundRole: ChangesetHandler<"InsertRoundRole">;
-    DeleteAllRoundRolesByRoleAndAddress: ChangesetHandler<"DeleteAllRoundRolesByRoleAndAddress">;
+    [K in RoundChangeset["type"]]: ChangesetHandler<K>;
 };
 
 /**

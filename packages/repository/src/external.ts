@@ -35,7 +35,12 @@ export type {
     PartialApplication,
 } from "./types/application.types.js";
 
-export type { Changeset } from "./types/index.js";
+export type {
+    Changeset,
+    ProjectChangeset,
+    RoundChangeset,
+    ApplicationChangeset,
+} from "./types/index.js";
 
 export {
     KyselyRoundRepository,

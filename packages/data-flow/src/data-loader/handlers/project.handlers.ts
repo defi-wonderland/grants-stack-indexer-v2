@@ -1,4 +1,4 @@
-import { IProjectRepository } from "@grants-stack-indexer/repository";
+import { IProjectRepository, ProjectChangeset } from "@grants-stack-indexer/repository";
 
 import { ChangesetHandler } from "../types/index.js";
 
@@ -7,13 +7,7 @@ import { ChangesetHandler } from "../types/index.js";
  * Each handler corresponds to a specific Project changeset type.
  */
 export type ProjectHandlers = {
-    InsertProject: ChangesetHandler<"InsertProject">;
-    UpdateProject: ChangesetHandler<"UpdateProject">;
-    InsertPendingProjectRole: ChangesetHandler<"InsertPendingProjectRole">;
-    DeletePendingProjectRoles: ChangesetHandler<"DeletePendingProjectRoles">;
-    InsertProjectRole: ChangesetHandler<"InsertProjectRole">;
-    DeleteAllProjectRolesByRole: ChangesetHandler<"DeleteAllProjectRolesByRole">;
-    DeleteAllProjectRolesByRoleAndAddress: ChangesetHandler<"DeleteAllProjectRolesByRoleAndAddress">;
+    [K in ProjectChangeset["type"]]: ChangesetHandler<K>;
 };
 
 /**

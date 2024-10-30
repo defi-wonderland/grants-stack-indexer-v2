@@ -1,4 +1,4 @@
-import { IApplicationRepository } from "@grants-stack-indexer/repository";
+import { ApplicationChangeset, IApplicationRepository } from "@grants-stack-indexer/repository";
 
 import { ChangesetHandler } from "../types/index.js";
 
@@ -7,8 +7,7 @@ import { ChangesetHandler } from "../types/index.js";
  * Each handler corresponds to a specific Application changeset type.
  */
 export type ApplicationHandlers = {
-    InsertApplication: ChangesetHandler<"InsertApplication">;
-    UpdateApplication: ChangesetHandler<"UpdateApplication">;
+    [K in ApplicationChangeset["type"]]: ChangesetHandler<K>;
 };
 
 /**

@@ -18,7 +18,7 @@ import {
 
 //TODO: see if in the future we move out of inline object types for changesets
 
-type ProjectChangeset =
+export type ProjectChangeset =
     | {
           type: "InsertProject";
           args: {
@@ -64,7 +64,7 @@ type ProjectChangeset =
           };
       };
 
-type RoundChangeset =
+export type RoundChangeset =
     | {
           type: "InsertRound";
           args: {
@@ -129,7 +129,7 @@ type RoundChangeset =
           };
       };
 
-type ApplicationChangeset =
+export type ApplicationChangeset =
     | {
           type: "InsertApplication";
           args: NewApplication;
