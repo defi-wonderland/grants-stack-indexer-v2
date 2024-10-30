@@ -123,8 +123,8 @@ describe("EnvioIndexerClient", () => {
             expect(graphqlClient.request).toHaveBeenCalledWith(
                 expect.any(String), // We can check the query string later if necessary
                 {
-                    chainId: 1n,
-                    blockNumber: 12345n,
+                    chainId: 1,
+                    blockNumber: 12345,
                     logIndex: 0,
                     limit: 100, // Ensure the default limit is used
                 },
