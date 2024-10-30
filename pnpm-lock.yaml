@@ -113,6 +113,9 @@ importers:
             "@grants-stack-indexer/indexer-client":
                 specifier: workspace:*
                 version: link:../indexer-client
+            "@grants-stack-indexer/repository":
+                specifier: workspace:*
+                version: link:../repository
             "@grants-stack-indexer/shared":
                 specifier: workspace:*
                 version: link:../shared

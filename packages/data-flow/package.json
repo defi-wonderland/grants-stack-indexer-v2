@@ -29,6 +29,7 @@
     },
     "dependencies": {
         "@grants-stack-indexer/indexer-client": "workspace:*",
+        "@grants-stack-indexer/repository": "workspace:*",
         "@grants-stack-indexer/shared": "workspace:*",
         "viem": "2.21.19"
     }
