@@ -1,5 +1,3 @@
-// class should contain the logic to orchestrate the data flow Events Fetcher -> Events Processor -> Data Loader
-
 import { IIndexerClient } from "@grants-stack-indexer/indexer-client";
 import {
     existsHandler,
@@ -62,6 +60,14 @@ export class Orchestrator {
     private readonly strategyRegistry: IStrategyRegistry;
     private readonly dataLoader: DataLoader;
 
+    /**
+     * @param chainId - The chain id
+     * @param dependencies - The core dependencies
+     * @param indexerClient - The indexer client
+     * @param registries - The registries
+     * @param fetchLimit - The fetch limit
+     * @param fetchDelayInMs - The fetch delay in milliseconds
+     */
     constructor(
         private chainId: ChainId,
         private dependencies: Readonly<CoreDependencies>,
@@ -71,7 +77,7 @@ export class Orchestrator {
             strategyRegistry: IStrategyRegistry;
         },
         private fetchLimit: number = 1000,
-        private fetchDelay: number = 10000,
+        private fetchDelayInMs: number = 10000,
     ) {
         this.eventsFetcher = new EventsFetcher(this.indexerClient);
         this.eventsProcessor = new EventsProcessor(this.chainId, this.dependencies);
@@ -95,7 +101,7 @@ export class Orchestrator {
                 event = this.eventsQueue.pop();
 
                 if (!event) {
-                    await delay(this.fetchDelay);
+                    await delay(this.fetchDelayInMs);
                     continue;
                 }
 

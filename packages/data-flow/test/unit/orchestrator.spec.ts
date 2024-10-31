@@ -1,5 +1,5 @@
 import { Address } from "viem";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { EvmProvider } from "@grants-stack-indexer/chain-providers";
 import { IIndexerClient } from "@grants-stack-indexer/indexer-client";
@@ -91,9 +91,6 @@ describe("Orchestrator", { sequential: true }, () => {
             },
         };
 
-        // vi.mocked(EventsProcessor).mockImplementation(() => mockEventsProcessor);
-        // vi.mocked(DataLoader).mockImplementation(() => mockDataLoader);
-
         orchestrator = new Orchestrator(
             chainId,
             dependencies,
@@ -105,6 +102,12 @@ describe("Orchestrator", { sequential: true }, () => {
             mockFetchLimit,
             mockFetchDelay,
         );
+    });
+
+    afterAll(() => {
+        vi.clearAllMocks();
+
+        return new Promise((resolve) => setImmediate(resolve));
     });
 
     describe("Event Processing Flow", () => {
