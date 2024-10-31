@@ -104,10 +104,11 @@ describe("Orchestrator", { sequential: true }, () => {
         );
     });
 
-    afterAll(() => {
+    afterAll(async () => {
         vi.clearAllMocks();
 
-        return new Promise((resolve) => setImmediate(resolve));
+        // Wait for any pending promises to resolve
+        await new Promise((resolve) => setImmediate(resolve));
     });
 
     describe("Event Processing Flow", () => {
