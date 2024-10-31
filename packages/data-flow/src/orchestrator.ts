@@ -1,7 +1,11 @@
 // class should contain the logic to orchestrate the data flow Events Fetcher -> Events Processor -> Data Loader
 
 import { IIndexerClient } from "@grants-stack-indexer/indexer-client";
-import { UnsupportedStrategy } from "@grants-stack-indexer/processors/dist/src/internal.js";
+import {
+    existsHandler,
+    UnsupportedEventException,
+    UnsupportedStrategy,
+} from "@grants-stack-indexer/processors";
 import {
     Address,
     AnyEvent,
@@ -23,6 +27,33 @@ import { IEventsFetcher } from "./interfaces/index.js";
 import { IStrategyRegistry } from "./interfaces/strategyRegistry.interface.js";
 import { CoreDependencies, DataLoader, delay, IQueue, iStrategyAbi, Queue } from "./internal.js";
 
+/**
+ * The Orchestrator is the central coordinator of the data flow system, managing the interaction between
+ * three main components:
+ *
+ * 1. Events Fetcher: Retrieves blockchain events from the indexer service
+ * 2. Events Processor: Processes and transforms raw events into domain events
+ * 3. Data Loader: Persists the processed events into the database
+ *
+ * The Orchestrator implements a continuous processing loop that:
+ *
+ * 1. Fetches batches of events from the indexer and stores them in an internal queue
+ * 2. Processes each event from the queue:
+ *    - For strategy events and PoolCreated from Allo contract, enhances them with strategyId
+ *    - Forwards the event to the Events Processor which is in charge of delagating the processing of the event to the correct handler
+ *    - Discards events for unsupported strategies or events
+ * 3. Loads the processed events into the database via the Data Loader
+ *
+ * The Orchestrator provides fault tolerance and performance optimization through:
+ * - Configurable batch sizes for event fetching
+ * - Delayed processing to prevent overwhelming the system
+ * - Error handling and logging for various failure scenarios
+ * - Registry tracking of supported/unsupported strategies and events
+ *
+ * TODO: Implement a circuit breaker to gracefully stop the orchestrator
+ * TODO: Enhance the error handling/retries, logging and observability
+ * TODO: Handle unhandled strategies appropriately
+ */
 export class Orchestrator {
     private readonly eventsQueue: IQueue<ProcessorEvent<ContractName, AnyEvent>>;
     private readonly eventsFetcher: IEventsFetcher;
@@ -55,6 +86,7 @@ export class Orchestrator {
     }
 
     async run(): Promise<void> {
+        //TODO: implement a circuit breaker to gracefully stop the orchestrator
         while (true) {
             let event: ProcessorEvent<ContractName, AnyEvent> | undefined;
             try {
@@ -68,8 +100,19 @@ export class Orchestrator {
                 }
 
                 event = await this.enhanceStrategyId(event);
-                const changesets = await this.eventsProcessor.processEvent(event);
+                if (event.contractName === "Strategy" && "strategyId" in event) {
+                    if (!existsHandler(event.strategyId)) {
+                        //TODO: save to registry as unsupported strategy, so when the strategy is handled it will be backwards compatible and process all of the events
+                        console.log(
+                            `No handler found for strategyId: ${event.strategyId}. Event: ${stringify(
+                                event,
+                            )}`,
+                        );
+                        continue;
+                    }
+                }
 
+                const changesets = await this.eventsProcessor.processEvent(event);
                 const executionResult = await this.dataLoader.applyChanges(changesets);
 
                 if (executionResult.numFailed > 0) {
@@ -79,13 +122,19 @@ export class Orchestrator {
                             event,
                         )}`,
                     );
+                } else {
+                    await this.eventsRegistry.saveLastProcessedEvent(event);
                 }
-
-                await this.eventsRegistry.saveLastProcessedEvent(event);
             } catch (error: unknown) {
-                // TODO: improve error handling and notify
-                if (error instanceof UnsupportedStrategy || error instanceof InvalidEvent) {
-                    console.error(`${error.name}: ${error.message}. Event: ${stringify(event)}`);
+                // TODO: improve error handling, retries and notify
+                if (
+                    error instanceof UnsupportedStrategy ||
+                    error instanceof InvalidEvent ||
+                    error instanceof UnsupportedEventException
+                ) {
+                    console.error(
+                        `Current event cannot be handled. ${error.name}: ${error.message}. Event: ${stringify(event)}`,
+                    );
                 } else {
                     console.error(`Error processing event: ${stringify(event)}`, error);
                 }
@@ -93,6 +142,9 @@ export class Orchestrator {
         }
     }
 
+    /**
+     * Fill the events queue with the events from the events fetcher
+     */
     private async fillQueue(): Promise<void> {
         const lastProcessedEvent = await this.eventsRegistry.getLastProcessedEvent();
         const blockNumber = lastProcessedEvent?.blockNumber ?? 0;
@@ -108,9 +160,15 @@ export class Orchestrator {
         this.eventsQueue.push(...events);
     }
 
-    // if poolCreated event, get strategyId and save in the map
-    // if strategy event populate event with strategyId if exists in the map
-    // get strategyId and populate event with it
+    /**
+     * Enhance the event with the strategy id when required
+     * @param event - The event
+     * @returns The event with the strategy id or the same event if strategyId is not required
+     *
+     * StrategyId is required for the following events:
+     * - PoolCreated from Allo contract
+     * - Any event from Strategy contract or its implementations
+     */
     private async enhanceStrategyId(
         event: ProcessorEvent<ContractName, AnyEvent>,
     ): Promise<ProcessorEvent<ContractName, AnyEvent>> {
@@ -125,6 +183,11 @@ export class Orchestrator {
         return event;
     }
 
+    /**
+     * Get the strategy address from the event
+     * @param event - The event
+     * @returns The strategy address
+     */
     private getStrategyAddress(
         event: ProcessorEvent<"Allo", "PoolCreated"> | ProcessorEvent<"Strategy", StrategyEvent>,
     ): Address {
@@ -133,6 +196,11 @@ export class Orchestrator {
             : event.srcAddress;
     }
 
+    /**
+     * Get the strategy id from the strategy registry or fetch it from the chain
+     * @param strategyAddress - The strategy address
+     * @returns The strategy id
+     */
     private async getOrFetchStrategyId(strategyAddress: Address): Promise<Hex> {
         const existingId = await this.strategyRegistry.getStrategyId(strategyAddress);
         if (existingId) {
@@ -150,6 +218,11 @@ export class Orchestrator {
         return strategyId;
     }
 
+    /**
+     * Check if the event requires a strategy id
+     * @param event - The event
+     * @returns True if the event requires a strategy id, false otherwise
+     */
     private requiresStrategyId(
         event: ProcessorEvent<ContractName, AnyEvent>,
     ): event is ProcessorEvent<"Allo", "PoolCreated"> | ProcessorEvent<"Strategy", StrategyEvent> {

@@ -5,6 +5,22 @@ export interface IQueue<T> {
     get length(): number;
     isEmpty(): boolean;
 }
+/**
+ * A circular buffer-based queue implementation that provides efficient O(1) operations
+ * with automatic resizing capabilities.
+ *
+ * Key benefits:
+ * - Constant O(1) time complexity for push/pop/peek operations
+ * - Memory efficient circular buffer that reuses space
+ * - Automatic buffer resizing to handle growth and shrinkage
+ * - Amortized O(1) push operations even when resizing is needed
+ * - Memory optimization by shrinking when queue becomes very empty
+ * - Initial capacity can be tuned based on expected usage
+ *
+ * The circular buffer approach avoids the need to shift elements, making it more
+ * efficient than array-based queues for high-throughput scenarios. The automatic
+ * resizing ensures memory usage adapts to actual needs while maintaining performance.
+ */
 
 export class Queue<T> implements IQueue<T> {
     private buffer: (T | undefined)[];

@@ -6,6 +6,9 @@ import {
     IRoundRepository,
 } from "@grants-stack-indexer/repository";
 
+/**
+ * The result of the execution of the changesets.
+ */
 export type ExecutionResult = {
     changesets: Changeset["type"][];
     numExecuted: number;
