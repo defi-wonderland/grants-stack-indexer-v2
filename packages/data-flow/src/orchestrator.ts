@@ -48,7 +48,6 @@ import { CoreDependencies, DataLoader, delay, IQueue, iStrategyAbi, Queue } from
  * - Error handling and logging for various failure scenarios
  * - Registry tracking of supported/unsupported strategies and events
  *
- * TODO: Implement a circuit breaker to gracefully stop the orchestrator
  * TODO: Enhance the error handling/retries, logging and observability
  * TODO: Handle unhandled strategies appropriately
  */
@@ -91,9 +90,8 @@ export class Orchestrator {
         this.eventsQueue = new Queue<ProcessorEvent<ContractName, AnyEvent>>(fetchLimit);
     }
 
-    async run(): Promise<void> {
-        //TODO: implement a circuit breaker to gracefully stop the orchestrator
-        while (true) {
+    async run(signal: AbortSignal): Promise<void> {
+        while (!signal.aborted) {
             let event: ProcessorEvent<ContractName, AnyEvent> | undefined;
             try {
                 if (this.eventsQueue.isEmpty()) await this.fillQueue();
