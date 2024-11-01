@@ -17,12 +17,10 @@ import {
     stringify,
 } from "@grants-stack-indexer/shared";
 
+import type { IEventsFetcher, IEventsRegistry, IStrategyRegistry } from "./interfaces/index.js";
 import { EventsFetcher } from "./eventsFetcher.js";
 import { EventsProcessor } from "./eventsProcessor.js";
 import { InvalidEvent } from "./exceptions/index.js";
-import { IEventsRegistry } from "./interfaces/eventsRegistry.interface.js";
-import { IEventsFetcher } from "./interfaces/index.js";
-import { IStrategyRegistry } from "./interfaces/strategyRegistry.interface.js";
 import { CoreDependencies, DataLoader, delay, IQueue, iStrategyAbi, Queue } from "./internal.js";
 
 /**
@@ -94,7 +92,7 @@ export class Orchestrator {
         while (!signal.aborted) {
             let event: ProcessorEvent<ContractName, AnyEvent> | undefined;
             try {
-                if (this.eventsQueue.isEmpty()) await this.fillQueue();
+                if (this.eventsQueue.isEmpty()) await this.enqueueEvents();
 
                 event = this.eventsQueue.pop();
 
@@ -147,9 +145,9 @@ export class Orchestrator {
     }
 
     /**
-     * Fill the events queue with the events from the events fetcher
+     * Enqueue new events from the events fetcher using the last processed event as a starting point
      */
-    private async fillQueue(): Promise<void> {
+    private async enqueueEvents(): Promise<void> {
         const lastProcessedEvent = await this.eventsRegistry.getLastProcessedEvent();
         const blockNumber = lastProcessedEvent?.blockNumber ?? 0;
         const logIndex = lastProcessedEvent?.logIndex ?? 0;

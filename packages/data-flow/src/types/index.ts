@@ -17,6 +17,13 @@ export type ExecutionResult = {
     errors: string[];
 };
 
+/**
+ * The core dependencies for the data flow
+ *
+ * Note: for Repositories, we type the Read & Write interfaces
+ * while the ProcessorDependencies type uses the ReadOnly interfaces
+ * so that's why we need this type
+ */
 export type CoreDependencies = Pick<
     ProcessorDependencies,
     "evmProvider" | "pricingProvider" | "metadataProvider"
