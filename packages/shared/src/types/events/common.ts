@@ -11,7 +11,7 @@ import {
 } from "./index.js";
 
 export type ContractName = "Strategy" | "Allo" | "Registry";
-export type AnyEvent = StrategyEvent | AlloEvent;
+export type AnyEvent = StrategyEvent | AlloEvent | RegistryEvent;
 
 type TransactionFields = {
     hash: Hex;
@@ -48,9 +48,9 @@ export type EventParams<T extends ContractName, E extends ContractToEventName<T>
         : never;
 
 /**
- * This type is used to represent a protocol event.
+ * This type represents events fetched from the indexer.
  */
-export type ProtocolEvent<T extends ContractName, E extends ContractToEventName<T>> = {
+export type IndexerFetchedEvent<T extends ContractName, E extends ContractToEventName<T>> = {
     //TODO: make blocknumber and chainId bigints, implies implementing adapter patterns in the EventsFetcher or IndexerClient
     blockNumber: number;
     blockTimestamp: number;
@@ -61,13 +61,7 @@ export type ProtocolEvent<T extends ContractName, E extends ContractToEventName<
     params: EventParams<T, E>;
     srcAddress: Address;
     transactionFields: TransactionFields;
-} & (T extends "Strategy" // strategyId should be defined for Strategy events or PoolCreated events in Allo
-    ? { strategyId: Address }
-    : T extends "Allo"
-      ? E extends "PoolCreated"
-          ? { strategyId: Address }
-          : object
-      : object);
+};
 
 /**
  * TODO: This type is currently only used in the EventsFetcher and IndexerClient.
@@ -75,7 +69,22 @@ export type ProtocolEvent<T extends ContractName, E extends ContractToEventName<
  * to improve flexibility and reduce dependencies across different parts of the system.
  * Consider creating separate event types for different contexts if necessary.
  */
-export type AnyProtocolEvent = Omit<
-    ProtocolEvent<ContractName, ContractToEventName<ContractName>>,
-    "strategyId"
+export type AnyIndexerFetchedEvent = IndexerFetchedEvent<
+    ContractName,
+    ContractToEventName<ContractName>
 >;
+
+/**
+ * This type represents events processed by the processor after being enriched with strategy ids.
+ */
+export type ProcessorEvent<
+    T extends ContractName,
+    E extends ContractToEventName<T>,
+> = IndexerFetchedEvent<T, E> &
+    (T extends "Strategy" // strategyId should be defined for Strategy events or PoolCreated events in Allo
+        ? { strategyId: Address }
+        : T extends "Allo"
+          ? E extends "PoolCreated"
+              ? { strategyId: Address }
+              : object
+          : object);

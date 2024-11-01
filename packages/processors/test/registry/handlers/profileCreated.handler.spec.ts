@@ -5,13 +5,13 @@ import { EvmProvider } from "@grants-stack-indexer/chain-providers";
 import { IMetadataProvider } from "@grants-stack-indexer/metadata";
 import { IPricingProvider } from "@grants-stack-indexer/pricing";
 import { IProjectReadRepository, IRoundReadRepository } from "@grants-stack-indexer/repository";
-import { Bytes32String, ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
+import { Bytes32String, ChainId, ProcessorEvent } from "@grants-stack-indexer/shared";
 
 import { ProcessorDependencies } from "../../../src/internal.js";
 import { ProfileCreatedHandler } from "../../../src/registry/handlers/index.js";
 
 describe("ProfileCreatedHandler", () => {
-    let mockEvent: ProtocolEvent<"Registry", "ProfileCreated">;
+    let mockEvent: ProcessorEvent<"Registry", "ProfileCreated">;
     let mockChainId: ChainId;
     let mockDependencies: ProcessorDependencies;
     const mockedTxHash = "0x6e5a7115323ac1712f7c27adff46df2216324a4ad615a8c9ce488c32a1f3a035";
@@ -38,7 +38,7 @@ describe("ProfileCreatedHandler", () => {
                 anchor: mockedAddress,
                 owner: mockedAddress,
             },
-        } as ProtocolEvent<"Registry", "ProfileCreated">;
+        } as ProcessorEvent<"Registry", "ProfileCreated">;
 
         mockChainId = 10 as ChainId;
 

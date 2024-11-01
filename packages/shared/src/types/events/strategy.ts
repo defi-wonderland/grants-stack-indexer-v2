@@ -1,15 +1,22 @@
 import { Hex } from "viem";
 
-import { Address } from "../../internal.js";
+import { Address, AnyEvent, ContractName, ProcessorEvent } from "../../internal.js";
+
+/**
+ * This array is used to represent all Strategy events.
+ */
+const StrategyEventArray = [
+    "Registered",
+    "Distributed",
+    "TimestampsUpdated",
+    "AllocatedWithToken",
+] as const;
 
 /**
  * This type is used to represent a Strategy events.
  */
-export type StrategyEvent =
-    | "Registered"
-    | "Distributed"
-    | "TimestampsUpdated"
-    | "AllocatedWithToken";
+export type StrategyEvent = (typeof StrategyEventArray)[number];
+
 /**
  * This type maps Strategy events to their respective parameters.
  */
@@ -49,3 +56,17 @@ export type AllocatedWithTokenParams = {
     tokenAddress: Address;
     amount: number;
 };
+
+/**
+ * Type guard for Strategy events.
+ * @param event The event to check.
+ * @returns True if the event is a Strategy event, false otherwise.
+ */
+export function isStrategyEvent(
+    event: ProcessorEvent<ContractName, AnyEvent>,
+): event is ProcessorEvent<"Strategy", StrategyEvent> {
+    return (
+        event.contractName === "Strategy" &&
+        (StrategyEventArray as readonly string[]).includes(event.eventName)
+    );
+}

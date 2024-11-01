@@ -1,4 +1,4 @@
-export type { Address } from "viem";
+export type { Address, Hex } from "viem";
 export { stringify } from "viem/utils";
 export * from "./math/bignumber.js";
 export * from "./types/index.js";

@@ -1,7 +1,7 @@
 import { getAddress, zeroAddress } from "viem";
 
 import type { Changeset, NewRound, PendingRoundRole } from "@grants-stack-indexer/repository";
-import type { ChainId, ProtocolEvent, Token } from "@grants-stack-indexer/shared";
+import type { ChainId, ProcessorEvent, Token } from "@grants-stack-indexer/shared";
 import { getToken, isAlloNativeToken } from "@grants-stack-indexer/shared";
 
 import type { IEventHandler, ProcessorDependencies, StrategyTimings } from "../../internal.js";
@@ -30,7 +30,7 @@ export const TIMESTAMP_DELTA_RANGE = 2 * 60 * 60 * 1000;
   */
 export class PoolCreatedHandler implements IEventHandler<"Allo", "PoolCreated"> {
     constructor(
-        readonly event: ProtocolEvent<"Allo", "PoolCreated">,
+        readonly event: ProcessorEvent<"Allo", "PoolCreated">,
         private readonly chainId: ChainId,
         private readonly dependencies: Dependencies,
     ) {}

@@ -28,7 +28,11 @@
         "test:cov": "vitest run --config vitest.config.ts --coverage"
     },
     "dependencies": {
+        "@grants-stack-indexer/chain-providers": "workspace:*",
         "@grants-stack-indexer/indexer-client": "workspace:*",
+        "@grants-stack-indexer/metadata": "workspace:*",
+        "@grants-stack-indexer/pricing": "workspace:*",
+        "@grants-stack-indexer/processors": "workspace:*",
         "@grants-stack-indexer/repository": "workspace:*",
         "@grants-stack-indexer/shared": "workspace:*",
         "viem": "2.21.19"

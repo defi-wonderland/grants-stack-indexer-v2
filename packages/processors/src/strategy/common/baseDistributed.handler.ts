@@ -1,7 +1,7 @@
 import { getAddress } from "viem";
 
 import { Changeset } from "@grants-stack-indexer/repository";
-import { ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
+import { ChainId, ProcessorEvent } from "@grants-stack-indexer/shared";
 
 import { IEventHandler, ProcessorDependencies } from "../../internal.js";
 
@@ -21,7 +21,7 @@ type Dependencies = Pick<ProcessorDependencies, "roundRepository">;
 
 export class BaseDistributedHandler implements IEventHandler<"Strategy", "Distributed"> {
     constructor(
-        readonly event: ProtocolEvent<"Strategy", "Distributed">,
+        readonly event: ProcessorEvent<"Strategy", "Distributed">,
         private readonly chainId: ChainId,
         private readonly dependencies: Dependencies,
     ) {}

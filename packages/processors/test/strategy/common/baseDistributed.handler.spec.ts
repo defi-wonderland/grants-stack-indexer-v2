@@ -1,14 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { IRoundReadRepository, Round } from "@grants-stack-indexer/repository";
-import { ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
+import { ChainId, ProcessorEvent } from "@grants-stack-indexer/shared";
 
 import { BaseDistributedHandler } from "../../../src/strategy/common/baseDistributed.handler.js";
 
 function createMockEvent(
-    overrides: Partial<ProtocolEvent<"Strategy", "Distributed">> = {},
-): ProtocolEvent<"Strategy", "Distributed"> {
-    const defaultEvent: ProtocolEvent<"Strategy", "Distributed"> = {
+    overrides: Partial<ProcessorEvent<"Strategy", "Distributed">> = {},
+): ProcessorEvent<"Strategy", "Distributed"> {
+    const defaultEvent: ProcessorEvent<"Strategy", "Distributed"> = {
         params: {
             amount: 1000,
             recipientAddress: "0x1234567890123456789012345678901234567890",
@@ -36,7 +36,7 @@ function createMockEvent(
 describe("BaseDistributedHandler", () => {
     let handler: BaseDistributedHandler;
     let mockRoundRepository: IRoundReadRepository;
-    let mockEvent: ProtocolEvent<"Strategy", "Distributed">;
+    let mockEvent: ProcessorEvent<"Strategy", "Distributed">;
     const chainId = 10 as ChainId;
 
     beforeEach(() => {

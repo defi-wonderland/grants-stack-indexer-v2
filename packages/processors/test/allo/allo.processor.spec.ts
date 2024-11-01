@@ -7,7 +7,7 @@ import type {
     IProjectReadRepository,
     IRoundReadRepository,
 } from "@grants-stack-indexer/repository";
-import type { AlloEvent, ChainId, ProtocolEvent } from "@grants-stack-indexer/shared";
+import type { AlloEvent, ChainId, ProcessorEvent } from "@grants-stack-indexer/shared";
 
 import { AlloProcessor } from "../../src/allo/allo.processor.js";
 import { PoolCreatedHandler } from "../../src/allo/handlers/poolCreated.handler.js";
@@ -50,10 +50,10 @@ describe("AlloProcessor", () => {
     });
 
     it("call PoolCreatedHandler for PoolCreated event", async () => {
-        const mockEvent: ProtocolEvent<"Allo", "PoolCreated"> = {
+        const mockEvent: ProcessorEvent<"Allo", "PoolCreated"> = {
             eventName: "PoolCreated",
             // Add other necessary event properties here
-        } as ProtocolEvent<"Allo", "PoolCreated">;
+        } as ProcessorEvent<"Allo", "PoolCreated">;
 
         vi.spyOn(PoolCreatedHandler.prototype, "handle").mockResolvedValue([]);
 
@@ -70,7 +70,7 @@ describe("AlloProcessor", () => {
     it("throw an error for unknown event names", async () => {
         const mockEvent = {
             eventName: "UnknownEvent",
-        } as unknown as ProtocolEvent<"Allo", AlloEvent>;
+        } as unknown as ProcessorEvent<"Allo", AlloEvent>;
 
         await expect(() => processor.process(mockEvent)).rejects.toThrow(UnsupportedEventException);
     });

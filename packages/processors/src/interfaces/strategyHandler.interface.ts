@@ -2,7 +2,7 @@ import type { Changeset } from "@grants-stack-indexer/repository";
 import type {
     Address,
     ContractToEventName,
-    ProtocolEvent,
+    ProcessorEvent,
     Token,
 } from "@grants-stack-indexer/shared";
 
@@ -23,7 +23,7 @@ export interface IStrategyHandler<E extends ContractToEventName<"Strategy">> {
      * Handles the event.
      * @returns A promise that resolves to an array of changesets.
      */
-    handle(event: ProtocolEvent<"Strategy", E>): Promise<Changeset[]>;
+    handle(event: ProcessorEvent<"Strategy", E>): Promise<Changeset[]>;
 
     /**
      * Fetch the strategy timings data from the strategy contract

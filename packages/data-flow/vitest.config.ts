@@ -10,7 +10,14 @@ export default defineConfig({
         coverage: {
             provider: "v8",
             reporter: ["text", "json", "html"], // Coverage reporters
-            exclude: ["node_modules", "dist", "src/index.ts", ...configDefaults.exclude], // Files to exclude from coverage
+            exclude: [
+                "node_modules",
+                "dist",
+                "src/index.ts",
+                "src/external.ts",
+                "test/**",
+                ...configDefaults.exclude,
+            ], // Files to exclude from coverage
         },
     },
     resolve: {

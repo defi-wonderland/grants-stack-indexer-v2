@@ -1,5 +1,5 @@
 import { Changeset } from "@grants-stack-indexer/repository";
-import { ChainId, ProtocolEvent, StrategyEvent } from "@grants-stack-indexer/shared";
+import { ChainId, ProcessorEvent, StrategyEvent } from "@grants-stack-indexer/shared";
 
 import type { IProcessor, ProcessorDependencies } from "../internal.js";
 import { UnsupportedStrategy } from "../internal.js";
@@ -11,7 +11,7 @@ export class StrategyProcessor implements IProcessor<"Strategy", StrategyEvent> 
         private readonly dependencies: ProcessorDependencies,
     ) {}
 
-    async process(event: ProtocolEvent<"Strategy", StrategyEvent>): Promise<Changeset[]> {
+    async process(event: ProcessorEvent<"Strategy", StrategyEvent>): Promise<Changeset[]> {
         const strategyId = event.strategyId;
 
         const strategyHandler = StrategyHandlerFactory.createHandler(
