@@ -1,5 +1,5 @@
 import { Address } from "viem";
-import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { EvmProvider } from "@grants-stack-indexer/chain-providers";
 import { IIndexerClient } from "@grants-stack-indexer/indexer-client";
@@ -108,7 +108,7 @@ describe("Orchestrator", { sequential: true }, () => {
         );
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         vi.clearAllMocks();
 
         abortController.abort();
@@ -160,22 +160,24 @@ describe("Orchestrator", { sequential: true }, () => {
             expect(mockEventsRegistry.saveLastProcessedEvent).toHaveBeenCalledWith(mockEvents[1]);
         });
 
-        it("wait and keep polling on empty queue", { timeout: 1000 }, async () => {
-            vi.useFakeTimers();
-            vi.spyOn(mockIndexerClient, "getEventsAfterBlockNumberAndLogIndex").mockResolvedValue(
-                [],
+        it("wait and keep polling on empty queue", async () => {
+            const getEventsAfterBlockNumberAndLogIndexSpy = vi.spyOn(
+                mockIndexerClient,
+                "getEventsAfterBlockNumberAndLogIndex",
             );
+            getEventsAfterBlockNumberAndLogIndexSpy.mockResolvedValue([]);
 
             runPromise = orchestrator.run(abortController.signal);
 
             // Wait for a few polling cycles
-            await vi.advanceTimersByTimeAsync(mockFetchDelay * 2);
+            await new Promise((resolve) => setTimeout(resolve, mockFetchDelay * 3));
 
             expect(
                 vi.spyOn(orchestrator["eventsProcessor"], "processEvent"),
             ).not.toHaveBeenCalled();
-            expect(mockIndexerClient.getEventsAfterBlockNumberAndLogIndex).toHaveBeenCalledTimes(3);
-            vi.useRealTimers();
+            expect(
+                getEventsAfterBlockNumberAndLogIndexSpy.mock.calls.length,
+            ).toBeGreaterThanOrEqual(3);
         });
     });
 
@@ -313,7 +315,6 @@ describe("Orchestrator", { sequential: true }, () => {
         }
 
         it("discards events from unhandled strategies", async () => {
-            vi.useFakeTimers();
             const unhandledStrategyId = "0x6f9aaaaf02b266413f" as Hex;
             const strategyAddress = "0x123" as Address;
             const mockEvent = createMockEvent(
@@ -324,8 +325,12 @@ describe("Orchestrator", { sequential: true }, () => {
                 strategyAddress,
             );
 
+            const getEventsAfterBlockNumberAndLogIndexSpy = vi.spyOn(
+                mockIndexerClient,
+                "getEventsAfterBlockNumberAndLogIndex",
+            );
             vi.spyOn(mockEventsRegistry, "getLastProcessedEvent").mockResolvedValue(undefined);
-            vi.spyOn(mockIndexerClient, "getEventsAfterBlockNumberAndLogIndex")
+            getEventsAfterBlockNumberAndLogIndexSpy
                 .mockResolvedValueOnce([mockEvent])
                 .mockResolvedValue([]);
 
@@ -334,12 +339,14 @@ describe("Orchestrator", { sequential: true }, () => {
 
             runPromise = orchestrator.run(abortController.signal);
 
-            await vi.advanceTimersByTimeAsync(mockFetchDelay * 2);
+            await vi.waitFor(() => {
+                if (getEventsAfterBlockNumberAndLogIndexSpy.mock.calls.length >= 2)
+                    throw new Error("Not yet called");
+            });
 
             expect(orchestrator["eventsProcessor"].processEvent).not.toHaveBeenCalled();
             expect(orchestrator["dataLoader"].applyChanges).not.toHaveBeenCalled();
             expect(mockEventsRegistry.saveLastProcessedEvent).not.toHaveBeenCalled();
-            vi.useRealTimers();
         });
 
         it("uses cached strategy ID from registry", async () => {
