@@ -31,5 +31,3 @@ export type Application = {
 
 export type NewApplication = Application;
 export type PartialApplication = Partial<Application>;
-
-//TODO: create the corresponding repository implementation

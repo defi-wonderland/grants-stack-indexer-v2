@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, Mocked, vi } from "vitest";
 
 import { IIndexerClient } from "@grants-stack-indexer/indexer-client";
-import { AnyProtocolEvent } from "@grants-stack-indexer/shared";
+import { AnyIndexerFetchedEvent, ChainId } from "@grants-stack-indexer/shared";
 
 import { EventsFetcher } from "../../src/eventsFetcher.js";
 
@@ -18,7 +18,7 @@ describe("EventsFetcher", () => {
     });
 
     it("fetches events by block number and log index", async () => {
-        const mockEvents: AnyProtocolEvent[] = [
+        const mockEvents: AnyIndexerFetchedEvent[] = [
             {
                 chainId: 1,
                 blockNumber: 12345,
@@ -46,8 +46,8 @@ describe("EventsFetcher", () => {
                 transactionFields: { hash: "0x1234", transactionIndex: 1 },
             },
         ];
-        const chainId = 1n;
-        const blockNumber = 1000n;
+        const chainId = 1 as ChainId;
+        const blockNumber = 1000;
         const logIndex = 0;
         const limit = 100;
 
@@ -69,8 +69,8 @@ describe("EventsFetcher", () => {
     });
 
     it("handles errors thrown by indexer client", async () => {
-        const chainId = 1n;
-        const blockNumber = 1000n;
+        const chainId = 1 as ChainId;
+        const blockNumber = 1000;
         const logIndex = 0;
 
         indexerClientMock.getEventsAfterBlockNumberAndLogIndex.mockRejectedValue(

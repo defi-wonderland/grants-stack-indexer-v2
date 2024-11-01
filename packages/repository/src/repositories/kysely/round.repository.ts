@@ -94,14 +94,22 @@ export class KyselyRoundRepository implements IRoundRepository {
         await this.db.withSchema(this.schemaName).insertInto("rounds").values(round).execute();
     }
 
-    async updateRound(where: { id: string; chainId: ChainId }, round: PartialRound): Promise<void> {
-        await this.db
+    /* @inheritdoc */
+    async updateRound(
+        where: { id: string; chainId: ChainId } | { chainId: ChainId; strategyAddress: Address },
+        round: PartialRound,
+    ): Promise<void> {
+        const query = this.db
             .withSchema(this.schemaName)
             .updateTable("rounds")
             .set(round)
-            .where("id", "=", where.id)
-            .where("chainId", "=", where.chainId)
-            .execute();
+            .where("chainId", "=", where.chainId);
+
+        if ("id" in where) {
+            await query.where("id", "=", where.id).execute();
+        } else {
+            await query.where("strategyAddress", "=", where.strategyAddress).execute();
+        }
     }
 
     /* @inheritdoc */

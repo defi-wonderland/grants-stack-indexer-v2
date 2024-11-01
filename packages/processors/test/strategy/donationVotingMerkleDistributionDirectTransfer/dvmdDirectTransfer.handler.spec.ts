@@ -10,7 +10,7 @@ import { EvmProvider } from "@grants-stack-indexer/chain-providers";
 import { IPricingProvider } from "@grants-stack-indexer/pricing";
 import {
     ChainId,
-    ProtocolEvent,
+    ProcessorEvent,
     StrategyEvent,
     Token,
     TokenCode,
@@ -83,7 +83,7 @@ describe("DVMDDirectTransferHandler", () => {
     it("calls RegisteredHandler for Registered event", async () => {
         const mockEvent = {
             eventName: "Registered",
-        } as ProtocolEvent<"Strategy", "Registered">;
+        } as ProcessorEvent<"Strategy", "Registered">;
 
         vi.spyOn(DVMDRegisteredHandler.prototype, "handle").mockResolvedValue([]);
 
@@ -102,7 +102,7 @@ describe("DVMDDirectTransferHandler", () => {
     it("calls DistributedHandler for Distributed event", async () => {
         const mockEvent = {
             eventName: "Distributed",
-        } as ProtocolEvent<"Strategy", "Distributed">;
+        } as ProcessorEvent<"Strategy", "Distributed">;
 
         vi.spyOn(BaseDistributedHandler.prototype, "handle").mockResolvedValue([]);
 
@@ -227,7 +227,7 @@ describe("DVMDDirectTransferHandler", () => {
     it.skip("calls FundsDistributedHandler for FundsDistributed event");
 
     it("throws UnsupportedEventException for unknown event names", async () => {
-        const mockEvent = { eventName: "UnknownEvent" } as unknown as ProtocolEvent<
+        const mockEvent = { eventName: "UnknownEvent" } as unknown as ProcessorEvent<
             "Strategy",
             StrategyEvent
         >;

@@ -8,15 +8,15 @@ import {
     Project,
     Round,
 } from "@grants-stack-indexer/repository";
-import { ChainId, DeepPartial, mergeDeep, ProtocolEvent } from "@grants-stack-indexer/shared";
+import { ChainId, DeepPartial, mergeDeep, ProcessorEvent } from "@grants-stack-indexer/shared";
 
 import { ProjectNotFound, RoundNotFound } from "../../../../src/exceptions/index.js";
 import { DVMDRegisteredHandler } from "../../../../src/strategy/donationVotingMerkleDistributionDirectTransfer/handlers/index.js";
 
 function createMockEvent(
-    overrides: DeepPartial<ProtocolEvent<"Strategy", "Registered">> = {},
-): ProtocolEvent<"Strategy", "Registered"> {
-    const defaultEvent: ProtocolEvent<"Strategy", "Registered"> = {
+    overrides: DeepPartial<ProcessorEvent<"Strategy", "Registered">> = {},
+): ProcessorEvent<"Strategy", "Registered"> {
+    const defaultEvent: ProcessorEvent<"Strategy", "Registered"> = {
         params: {
             recipientId: "0x1234567890123456789012345678901234567890",
             sender: "0x0987654321098765432109876543210987654321",
@@ -37,7 +37,7 @@ function createMockEvent(
         strategyId: "0x9fa6890423649187b1f0e8bf4265f0305ce99523c3d11aa36b35a54617bb0ec0",
     };
 
-    return mergeDeep(defaultEvent, overrides) as ProtocolEvent<"Strategy", "Registered">;
+    return mergeDeep(defaultEvent, overrides) as ProcessorEvent<"Strategy", "Registered">;
 }
 
 describe("DVMDRegisteredHandler", () => {
@@ -45,7 +45,7 @@ describe("DVMDRegisteredHandler", () => {
     let mockRoundRepository: IRoundReadRepository;
     let mockProjectRepository: IProjectReadRepository;
     let mockMetadataProvider: IMetadataProvider;
-    let mockEvent: ProtocolEvent<"Strategy", "Registered">;
+    let mockEvent: ProcessorEvent<"Strategy", "Registered">;
     const chainId = 10 as ChainId;
 
     beforeEach(() => {

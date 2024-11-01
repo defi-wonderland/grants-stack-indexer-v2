@@ -1,4 +1,4 @@
-import { AnyProtocolEvent } from "@grants-stack-indexer/shared";
+import { AnyIndexerFetchedEvent, ChainId } from "@grants-stack-indexer/shared";
 
 /**
  * Interface for the indexer client
@@ -12,9 +12,9 @@ export interface IIndexerClient {
      * @param limit Limit of events to fetch
      */
     getEventsAfterBlockNumberAndLogIndex(
-        chainId: bigint,
-        fromBlock: bigint,
+        chainId: ChainId,
+        fromBlock: number,
         logIndex: number,
         limit?: number,
-    ): Promise<AnyProtocolEvent[]>;
+    ): Promise<AnyIndexerFetchedEvent[]>;
 }

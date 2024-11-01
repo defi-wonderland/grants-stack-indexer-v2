@@ -1,5 +1,5 @@
 import { Changeset } from "@grants-stack-indexer/repository";
-import { Address, ProtocolEvent, StrategyEvent, Token } from "@grants-stack-indexer/shared";
+import { Address, ProcessorEvent, StrategyEvent, Token } from "@grants-stack-indexer/shared";
 
 import { IStrategyHandler, StrategyTimings } from "../../internal.js";
 
@@ -39,5 +39,5 @@ export abstract class BaseStrategyHandler implements IStrategyHandler<StrategyEv
         };
     }
 
-    abstract handle(event: ProtocolEvent<"Strategy", StrategyEvent>): Promise<Changeset[]>;
+    abstract handle(event: ProcessorEvent<"Strategy", StrategyEvent>): Promise<Changeset[]>;
 }

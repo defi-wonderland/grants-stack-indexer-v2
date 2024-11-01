@@ -5,7 +5,7 @@ import {
     ALLO_OWNER_ROLE,
     Bytes32String,
     ChainId,
-    ProtocolEvent,
+    ProcessorEvent,
 } from "@grants-stack-indexer/shared";
 
 import { ProcessorDependencies } from "../../../src/internal.js";
@@ -41,7 +41,7 @@ describe("RoleGrantedHandler", () => {
             hash: "0x123",
             transactionIndex: 1,
         },
-    } as ProtocolEvent<"Registry", "RoleGranted">;
+    } as ProcessorEvent<"Registry", "RoleGranted">;
 
     it("returns an empty array if role is ALLO_OWNER_ROLE", async () => {
         const event = mockedEvent;

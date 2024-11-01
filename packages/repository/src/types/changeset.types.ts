@@ -1,6 +1,6 @@
 import type { Address, ChainId } from "@grants-stack-indexer/shared";
 
-import { NewApplication } from "./application.types.js";
+import { NewApplication, PartialApplication } from "./application.types.js";
 import {
     NewPendingProjectRole,
     NewProject,
@@ -16,7 +16,9 @@ import {
     RoundRole,
 } from "./round.types.js";
 
-export type Changeset =
+//TODO: see if in the future we move out of inline object types for changesets
+
+export type ProjectChangeset =
     | {
           type: "InsertProject";
           args: {
@@ -60,7 +62,9 @@ export type Changeset =
           args: {
               projectRole: Pick<ProjectRole, "chainId" | "projectId" | "role" | "address">;
           };
-      }
+      };
+
+export type RoundChangeset =
     | {
           type: "InsertRound";
           args: {
@@ -93,28 +97,11 @@ export type Changeset =
           };
       }
     | {
-          type: "IncrementRoundDonationStats";
-          args: {
-              chainId: ChainId;
-              roundId: Address;
-              amountInUsd: string;
-          };
-      }
-    | {
           type: "IncrementRoundTotalDistributed";
           args: {
               chainId: ChainId;
               roundId: string;
               amount: bigint;
-          };
-      }
-    | {
-          type: "IncrementApplicationDonationStats";
-          args: {
-              chainId: ChainId;
-              roundId: Address;
-              applicationId: string;
-              amountInUsd: number;
           };
       }
     | {
@@ -140,8 +127,23 @@ export type Changeset =
           args: {
               roundRole: Pick<RoundRole, "chainId" | "roundId" | "role" | "address">;
           };
-      }
+      };
+
+export type ApplicationChangeset =
     | {
           type: "InsertApplication";
           args: NewApplication;
+      }
+    | {
+          type: "UpdateApplication";
+          args: {
+              chainId: ChainId;
+              roundId: string;
+              applicationId: string;
+              application: PartialApplication;
+          };
       };
+
+//TODO: add changeset for Donation and Payout tables
+
+export type Changeset = ProjectChangeset | RoundChangeset | ApplicationChangeset;

@@ -1,7 +1,7 @@
 import { GraphQLClient } from "graphql-request";
 import { afterEach, beforeEach, describe, expect, it, Mocked, vi } from "vitest";
 
-import { AnyProtocolEvent } from "@grants-stack-indexer/shared";
+import { AnyIndexerFetchedEvent, ChainId } from "@grants-stack-indexer/shared";
 
 import { IndexerClientError, InvalidIndexerResponse } from "../../src/exceptions/index.js";
 import { EnvioIndexerClient } from "../../src/providers/envioIndexerClient.js";
@@ -42,7 +42,7 @@ describe("EnvioIndexerClient", () => {
     });
 
     describe("getEventsAfterBlockNumberAndLogIndex", () => {
-        const mockEvents: AnyProtocolEvent[] = [
+        const mockEvents: AnyIndexerFetchedEvent[] = [
             {
                 chainId: 1,
                 blockNumber: 12345,
@@ -70,8 +70,8 @@ describe("EnvioIndexerClient", () => {
             graphqlClient.request.mockResolvedValue(mockedResponse);
 
             const result = await envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(
-                1n,
-                12345n,
+                1 as ChainId,
+                12345,
                 0,
                 100,
             );
@@ -89,7 +89,7 @@ describe("EnvioIndexerClient", () => {
             graphqlClient.request.mockResolvedValue(mockedResponse);
 
             await expect(
-                envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(1n, 12345n, 0),
+                envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(1 as ChainId, 12345, 0),
             ).rejects.toThrow(InvalidIndexerResponse);
         });
 
@@ -98,7 +98,7 @@ describe("EnvioIndexerClient", () => {
             graphqlClient.request.mockRejectedValue(error);
 
             await expect(
-                envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(1n, 12345n, 0),
+                envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(1 as ChainId, 12345, 0),
             ).rejects.toThrow(IndexerClientError);
         });
 
@@ -114,8 +114,8 @@ describe("EnvioIndexerClient", () => {
 
             // Call the method without the limit argument
             const result = await envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(
-                1n,
-                12345n,
+                1 as ChainId,
+                12345,
                 0,
             );
 
@@ -123,8 +123,8 @@ describe("EnvioIndexerClient", () => {
             expect(graphqlClient.request).toHaveBeenCalledWith(
                 expect.any(String), // We can check the query string later if necessary
                 {
-                    chainId: 1n,
-                    blockNumber: 12345n,
+                    chainId: 1,
+                    blockNumber: 12345,
                     logIndex: 0,
                     limit: 100, // Ensure the default limit is used
                 },
@@ -142,8 +142,8 @@ describe("EnvioIndexerClient", () => {
             graphqlClient.request.mockResolvedValue(mockedResponse);
 
             const result = await envioIndexerClient.getEventsAfterBlockNumberAndLogIndex(
-                1n,
-                12345n,
+                1 as ChainId,
+                12345,
                 0,
             );
             expect(result).toEqual([]);

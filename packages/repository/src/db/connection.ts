@@ -1,13 +1,15 @@
-import { CamelCasePlugin, Kysely, PostgresDialect, WithSchemaPlugin } from "kysely";
+import { CamelCasePlugin, ColumnType, Kysely, PostgresDialect, WithSchemaPlugin } from "kysely";
 import pg from "pg";
 
 import {
+    Application,
     PendingProjectRole as PendingProjectRoleTable,
     PendingRoundRole as PendingRoundRoleTable,
     ProjectRole as ProjectRoleTable,
     Project as ProjectTable,
     RoundRole as RoundRoleTable,
     Round as RoundTable,
+    StatusSnapshot,
 } from "../internal.js";
 
 const { Pool } = pg;
@@ -17,6 +19,14 @@ export interface DatabaseConfig extends pg.PoolConfig {
     withSchema?: string;
 }
 
+type ApplicationTable = Omit<Application, "statusSnapshots"> & {
+    statusSnapshots: ColumnType<
+        StatusSnapshot[],
+        StatusSnapshot[] | string,
+        StatusSnapshot[] | string
+    >;
+};
+
 export interface Database {
     rounds: RoundTable;
     pendingRoundRoles: PendingRoundRoleTable;
@@ -24,6 +34,7 @@ export interface Database {
     projects: ProjectTable;
     pendingProjectRoles: PendingProjectRoleTable;
     projectRoles: ProjectRoleTable;
+    applications: ApplicationTable;
 }
 
 /**

@@ -1,5 +1,8 @@
 // Add your external exports here
-export { StrategyProcessor, AlloProcessor } from "./internal.js";
-export type { IProcessor } from "./internal.js";
+export { StrategyProcessor, AlloProcessor, RegistryProcessor } from "./internal.js";
+
+export { UnsupportedStrategy, UnsupportedEventException } from "./internal.js";
+
+export type { IProcessor, ProcessorDependencies } from "./internal.js";
 
 export { existsHandler } from "./internal.js";
